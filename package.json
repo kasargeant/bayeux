@@ -6,7 +6,12 @@
     "javascript, test, testing, tap"
   ],
   "author": "Kyle Alexis Sargeant",
+  "email": "kasargeant@gmail.com",
   "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kasargeant/bayeux.git"
+  },
   "main": "src/index.js",
   "directories": {
     "doc": "docs",
@@ -40,7 +45,6 @@
     "jest": "^20.0.4",
     "jest-html-reporter": "^0.1.0"
   },
-  "email": "kasargeant@gmail.com",
   "jest-html-reporter": {
     "pageTitle": "Test Results",
     "outputPath": "docs/tests/index.html",

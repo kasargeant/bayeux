@@ -1,0 +1,49 @@
+{
+  "name": "bayeux",
+  "version": "0.0.0",
+  "description": "A simple, capable and pragmatic Tap-based test framework.",
+  "keywords": [
+    "javascript"
+  ],
+  "author": "Kyle Alexis Sargeant",
+  "license": "AGPL-3.0",
+  "main": "src/index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "engines": {
+    "node": "~6.10.0",
+    "npm": "~3.10.10"
+  },
+  "scripts": {
+    "build": "warhorse build",
+    "clean": "warhorse clean",
+    "create": "warhorse create",
+    "distribute": "warhorse distribute",
+    "document": "warhorse document",
+    "lint": "warhorse lint",
+    "pack": "warhorse pack",
+    "process": "warhorse process",
+    "publish": "warhorse publish",
+    "test": "warhorse test",
+    "jest": "jest",
+    "jest-update": "jest --updateSnapshot"
+  },
+  "devDependencies": {
+    "minami": "^1.2.3",
+    "jest": "^20.0.4",
+    "jest-html-reporter": "^0.1.0"
+  },
+  "email": "kasargeant@gmail.com",
+  "jest-html-reporter": {
+    "pageTitle": "Test Results",
+    "outputPath": "docs/tests/index.html",
+    "includeFailureMsg": false
+  }
+}

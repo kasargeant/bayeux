@@ -51,6 +51,9 @@
     "includeFailureMsg": false
   },
   "dependencies": {
-    "tape": "^4.6.3"
+    "tap": "^10.3.3",
+    "tap-parser": "^5.3.3",
+    "tape": "^4.6.3",
+    "tinter": "^0.4.2"
   }
 }

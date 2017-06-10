@@ -6,17 +6,20 @@ const {is, unit, test} = require("./Bayeux");
 // Unit(s)
 
 // Unit test(s)
-unit("Class: Square", function() {
+// unit("Unit A", function() {
+//
+//     test("Sanity check.", function(done) {
+//
+//         // Assert - it should have assigned the right height.
+//         is.equal(true, true, "it should be true.");
+//
+//         // Assert - it should have assigned the right width.
+//         is.notEqual(true, false, "it should be false.");
+//         done();
+//     });
+// });
 
-    test("Sanity check.", function(done) {
-
-        // Assert - it should have assigned the right height.
-        is.equal(true, true, "it should be true.");
-
-        // Assert - it should have assigned the right width.
-        is.notEqual(true, false, "it should be false.");
-        done();
-    });
+unit("Unit B", function() {
 
     test("Somethng async and timed", function(done) {
         setTimeout(function() {
@@ -33,5 +36,4 @@ unit("Class: Square", function() {
             done();
         }, 2000);
     });
-
 });

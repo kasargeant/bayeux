@@ -148,4 +148,8 @@ const Bayeux = {
 
 
 // Exports
-module.exports = Bayeux;
+module.exports = {
+    is: Bayeux,
+    unit: function(desc, fn) {Bayeux.unit(desc, fn);},
+    test: function(desc, fn) {Bayeux.test(desc, fn);},
+};

@@ -10,15 +10,10 @@
 
 // Imports
 const fs = require("fs");
-const path = require("path");
 const assert = require("assert");
 const series = require("async-series");
-const tinter = require("tinter");
 
-
-
-
-
+// Component
 const Bayeux = {
 
     debug: false,
@@ -29,11 +24,19 @@ const Bayeux = {
     snapshots: {},
     snapshotsUpdated: false,
 
-    _collate: function() {
+    _cleanup: function() {
+        this.testReports = [];
+        this.reports = [];
+        this.fnArray = [];
+        this.snapshots = {};
+        this.snapshotsUpdated = false;
+    },
+
+    _collate: function(reports) {
 
         if(this.debug === true) {
-            for(let i = 0; i < this.reports.length; i++) {
-                console.log(`${i}: ${JSON.stringify(this.reports[i])}`);
+            for(let i = 0; i < reports.length; i++) {
+                console.log(`${i}: ${JSON.stringify(reports[i])}`);
             }
         }
 
@@ -46,8 +49,8 @@ const Bayeux = {
             cases: []
         };
         let testReportCount = 0;
-        for(let i = 0; i < this.reports.length; i++) {
-            let report = this.reports[i];
+        for(let i = 0; i < reports.length; i++) {
+            let report = reports[i];
             switch(report.type) {
                 case "unit":
                     unitReport.name = report.message;
@@ -83,20 +86,11 @@ const Bayeux = {
 
         if(destination === "stdout") {
             console.log(unitReportSerialized);
-        }
-        else if(destination === "file") {
+        } else if(destination === "file") {
             let filename = unitReport.name.replace(/ /g, "_") + ".out.json";
             fs.writeFileSync(filename, unitReportSerialized);
         }
-
-        // Final post-unit cleanup
-        this.testReports = [];
-        this.reports = [];
-        this.fnArray = [];
-        this.snapshots = {};
-        this.snapshotsUpdated = false;
-
-        return;
+        return unitReport; // For diagnostics only.
     },
 
     _report: function(desc, fn) {
@@ -117,7 +111,7 @@ const Bayeux = {
                     title: desc,
                     message: desc
                 });
-            } catch (err) {
+            } catch(err) {
                 let errorReport = {
                     type: "case",
                     ok: false,
@@ -190,7 +184,11 @@ const Bayeux = {
         series(this.fnArray, function(err) {
             if(err) {throw err;}
             this.fnArray = [];
-            this._collate(); // At this point the entire test unit is finished.
+            // console.log(JSON.stringify(this.reports));
+            // console.log("=======");
+            this._collate(this.reports); // At this point the entire test unit is finished.
+            // Then cleanup
+            this._cleanup();
         }.bind(this));
 
     },

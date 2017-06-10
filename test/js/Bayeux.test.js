@@ -105,6 +105,21 @@ describe("Class: Bayeux", function() {
 
         });
 
+        it("it should have cleaned up all temporary variable after every unit test.", function() {
+
+            JSON.stringify(Bayeux._collate(unitOutput));
+
+            expect(Bayeux.testReports).toEqual([]);
+            expect(Bayeux.reports).toEqual([]);
+            expect(Bayeux.fnArray).toEqual([]);
+            expect(Bayeux.snapshots).toEqual({});
+            expect(Bayeux.snapshotsUpdated).toEqual(false);
+        });
+
+
+
+
+
     });
 });
 

@@ -1,4 +1,4 @@
-# BAYEUX [![npm](https://img.shields.io/npm/v/bayeux.svg)]()
+# BAYEUX [![npm](https://img.shields.io/npm/v/bayeux.svg)]() [![Build Status](https://travis-ci.org/kasargeant/bayeux.svg?branch=master)](https://travis-ci.org/kasargeant/tinter)  [![Coverage Status](https://coveralls.io/repos/github/kasargeant/bayeux/badge.svg?branch=master)](https://coveralls.io/github/kasargeant/bayeux?branch=master)
 
 A simple, capable and pragmatic Tap-based test framework.
 

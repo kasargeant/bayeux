@@ -6,22 +6,21 @@
  * @license See LICENSE file included in this distribution.
  */
 
+"use strict";
+
 // Imports
 const fs = require("fs");
 const assert = require("assert");
 const series = require("async-series");
 const tinter = require("tinter");
 
-class Bayeux {
-    constructor() {
-        this.testReports = [];
-        this.reports = [];
-        this.fnArray = [];
-    }
+const Bayeux = {
 
+    testReports: [],
+    reports: [],
+    fnArray: [],
 
-
-    report() {
+    report: function() {
         // Clean-up sequential report into a useful object.
         let unitReport = {
             tests: []
@@ -69,9 +68,9 @@ class Bayeux {
         }
 
         return this.reports;
-    }
+    },
 
-    _report(desc, fn) {
+    _report: function(desc, fn) {
         try {
             //console.log(desc + ": starting...");
             fn();
@@ -98,55 +97,54 @@ class Bayeux {
             // console.log(desc + ": " + JSON.stringify(errorReport, null, 2));
             this.reports.push(errorReport);
         }
-    }
+    },
 
     // is.equal(square.height, 2110, "it should have assigned the right height.");
-    equal(a, b, msg) {
+    equal: function(a, b, msg) {
         this._report(msg, function() {
             assert.equal(a, b);
         });
-    }
+    },
 
     // is.equal(square.height, 2110, "it should have assigned the right height.");
-    notEqual(a, b, msg) {
+    notEqual: function(a, b, msg) {
         this._report(msg, function() {
             assert.notEqual(a, b);
         });
-    }
+    },
 
     // is.equal(square.height, 2110, "it should have assigned the right height.");
-    ifError(a, b, msg) {
+    ifError: function(a, b, msg) {
         this._report(msg, function() {
             assert.ifError(a, b);
         });
-    }
+    },
 
 
     // is.equal(square.height, 2110, "it should have assigned the right height.");
-    _executeTests() {
+    _executeTests: function() {
 
         series(this.fnArray, function() {
             this.fnArray = [];
-            console.log("Done!");
-            this.report(); // Indicate the test has finished
+            this.report(); // At this point the entire test unit is finished.
         }.bind(this));
 
-    }
+    },
 
     // is.equal(square.height, 2110, "it should have assigned the right height.");
-    test(message, fn) {
+    test: function(message, fn) {
         this.fnArray.push(function(done) {
             this.reports.push({type: "test", message: message});
             fn(done);
         }.bind(this));
-    }
+    },
 
-    unit(message, fn) {
+    unit: function(message, fn) {
         this.reports = [{type: "unit", message: message}];
         fn();
         this._executeTests();
     }
-}
+};
 
 
 // Exports

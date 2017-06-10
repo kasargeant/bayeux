@@ -1,11 +1,9 @@
 "use strict";
 
 // Imports
-const Bayeux = require("./Bayeux");
-const is = new Bayeux();
-const unit = is.unit;
-const test = is.test;
-// const report = require("./bt").report;
+// const is = require("./Bayeux");
+
+const is = require("./Bayeux");
 
 const Square = require("./Square");
 

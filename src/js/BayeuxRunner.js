@@ -17,6 +17,9 @@ class BayeuxRunner {
 
     _reportJSON(unitReport) {
 
+        console.log("");
+        console.log(`Unit Report`);
+
         let reports = unitReport.tests;
 
         let testsTotal = 0;
@@ -29,7 +32,7 @@ class BayeuxRunner {
             testsTotal += report.cases.length;
 
             console.log("");
-            console.log(`  Test Report: ${report.name} (${report.cases.length} tests).`);
+            console.log(`  Test: ${report.name} (${report.cases.length} tests).`);
             for(let i = 0; i < report.cases.length; i++) {
                 let result = report.cases[i];
 
@@ -54,7 +57,8 @@ class BayeuxRunner {
                 }
             }
         }
-        console.log(`Test Report Summary:`);
+        console.log("");
+        console.log(`Summary:`);
         console.log(`   \x1b[32mTests passed: (${testsPassed}/${testsTotal})\x1b[0m`);
         if(testsFailed) {
             console.log(`   \x1b[31mTests failed: (${testsFailed}/${testsTotal})\x1b[0m`);
@@ -83,5 +87,5 @@ class BayeuxRunner {
 module.exports = BayeuxRunner;
 
 let bay = new BayeuxRunner();
-// bay.runTests("tapeSimple.js");
-bay.runTest("/Users/kasargeant/dev/projects/bayeux/test/js/Tinter16.test.js");
+// bay.runTest("/Users/kasargeant/dev/projects/bayeux/test/js/Tinter16.test.js");
+bay.runTest("/Users/kasargeant/dev/projects/bayeux/test/js/bayeuxSnapshots.test.js");

@@ -10,36 +10,58 @@
 
 // Imports
 const fs = require("fs");
+const path = require("path");
 const assert = require("assert");
 const series = require("async-series");
 const tinter = require("tinter");
 
+
+
+
+
 const Bayeux = {
 
+    debug: false,
     testReports: [],
     reports: [],
     fnArray: [],
 
-    report: function() {
+    snapshots: {},
+    snapshotsUpdated: false,
+
+    _collate: function() {
+
+        if(this.debug === true) {
+            for(let i = 0; i < this.reports.length; i++) {
+                console.log(`${i}: ${JSON.stringify(this.reports[i])}`);
+            }
+        }
+
         // Clean-up sequential report into a useful object.
         let unitReport = {
             tests: []
         };
-        let testReport = null;
+        let unitReportCount = 0;
+        let testReport = {
+            cases: []
+        };
+        let testReportCount = 0;
         for(let i = 0; i < this.reports.length; i++) {
             let report = this.reports[i];
             switch(report.type) {
                 case "unit":
                     unitReport.name = report.message;
+                    unitReportCount++;
                     break;
                 case "test":
-                    if(testReport !== null) {
+                    if(testReportCount > 0) {
                         unitReport.tests.push(testReport);
+                        testReport = {
+                            name: report.message,
+                            cases: []
+                        };
                     }
-                    testReport = {
-                        name: report.message,
-                        cases: []
-                    };
+                    testReportCount++;
                     break;
                 case "case":
                     testReport.cases.push(report);
@@ -67,7 +89,14 @@ const Bayeux = {
             fs.writeFileSync(filename, unitReportSerialized);
         }
 
-        return this.reports;
+        // Final post-unit cleanup
+        this.testReports = [];
+        this.reports = [];
+        this.fnArray = [];
+        this.snapshots = {};
+        this.snapshotsUpdated = false;
+
+        return;
     },
 
     _report: function(desc, fn) {
@@ -120,13 +149,39 @@ const Bayeux = {
         });
     },
 
+    snapshot: function(a, msg) {
+        // this._report(msg, function() {
+        //     assert.equal(a, a);
+        // });
+        let key = msg;
+        let snapshot = this.snapshots[key];
+        //console.log("SNAPSHOT = " + JSON.stringify(snapshot));
+
+        let type = typeof(a);
+        let value = "";
+        switch(type) {
+            default:
+                value = JSON.stringify(a);
+        }
+
+        if(snapshot !== undefined) {
+            // We have an existing snapshot - to test against.
+            this.equal(value, snapshot, msg);
+        } else {
+            // We need to make a new snapshot.
+            this.snapshots[key] = value;
+            this.snapshotsUpdated = true;
+            this._report(msg, function() {});
+        }
+    },
 
     // is.equal(square.height, 2110, "it should have assigned the right height.");
     _executeTests: function() {
 
-        series(this.fnArray, function() {
+        series(this.fnArray, function(err) {
+            if(err) {throw err;}
             this.fnArray = [];
-            this.report(); // At this point the entire test unit is finished.
+            this._collate(); // At this point the entire test unit is finished.
         }.bind(this));
 
     },
@@ -134,15 +189,62 @@ const Bayeux = {
     // is.equal(square.height, 2110, "it should have assigned the right height.");
     test: function(message, fn) {
         this.fnArray.push(function(done) {
-            this.reports.push({type: "test", message: message});
+            this.reports.push({type: "test", stage: "begin", message: message});
             fn(done);
         }.bind(this));
     },
 
     unit: function(message, fn) {
+        // If we have snapshots - load them.
+        if(fs.existsSync("./__snapshots__/")) {
+            let snapshotFilename = message.replace(/ /g, "_") + ".snap.js";
+            //console.log("SNAPSHOT: " + snapshotFilename);
+            this.snapshots = null;
+            try {
+                this.snapshots = require(`${path.join(__dirname, "../../test/js/__snapshots__/")}${snapshotFilename}`);
+            } catch(err) {
+                console.warn("No snapshots for this unit.");
+                this.snapshots = {};
+            }
+        } else {
+            console.warn("No snapshots directory.");
+        }
+
+        // Core of unit
         this.reports = [{type: "unit", message: message}];
         fn();
         this._executeTests();
+
+        // If we have updated snapshots - save them.
+        if(this.snapshotsUpdated === true) {
+            // If there is no snapshots directory - make one.
+            if(!fs.existsSync(`./__snapshots__/`)) {
+                fs.mkdirSync(`./__snapshots__/`);
+            }
+
+            let snapshotsString = "";
+            for(let key in this.snapshots) {
+                if(!this.snapshots.hasOwnProperty(key)) {
+                    // ...then ignore.
+                    continue;
+                }
+                // ...otherwise write to file.
+                console.log("KEY: " + key);
+                let value = this.snapshots[key];
+                snapshotsString += `exports[\`${key}\`] = \`${value}\`;\n\n`;
+            }
+
+
+            let snapshotFilename = message.replace(/ /g, "_") + ".snap.js";
+            try {
+                fs.writeFileSync(`./__snapshots__/${snapshotFilename}`, snapshotsString);
+            } catch(err) {
+                throw new Error("Couldn't write snapshot for this unit.");
+            }
+
+
+        }
+
     }
 };
 

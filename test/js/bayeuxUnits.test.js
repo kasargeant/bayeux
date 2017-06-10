@@ -1,23 +1,23 @@
 "use strict";
 
 // Imports
-const {is, unit, test} = require("./Bayeux");
+const {is, unit, test} = require("../../src/js/Bayeux");
 
 // Unit(s)
 
 // Unit test(s)
-// unit("Unit A", function() {
-//
-//     test("Sanity check.", function(done) {
-//
-//         // Assert - it should have assigned the right height.
-//         is.equal(true, true, "it should be true.");
-//
-//         // Assert - it should have assigned the right width.
-//         is.notEqual(true, false, "it should be false.");
-//         done();
-//     });
-// });
+unit("Unit A", function() {
+
+    test("Sanity check.", function(done) {
+
+        // Assert - it should have assigned the right height.
+        is.equal(true, true, "it should be true.");
+
+        // Assert - it should have assigned the right width.
+        is.notEqual(true, false, "it should be false.");
+        done();
+    });
+});
 
 unit("Unit B", function() {
 

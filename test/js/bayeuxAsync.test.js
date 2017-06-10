@@ -1,36 +1,35 @@
 "use strict";
 
 // Imports
-const {is, unit, test} = require("./Bayeux");
+const {is, unit, test} = require("../../src/js/Bayeux");
 
 // Unit(s)
 
 // Unit test(s)
 unit("Class: Square", function() {
 
-    test("Sanity check.", function(done) {
+    test("Something synchronous and simple", function(done) {
 
-        // Assert - it should have assigned the right height.
         is.equal(true, true, "it should be true.");
 
-        // Assert - it should have assigned the right width.
         is.notEqual(true, false, "it should be false.");
+
         done();
     });
 
-    test("Somethng async and timed", function(done) {
+    test("Something async and timed", function(done) {
         setTimeout(function() {
             console.log("Timeout 1");
             is.equal(true, true, "it should timeout first.");
-            done();
+            done(); // Indicate the test has finished
         }, 2000);
     });
 
-    test("Somethng async and timed2", function(done) {
+    test("Something async and timed2", function(done) {
         setTimeout(function() {
             console.log("Timeout 2");
             is.equal(true, true, "it should timeout second.");
-            done();
+            done(); // Indicate the test has finished
         }, 2000);
     });
 

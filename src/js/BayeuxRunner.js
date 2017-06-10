@@ -84,4 +84,4 @@ module.exports = BayeuxRunner;
 
 let bay = new BayeuxRunner();
 // bay.runTests("tapeSimple.js");
-bay.runTest("/Users/kasargeant/dev/projects/bayeux/src/js/Tinter16.test.js");
+bay.runTest("/Users/kasargeant/dev/projects/bayeux/test/js/Tinter16.test.js");

@@ -51,6 +51,7 @@
     "includeFailureMsg": false
   },
   "dependencies": {
+    "async-series": "0.0.1",
     "tap": "^10.3.3",
     "tap-parser": "^5.3.3",
     "tape": "^4.6.3",

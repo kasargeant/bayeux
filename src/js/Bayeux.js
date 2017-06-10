@@ -132,53 +132,6 @@ const Bayeux = {
     },
 
     // is.equal(square.height, 2110, "it should have assigned the right height.");
-    equal: function(a, b, msg) {
-        this._report(msg, function() {
-            assert.equal(a, b);
-        });
-    },
-
-    // is.equal(square.height, 2110, "it should have assigned the right height.");
-    notEqual: function(a, b, msg) {
-        this._report(msg, function() {
-            assert.notEqual(a, b);
-        });
-    },
-
-    // is.equal(square.height, 2110, "it should have assigned the right height.");
-    ifError: function(a, b, msg) {
-        this._report(msg, function() {
-            assert.ifError(a, b);
-        });
-    },
-
-    snapshot: function(a, msg) {
-        // this._report(msg, function() {
-        //     assert.equal(a, a);
-        // });
-        let key = msg;
-        let snapshot = this.snapshots[key];
-        //console.log("SNAPSHOT = " + JSON.stringify(snapshot));
-
-        let type = typeof(a);
-        let value = "";
-        switch(type) {
-            default:
-                value = JSON.stringify(a);
-        }
-
-        if(snapshot !== undefined) {
-            // We have an existing snapshot - to test against.
-            this.equal(value, snapshot, msg);
-        } else {
-            // We need to make a new snapshot.
-            this.snapshots[key] = value;
-            this.snapshotsUpdated = true;
-            this._report(msg, "snapshot");
-        }
-    },
-
-    // is.equal(square.height, 2110, "it should have assigned the right height.");
     _executeTests: function() {
 
         series(this.fnArray, function(err) {
@@ -250,7 +203,227 @@ const Bayeux = {
                 throw new Error("Couldn't write snapshot for this unit.");
             }
         }
+    },
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    $$$$$$$$$$$$$$$$$$$$$debugDividerOnly: function() {}, // TODO - remove key for production version.
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    /**
+     * Tests whether the two parameters are not equal.
+     * @example is.equal(square.height, 2110, "it should have assigned the right height.");
+     * @param {*} actual - the actual value
+     * @param {*} expected - the expected value
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    equal: function(actual, expected, msg) {
+        this._report(msg, function() {
+            assert.equal(actual, expected);
+        });
+    },
+
+    /**
+     * Tests whether the two parameters are deep equal.
+     * @example is.equalDeep(someComplexObj, someOtherComplexObj, "it should be able to clone correctly.");
+     * @param {*} actual - the actual value
+     * @param {*} expected - the expected value
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    equalDeep: function(actual, expected, msg) {
+        this._report(msg, function() {
+            assert.deepEqual(actual, expected);
+        });
+    },
+
+    /**
+     * Tests whether the two parameters are deep equal (using strict equality).
+     * @example is.equalDeepStrict(someComplexObj, someOtherComplexObj, "it should be able to clone correctly.");
+     * @param {*} actual - the actual value
+     * @param {*} expected - the expected value
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    equalDeepStrict: function(actual, expected, msg) {
+        this._report(msg, function() {
+            assert.deepStrictEqual(actual, expected);
+        });
+    },
+
+    /**
+     * Tests whether the two parameters are equal (using strict equality).
+     * @example is.equalStrict(someComplexObj, someOtherComplexObj, "it should be able to clone correctly.");
+     * @param {*} actual - the actual value
+     * @param {*} expected - the expected value
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    equalStrict: function(actual, expected, msg) {
+        this._report(msg, function() {
+            assert.strictEqual(actual, expected);
+        });
+    },
+
+    /**
+     * Tests whether the two parameters are not equal.
+     * @example is.notEqual(square.height, 2110, "it shouldn't have been assigned the height pre-initialisation.");
+     * @param {*} actual - the actual value
+     * @param {*} expected - the expected value
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    notEqual: function(actual, expected, msg) {
+        this._report(msg, function() {
+            assert.notEqual(actual, expected);
+        });
+    },
+
+    /**
+     * Tests whether the two parameters are not deep equal.
+     * @example is.notEqualDeep(someComplexObj, someOtherComplexObj, "it should be unique.");
+     * @param {*} actual - the actual value
+     * @param {*} expected - the expected value
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    notEqualDeep: function(actual, expected, msg) {
+        this._report(msg, function() {
+            assert.notDeepEqual(actual, expected);
+        });
+    },
+
+    /**
+     * Tests whether the two parameters are not deep equal (using strict equality).
+     * @example is.notEqualDeepStrict(someComplexObj, someOtherComplexObj, "it should be unique.");
+     * @param {*} actual - the actual value
+     * @param {*} expected - the expected value
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    notEqualDeepStrict: function(actual, expected, msg) {
+        this._report(msg, function() {
+            assert.notDeepStrictEqual(actual, expected);
+        });
+    },
+
+    /**
+     * Tests whether the two parameters are not equal (using strict equality).
+     * @example is.notEqualStrict(someComplexObj, someOtherComplexObj, "it should be unique.");
+     * @param {*} actual - the actual value
+     * @param {*} expected - the expected value
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    notEqualStrict: function(actual, expected, msg) {
+        this._report(msg, function() {
+            assert.notStrictEqual(actual, expected);
+        });
+    },
+
+    /**
+     *
+     *
+     * @param {*} actual - the actual value
+     * @param {*} expected - the expected value
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    ifError: function(actual, expected, msg) {
+        this._report(msg, function() {
+            assert.ifError(actual, expected);
+        });
+    },
+
+    /**
+     * Tests whether an error was thrown.
+     * @example is.thrown(someFunc(123), "it should throw an error/exception.");
+     * @param {*} block - the code block
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    thrown: function(block, msg) {
+        this._report(msg, function() {
+            assert.throws(block);
+        });
+    },
+
+    /**
+     * Tests whether an error was not thrown.
+     * @example is.notThrown(someFunc(123), "it should not throw an error/exception.");
+     * @param {*} block - the code block
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    notThrown: function(block, msg) {
+        this._report(msg, function() {
+            assert.doesNotThrow(block);
+        });
+    },
+
+    /**
+     * Asserts an automatic test 'fail'.
+     * @example is.fail("it should meet the criteria.");
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    fail: function(msg) {
+        // TODO - implement direct reporting i.e. override test reporting
+    },
+
+    /**
+     * Asserts an automatic test 'pass'.
+     * @example is.pass("it should meet the criteria.");
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    pass: function(msg) {
+        // TODO - implement direct reporting i.e. override test reporting
+    },
+
+    /**
+     * Tests whether the single given parameter is 'falsey' (i.e. allowing coercion etc.)
+     * @example is.falsey(someValue, "it should be complete.");
+     * @param {*} actual - the actual value
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    falsey: function(actual, msg) {
+        this._report(msg, function() {
+            assert.ok(!actual);
+        });
+    },
+
+    /**
+     * Tests whether the single given parameter is 'truthy' (i.e. allowing coercion etc.)
+     * @example is.truthy(someValue, "it should be complete.");
+     * @param {*} actual - the actual value
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    truthy: function(actual, msg) {
+        this._report(msg, function() {
+            assert.ok(actual);
+        });
+    },
+
+    // assert(value[, message])
+    // assert.fail(message)
+    // assert.fail(actual, expected, message, operator)
+    // assert.ok(value[, message])
+
+    snapshot: function(a, msg) {
+        // this._report(msg, function() {
+        //     assert.equal(a, a);
+        // });
+        let key = msg;
+        let snapshot = this.snapshots[key];
+        //console.log("SNAPSHOT = " + JSON.stringify(snapshot));
+
+        let type = typeof(a);
+        let value = "";
+        switch(type) {
+            default:
+                value = JSON.stringify(a);
+        }
+
+        if(snapshot !== undefined) {
+            // We have an existing snapshot - to test against.
+            this.equal(value, snapshot, msg);
+        } else {
+            // We need to make a new snapshot.
+            this.snapshots[key] = value;
+            this.snapshotsUpdated = true;
+            this._report(msg, "snapshot");
+        }
     }
+
+
 };
 
 

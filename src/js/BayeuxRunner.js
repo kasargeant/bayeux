@@ -87,5 +87,5 @@ class BayeuxRunner {
 module.exports = BayeuxRunner;
 
 let bay = new BayeuxRunner();
-// bay.runTest("/Users/kasargeant/dev/projects/bayeux/test/js/Tinter16.test.js");
-bay.runTest("/Users/kasargeant/dev/projects/bayeux/test/js/bayeuxSnapshots.test.js");
+// bay.runTest("/Users/kasargeant/dev/projects/bayeux/test/js/samples/Tinter16.test.js");
+bay.runTest("/Users/kasargeant/dev/projects/bayeux/test/js/samples/bayeuxSnapshots.test.js");

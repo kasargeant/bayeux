@@ -7,6 +7,7 @@ _warhorse.js
 # TEMPORARY FOLDERS AND FILES
 scratch/
 temp/
+/test/js/samples/__snapshots__/
 
 # REPO FOLDERS NOT FOR NPM PUBLISHING
 /conf/

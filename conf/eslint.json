@@ -22,7 +22,6 @@
         "SwitchCase": 1
       }
     ],
-    "valid-jsdoc": 2,
     "semi": [
       2,
       "always"

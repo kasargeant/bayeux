@@ -12,6 +12,7 @@ node_modules/
 # TEMPORARY FOLDERS AND FILES
 scratch/
 temp/
+/test/js/samples/__snapshots__/
 
 # REPO FOLDERS NOT FOR GIT VERSIONING
 /coverage/

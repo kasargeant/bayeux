@@ -9,16 +9,31 @@ const Square = require("../../src/js/Square");
 // Unit test(s)
 unit("Examples", function() {
 
+    test("something simple like a value", function(done) {
+
+        let someBoolean = false;
+        let someNumber = 42;
+        let someString = "hi!";
+
+        is.notEqual(someBoolean, true, "it should be able to compare booleans for inequality.");
+
+        is.equal(someNumber, 42, "it should be able to compare numbers for equality.");
+
+        is.equal(someString, "hi!", "it should be able to compare strings for equality.");
+
+        done(); // Indicate the test has finished
+    });
+
     test("something like a class", function(done) {
 
         // Setup test
         let square = new Square(210);
 
-        is.equal(square.height, 2110, "it should have assigned the right height.");
+        is.equal(square.height, 2110, "it should have assigned the correct height.");
 
-        is.equal(square.width, 210, "it should have assigned the right width.");
+        is.equal(square.width, 210, "it should have assigned the correct width.");
 
-        is.equal(square.area, 44100, "it should have assigned the right area.");
+        is.equal(square.area, 44100, "it should have calculated the correct area.");
 
         done(); // Indicate the test has finished
     });

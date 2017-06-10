@@ -5,4 +5,4 @@ node_js:
   - "8"
 script: "npm run-script test-cover"
 # Send coverage data to Coveralls
-after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+after_script: "cat ./docs/coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"

@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "description": "A simple, capable and pragmatic Tap-based test framework.",
   "keywords": [
-    "javascript, test, testing, tap"
+    "javascript", "test", "testing", "tap", "json"
   ],
   "author": "Kyle Alexis Sargeant",
   "email": "kasargeant@gmail.com",

@@ -1,9 +1,13 @@
 {
   "name": "bayeux",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A simple, capable and pragmatic Tap-based test framework.",
   "keywords": [
-    "javascript, test, testing, tap"
+    "javascript",
+    "test",
+    "testing",
+    "tap",
+    "json"
   ],
   "author": "Kyle Alexis Sargeant",
   "email": "kasargeant@gmail.com",
@@ -51,6 +55,10 @@
     "includeFailureMsg": false
   },
   "dependencies": {
-    "tape": "^4.6.3"
+    "async-series": "0.0.1",
+    "tap": "^10.3.3",
+    "tap-parser": "^5.3.3",
+    "tape": "^4.6.3",
+    "tinter": "^0.4.2"
   }
 }

@@ -9,7 +9,7 @@
 "use strict";
 
 // Imports
-const {is, unit, test} = require("../../src/js/Bayeux");
+const {is, unit, test} = require("../../../src/js/Bayeux");
 
 // Unit(s)
 process.env.TINTER_TEST = "16";

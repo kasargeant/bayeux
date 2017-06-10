@@ -100,31 +100,40 @@ const Bayeux = {
     },
 
     _report: function(desc, fn) {
-        try {
-            //console.log(desc + ": starting...");
-            fn();
+        if(fn === "snapshot") {
             this.reports.push({
                 type: "case",
                 ok: true,
                 title: desc,
-                message: desc
+                message: "[NEW SNAPSHOT] " +  desc
             });
-        } catch(err) {
-            let errorReport = {
-                type: "case",
-                ok: false,
-                title: desc,
-                name: err.name,
-                message: err.message,
-                generatedMessage: err.generatedMessage,
-                code: err.code,
-                actual: err.actual,
-                expected: err.expected,
-                operator: err.operator,
-                stack: err.stack
-            };
-            // console.log(desc + ": " + JSON.stringify(errorReport, null, 2));
-            this.reports.push(errorReport);
+        } else {
+            try {
+                //console.log(desc + ": starting...");
+                fn();
+                this.reports.push({
+                    type: "case",
+                    ok: true,
+                    title: desc,
+                    message: desc
+                });
+            } catch (err) {
+                let errorReport = {
+                    type: "case",
+                    ok: false,
+                    title: desc,
+                    name: err.name,
+                    message: err.message,
+                    generatedMessage: err.generatedMessage,
+                    code: err.code,
+                    actual: err.actual,
+                    expected: err.expected,
+                    operator: err.operator,
+                    stack: err.stack
+                };
+                // console.log(desc + ": " + JSON.stringify(errorReport, null, 2));
+                this.reports.push(errorReport);
+            }
         }
     },
 
@@ -171,7 +180,7 @@ const Bayeux = {
             // We need to make a new snapshot.
             this.snapshots[key] = value;
             this.snapshotsUpdated = true;
-            this._report(msg, function() {});
+            this._report(msg, "snapshot");
         }
     },
 
@@ -189,25 +198,26 @@ const Bayeux = {
     // is.equal(square.height, 2110, "it should have assigned the right height.");
     test: function(message, fn) {
         this.fnArray.push(function(done) {
-            this.reports.push({type: "test", stage: "begin", message: message});
+            this.reports.push({type: "test", message: message});
             fn(done);
         }.bind(this));
     },
 
     unit: function(message, fn) {
         // If we have snapshots - load them.
+        if(this.debug) {console.log("CWD: " + process.cwd());}
         if(fs.existsSync("./__snapshots__/")) {
             let snapshotFilename = message.replace(/ /g, "_") + ".snap.js";
             //console.log("SNAPSHOT: " + snapshotFilename);
             this.snapshots = null;
             try {
-                this.snapshots = require(`${path.join(__dirname, "../../test/js/__snapshots__/")}${snapshotFilename}`);
+                this.snapshots = require(`${process.cwd()}/__snapshots__/${snapshotFilename}`);
             } catch(err) {
-                console.warn("No snapshots for this unit.");
+                if(this.debug) {console.warn("No snapshots for this unit.");}
                 this.snapshots = {};
             }
         } else {
-            console.warn("No snapshots directory.");
+            if(this.debug) {console.warn("No snapshots directory.");}
         }
 
         // Core of unit
@@ -229,7 +239,7 @@ const Bayeux = {
                     continue;
                 }
                 // ...otherwise write to file.
-                console.log("KEY: " + key);
+                // console.log("KEY: " + key);
                 let value = this.snapshots[key];
                 snapshotsString += `exports[\`${key}\`] = \`${value}\`;\n\n`;
             }
@@ -241,10 +251,7 @@ const Bayeux = {
             } catch(err) {
                 throw new Error("Couldn't write snapshot for this unit.");
             }
-
-
         }
-
     }
 };
 

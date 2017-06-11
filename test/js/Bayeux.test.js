@@ -116,7 +116,7 @@ describe("Class: Bayeux", function() {
                 // "ok": false,
                 // "operator": "==",
             expect(report.ok).toBe(false);
-            expect(report.name).toBe("AssertionError");
+            expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
             // FIXME expect(report.title).toBe("it should be able to compare strings for equality.");
             // FIXME expect(report.message).toBe("it should be able to compare strings for equality.");
 
@@ -183,7 +183,7 @@ describe("Class: Bayeux", function() {
             expect(report.ok).toBe(false);
             // FIXME expect(report.title).toBe("it should be able to compare strings for equality.");
             // FIXME expect(report.message).toBe("it should be able to compare strings for equality.");
-            expect(report.name).toBe("AssertionError");
+            expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
             expect(report.actual).toBe("ho!");
             expect(report.expected).toBe("hi!");
             expect(report.operator).toBe("==");
@@ -220,7 +220,7 @@ describe("Class: Bayeux", function() {
             expect(report.ok).toBe(false);
             // FIXME expect(report.title).toBe("it should be able to compare strings for equality.");
             // FIXME expect(report.message).toBe("it should be able to compare strings for equality.");
-            expect(report.name).toBe("AssertionError");
+            expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
             expect(report.actual).toBe("ho!");
             expect(report.expected).toBe("hi!");
             expect(report.operator).toBe("===");

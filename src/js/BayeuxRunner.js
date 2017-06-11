@@ -6,10 +6,12 @@
  * @license See LICENSE file included in this distribution.
  */
 
+// Imports
 const child = require("child_process");
-const path = require("path");
+const glob = require("glob");
 const tinter = require("tinter");
 
+// Component
 class BayeuxRunner {
     constructor() {
 
@@ -66,11 +68,10 @@ class BayeuxRunner {
         console.log("");
     }
 
-
-    runTest(pathname) {
+    _runTest(moduleDirectory, workingDirectory, fileName) {
 
         // Execute test file and capture output
-        let cmdLine = `node ${pathname}`;
+        let cmdLine = `node ${fileName}`;
         let stdout = "{}";
         try {
             stdout = child.execSync(cmdLine);
@@ -81,11 +82,20 @@ class BayeuxRunner {
         this._reportJSON(JSON.parse(stdout));
     }
 
+    runTests(moduleDirectory, workingDirectory, globPath) {
+        let paths = glob.sync(globPath);
+        for(let filePath of paths) {
+            console.log(`Testing: ${filePath}`);
+            this._runTest(moduleDirectory, workingDirectory, filePath);
+        }
+    }
+
 }
 
 // Exports
 module.exports = BayeuxRunner;
 
-let bay = new BayeuxRunner();
-bay.runTest("/Users/kasargeant/dev/projects/bayeux/test/js/samples/Tinter16.test.js");
-// bay.runTest("/Users/kasargeant/dev/projects/bayeux/test/js/samples/bayeuxSnapshots.test.js");
+// let bay = new BayeuxRunner();
+// bay.runTests("/Users/kasargeant/dev/projects/bayeux/test/js/samples/*.test.js");
+// bay._runTest("/Users/kasargeant/dev/projects/bayeux/test/js/samples/Tinter16.test.js");
+// bay._runTest("/Users/kasargeant/dev/projects/bayeux/test/js/samples/bayeuxSnapshots.test.js");

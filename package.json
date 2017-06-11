@@ -17,6 +17,9 @@
     "url": "https://github.com/kasargeant/bayeux.git"
   },
   "main": "src/index.js",
+  "bin": {
+    "bayeux": "./bin/bayeux"
+  },
   "directories": {
     "doc": "docs",
     "test": "test"
@@ -48,6 +51,8 @@
   },
   "dependencies": {
     "async-series": "0.0.1",
+    "glob": "^7.1.2",
+    "minimist": "^1.2.0",
     "tap": "^10.3.3",
     "tap-parser": "^5.3.3",
     "tape": "^4.6.3",

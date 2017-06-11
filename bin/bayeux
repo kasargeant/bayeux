@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+
+/**
+ * @file bayeux
+ * @description The Bayeux command-line interface (CLI).
+ * @author Kyle Alexis Sargeant <kasargeant@gmail.com> {@link https://github.com/kasargeant https://github.com/kasargeant}.
+ * @copyright Kyle Alexis Sargeant 2017
+ * @license See LICENSE file included in this distribution.
+ */
+
+"use strict";
+
+// Imports
+const path = require("path");
+const BayeuxRunner = require("../src/js/BayeuxRunner");
+const runner = new BayeuxRunner();
+
+let argv = require("minimist")(process.argv.slice(2), {
+    string: "task",
+    alias: {c: "conf", d: "debug", h: "help", r: "cover", u: "update", v: "version"},
+    default: {task: "build"},
+    "--": true
+});
+console.log(JSON.stringify(argv, null, 2));
+// return;
+let workingDirectory = process.cwd() + "/";
+let moduleDirectory = path.join(__dirname, "..") + "/";
+
+const help = `
+  ============================================================================
+  BAYEUX HELP
+    
+    Usage
+      $ bayeux <flags> <path>
+
+    Arguments:
+      flags,        (Detailed in the section below.)
+      path          Path to the unit test(s).  Can be glob.
+
+    Flags:
+      --conf,       -c  Use a specific configuration file.
+      --debug,      -d  Operate in verbose debug mode.
+      --help,       -h  Shows this information.
+      --cover,      -r  Provide coverage stats whilst executing tests.
+      --update,     -u  Force update of all snapshots.
+      --version,    -v  Shows Warhorse CLI version.
+
+    Examples
+      $ bayeux test/*.test.js
+      $ bayeux --conf ./conf/bayeux.json
+      $ bayeux --cover specific.test.js
+      $ bayeux -d -u ./test/**/*.test.js
+
+  ============================================================================
+
+`;
+
+function showHelp() {
+    console.log();
+    console.log(`Bayeux CLI directory: ${moduleDirectory}`);
+    console.log(`Working directory: ${workingDirectory}`);
+    console.log(help);
+}
+
+// Respond to user input
+if(argv.help === true) {
+    showHelp();
+} else if(argv.version === true) {
+    let warhorsePackage = require(moduleDirectory + "/" + "package.json");
+    console.log(`Bayeux version: ${warhorsePackage.version}`);
+} else if(argv._.length > 0) {
+
+    let testPath = argv._[0];
+    if(testPath && testPath.length > 0) {
+        runner.runTests(moduleDirectory, workingDirectory, argv._[0]);
+    } else {
+        console.error(`Error: Could not recognise path '${argv._[0]}'`);
+        showHelp();
+    }
+} else {
+    console.error(`Error: Missing any command.`);
+    showHelp();
+}

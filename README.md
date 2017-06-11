@@ -1,15 +1,20 @@
 # BAYEUX [![npm](https://img.shields.io/npm/v/bayeux.svg)]() [![Build Status](https://travis-ci.org/kasargeant/bayeux.svg?branch=master)](https://travis-ci.org/kasargeant/tinter)  [![Coverage Status](https://coveralls.io/repos/github/kasargeant/bayeux/badge.svg?branch=master)](https://coveralls.io/github/kasargeant/bayeux?branch=master)
 
-A simple, capable and pragmatic Tap-based test framework.
+A simple, reliable and pragmatic JavaScript test framework.
 
-## FEATURE
+**(Warning: Pre-alpha software, not yet production-ready.)**
+
+## FEATURES
 
 * No *magic* globals like: 'describe' and 'it'. 
-* Works IN your test code... not as a runner outside it!
-* Super f'cking simple, super f'cking solid and super f*cking fast!
-* ...how much more do *you people* want!!!
+* And no *black magic* behind-the-scenes either!  Test code runs the same as ordinary code.
+* Doesn't require a special test runner... although one's including for printing 'pretty' reports.
+* Tiny test vocabulary means you can get your tests written quickly.
+* Out-the-box snapshot testing means that you can make complex tests considerably less brittle.
+* In short, it's: super f'cking simple, super f'cking solid and super f*cking fast!
 
-Anyway, just an idea I'm playing with at the moment.  If it comes to anything... I'll be sure to let you know!!! ;)
+> ...how much more do *you people* want!!!
+
 
 ## INSTALLATION
 

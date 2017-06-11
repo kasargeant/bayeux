@@ -158,27 +158,25 @@ describe("Class: Bayeux", function() {
 
         });
 
-        it("it should log when a pass on a successful test case", function() {
+        it("it should log when a 'pass' on a successful test case", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
-            expect(Bayeux.reports).toEqual([]);
             let actual = "hi!";
             is.equal(actual, "hi!", "it should be able to compare strings for equality.");
             expect(Bayeux.reports).toEqual([{"message": "it should be able to compare strings for equality.", "ok": true, "title": "it should be able to compare strings for equality.", "type": "case"}]);
 
-            // Explicit cleanup
-            Bayeux._cleanup();
+            Bayeux._cleanup(); // Explicit cleanup
         });
 
 
-        it("it should log when a fail on a failed test case", function() {
+        it("it should log when a 'fail' on a failed test case", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
-            expect(Bayeux.reports).toEqual([]);
             let actual = "ho!";
             is.equal(actual, "hi!", "it should be able to compare strings for equality.");
             expect(Bayeux.reports).toMatchSnapshot();
 
-            // Explicit cleanup
-            Bayeux._cleanup();
+            Bayeux._cleanup(); // Explicit cleanup
         });
 
 
@@ -189,28 +187,104 @@ describe("Class: Bayeux", function() {
     });
 
 
-    // describe("User functions", function() {
-    //
-    //     it("should be able to test if two values are equal.", function() {
-    //         let someBoolean = false;
-    //         let someNumber = 42;
-    //         let someString = "hi!";
-    //
-    //         unit("Examples", function() {
-    //             test("something simple like a value", function(done) {
-    //
-    //                 // is.notEqual(someBoolean, true, "it should be able to compare booleans for inequality.");
-    //
-    //                 is.equal(someNumber, 42, "it should be able to compare numbers for equality.");
-    //
-    //                 // is.equal(someString, "hi!", "it should be able to compare strings for equality.");
-    //
-    //                 done(); // Indicate the test has finished
-    //             });
-    //         });
-    //         expect(Bayeux.reports).toBe([]);
-    //     });
-    //
-    // });
+    describe("User functions", function() {
+
+        // TYPICAL PASS
+        // [{
+        //      "message": "it should be able to compare strings for equality.",
+        //      "ok": true,
+        //      "title": "it should be able to compare strings for equality.",
+        //      "type": "case"
+        // }]
+
+        // TYPICAL FAIL
+        // [{
+        //         "type": "case",
+        //         "ok": false,
+        //         "title": "it should be able to compare strings for equality.",
+        //         "name": "AssertionError",
+        //         "message": "'ho!' == 'hi!'",
+        //         "generatedMessage": true,
+        //         "actual": "ho!",
+        //         "expected": "hi!",
+        //         "operator": "==",
+        //         "stack": "AssertionError: 'ho!' == 'hi!'\n    at /Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:229:20\n    at Object._report (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:38:17)\n    at Object.equal (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:228:14)\n    at /Users/kasargeant/dev/projects/bayeux/test/js/samples/bayeux.test.js:22:12\n    at Object.<anonymous> (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:155:13)\n    at handleItem (/Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:14:13)\n    at series (/Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:30:3)\n    at Object._executeTests (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:138:9)\n    at Object.unit (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:179:14)\n    at unit (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:441:38)"
+        // }]
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // equal()
+        it("it should log when a 'pass' on a successful: equal()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = "hi!";
+            is.equal(actual, "hi!", "it should be able to compare strings for equality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(true);
+            //TODO expect(report.title).toBe("it should be able to compare strings for equality.");
+            expect(report.message).toBe("it should be able to compare strings for equality.");
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        it("it should log when a 'fail' on a failed: equal()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = "ho!";
+            is.equal(actual, "hi!", "it should be able to compare strings for equality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(false);
+            // FIXME expect(report.title).toBe("it should be able to compare strings for equality.");
+            // FIXME expect(report.message).toBe("it should be able to compare strings for equality.");
+            expect(report.name).toBe("AssertionError");
+            expect(report.actual).toBe("ho!");
+            expect(report.expected).toBe("hi!");
+            expect(report.operator).toBe("==");
+            expect(report.stack).toBeDefined();
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // equalStrict()
+        it("it should log when a 'pass' on a successful: equalStrict()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = "hi!";
+            is.equalStrict(actual, "hi!", "it should be able to compare strings for equality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(true);
+            //TODO expect(report.title).toBe("it should be able to compare strings for equality.");
+            expect(report.message).toBe("it should be able to compare strings for equality.");
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        it("it should log when a 'fail' on a failed: equalStrict()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = "ho!";
+            is.equalStrict(actual, "hi!", "it should be able to compare strings for equality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(false);
+            // FIXME expect(report.title).toBe("it should be able to compare strings for equality.");
+            // FIXME expect(report.message).toBe("it should be able to compare strings for equality.");
+            expect(report.name).toBe("AssertionError");
+            expect(report.actual).toBe("ho!");
+            expect(report.expected).toBe("hi!");
+            expect(report.operator).toBe("===");
+            expect(report.stack).toBeDefined();
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+    });
 });
 

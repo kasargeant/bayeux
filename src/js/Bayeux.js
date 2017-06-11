@@ -29,7 +29,7 @@ const Bayeux = {
             this.reports.push({
                 type: "case",
                 ok: true,
-                title: desc,
+                unit: desc,
                 message: "[NEW SNAPSHOT] " +  desc
             });
         } else {
@@ -39,14 +39,14 @@ const Bayeux = {
                 this.reports.push({
                     type: "case",
                     ok: true,
-                    title: desc,
+                    unit: desc,
                     message: desc
                 });
             } catch(err) {
                 let errorReport = {
                     type: "case",
                     ok: false,
-                    title: desc,
+                    unit: desc,
                     name: err.name,
                     message: err.message,
                     generatedMessage: err.generatedMessage,
@@ -100,12 +100,14 @@ const Bayeux = {
                         unitReport.tests.push(testReport);
                         testReport = {
                             name: report.message,
+                            parent: unitReport.name,
                             cases: []
                         };
                     }
                     testReportCount++;
                     break;
                 case "case":
+                    report.parent = testReport.name;
                     testReport.cases.push(report);
                     break;
                 default:

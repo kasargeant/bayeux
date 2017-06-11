@@ -45,76 +45,7 @@ describe("Class: Bayeux", function() {
         const unitOutput = [{"type": "unit","message": "Examples"},{"type": "test","message": "something simple like a value"},{"type": "case","ok": true,"title": "it should be able to compare booleans for inequality.","message": "it should be able to compare booleans for inequality."},{"type": "case","ok": true,"title": "it should be able to compare numbers for equality.","message": "it should be able to compare numbers for equality."},{"type": "case","ok": true,"title": "it should be able to compare strings for equality.","message": "it should be able to compare strings for equality."},{"type": "test","message": "something like a class"},{"type": "case","ok": false,"title": "it should have assigned the correct height.","name": "AssertionError","message": "210 == 2110","generatedMessage": true,"actual": 210,"expected": 2110,"operator": "==","stack": "AssertionError: 210 == 2110\n    at /Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:136:20\n    at Object._report (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:106:17)\n    at Object.equal (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:135:14)\n    at /Users/kasargeant/dev/projects/bayeux/test/js/samples/bayeux.test.js:32:12\n    at Object.<anonymous> (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:199:13)\n    at handleItem (/Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:14:13)\n    at /Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:16:36\n    at /Users/kasargeant/dev/projects/bayeux/test/js/samples/bayeux.test.js:24:9\n    at Object.<anonymous> (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:199:13)\n    at handleItem (/Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:14:13)"},{"type": "case","ok": true,"title": "it should have assigned the correct width.","message": "it should have assigned the correct width."},{"type": "case","ok": true,"title": "it should have calculated the correct area.","message": "it should have calculated the correct area."},{"type": "test","message": "something within a callback"},{"type": "case","ok": true},{"type": "case","ok": true},{"type": "test","message": "something asynchronous like a timeout"},{"type": "case","ok": true}];
 
         it("should be able to collate the series of test line reports into a single unit report", function() {
-            expect(JSON.stringify(Bayeux._collate(unitOutput))).toBe(JSON.stringify({
-                "tests": [
-                    {
-                        "cases": [
-                            {
-                                "type": "case",
-                                "ok": true,
-                                "title": "it should be able to compare booleans for inequality.",
-                                "message": "it should be able to compare booleans for inequality."
-                            },
-                            {
-                                "type": "case",
-                                "ok": true,
-                                "title": "it should be able to compare numbers for equality.",
-                                "message": "it should be able to compare numbers for equality."
-                            },
-                            {
-                                "type": "case",
-                                "ok": true,
-                                "title": "it should be able to compare strings for equality.",
-                                "message": "it should be able to compare strings for equality."
-                            }
-                        ]
-                    },
-                    {
-                        "name": "something like a class",
-                        "cases": [
-                            {
-                                "type": "case",
-                                "ok": false,
-                                "title": "it should have assigned the correct height.",
-                                "name": "AssertionError",
-                                "message": "210 == 2110",
-                                "generatedMessage": true,
-                                "actual": 210,
-                                "expected": 2110,
-                                "operator": "==",
-                                "stack": "AssertionError: 210 == 2110\n    at /Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:136:20\n    at Object._report (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:106:17)\n    at Object.equal (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:135:14)\n    at /Users/kasargeant/dev/projects/bayeux/test/js/samples/bayeux.test.js:32:12\n    at Object.<anonymous> (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:199:13)\n    at handleItem (/Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:14:13)\n    at /Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:16:36\n    at /Users/kasargeant/dev/projects/bayeux/test/js/samples/bayeux.test.js:24:9\n    at Object.<anonymous> (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:199:13)\n    at handleItem (/Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:14:13)"
-                            },
-                            {
-                                "type": "case",
-                                "ok": true,
-                                "title": "it should have assigned the correct width.",
-                                "message": "it should have assigned the correct width."
-                            },
-                            {
-                                "type": "case",
-                                "ok": true,
-                                "title": "it should have calculated the correct area.",
-                                "message": "it should have calculated the correct area."
-                            }
-                        ]
-                    },
-                    {
-                        "name": "something within a callback",
-                        "cases": [
-                            {
-                                "type": "case",
-                                "ok": true
-                            },
-                            {
-                                "type": "case",
-                                "ok": true
-                            }
-                        ]
-                    }
-                ],
-                "name": "Examples"
-            }));
-
+            expect(Bayeux._collate(unitOutput)).toMatchSnapshot();
         });
 
         it("it should have cleaned up all temporary variable after every unit test.", function() {
@@ -163,7 +94,7 @@ describe("Class: Bayeux", function() {
 
             let actual = "hi!";
             is.equal(actual, "hi!", "it should be able to compare strings for equality.");
-            expect(Bayeux.reports).toEqual([{"message": "it should be able to compare strings for equality.", "ok": true, "title": "it should be able to compare strings for equality.", "type": "case"}]);
+            expect(Bayeux.reports).toEqual([{"message": "it should be able to compare strings for equality.", "ok": true, "unit": "it should be able to compare strings for equality.", "type": "case"}]);
 
             Bayeux._cleanup(); // Explicit cleanup
         });
@@ -175,6 +106,20 @@ describe("Class: Bayeux", function() {
             let actual = "ho!";
             is.equal(actual, "hi!", "it should be able to compare strings for equality.");
             expect(Bayeux.reports).toMatchSnapshot();
+
+            let report = Bayeux.reports[0];
+                // "actual": "ho!",
+                // "code": undefined,
+                // "expected": "hi!",
+                // "generatedMessage": true,
+                // "message": "'ho!' == 'hi!'",
+                // "name": "AssertionError",
+                // "ok": false,
+                // "operator": "==",
+            expect(report.ok).toBe(false);
+            expect(report.name).toBe("AssertionError");
+            // FIXME expect(report.title).toBe("it should be able to compare strings for equality.");
+            // FIXME expect(report.message).toBe("it should be able to compare strings for equality.");
 
             Bayeux._cleanup(); // Explicit cleanup
         });

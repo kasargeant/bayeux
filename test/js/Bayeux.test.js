@@ -105,7 +105,6 @@ describe("Class: Bayeux", function() {
 
             let actual = "ho!";
             is.equal(actual, "hi!", "it should be able to compare strings for equality.");
-            expect(Bayeux.reports).toMatchSnapshot();
 
             let report = Bayeux.reports[0];
                 // "actual": "ho!",

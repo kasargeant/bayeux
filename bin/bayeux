@@ -21,7 +21,7 @@ let argv = require("minimist")(process.argv.slice(2), {
     default: {task: "build"},
     "--": true
 });
-console.log(JSON.stringify(argv, null, 2));
+// console.log(JSON.stringify(argv, null, 2));
 // return;
 let workingDirectory = process.cwd() + "/";
 let moduleDirectory = path.join(__dirname, "..") + "/";
@@ -72,6 +72,9 @@ if(argv.help === true) {
 
     let testPath = argv._[0];
     if(testPath && testPath.length > 0) {
+        console.log(`\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%`);
+        console.log(`Bayeux Command Line Interface.\nCopyright 2016-2017 Kyle Alexis Sargeant.  Distributed under AGPL-3.0 license.`);
+        console.log(`%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n`);
         runner.runTests(moduleDirectory, workingDirectory, argv._[0]);
     } else {
         console.error(`Error: Could not recognise path '${argv._[0]}'`);

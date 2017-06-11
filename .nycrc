@@ -1,0 +1,26 @@
+{
+  "check-coverage": false,
+  "lines": 99,
+  "statements": 99,
+  "functions": 99,
+  "branches": 99,
+  "include": [
+    "src/**/*.js"
+  ],
+  "exclude": [
+    "src/**/*.test.js"
+  ],
+  "reporter": [
+    "lcov",
+    "text-summary"
+  ],
+  "require": [
+  ],
+  "extension": [
+    ".jsx"
+  ],
+  "cache": true,
+  "all": false,
+  "report-dir": "./docs/coverage",
+  "temp-directory": "./docs/coverage/.nyc_output"
+}

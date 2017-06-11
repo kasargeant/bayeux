@@ -13,7 +13,7 @@ unit("Examples", function() {
 
         let someBoolean = false;
         let someNumber = 42;
-        let someString = "hi!";
+        let someString = "ho!";
 
         is.notEqual(someBoolean, true, "it should be able to compare booleans for inequality.");
 

@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Class: Bayeux Core functions should be able to collate the series of test line reports into a single unit report 1`] = `
+Object {
+  "name": "Examples",
+  "tests": Array [
+    Object {
+      "cases": Array [
+        Object {
+          "message": "it should be able to compare booleans for inequality.",
+          "ok": true,
+          "parent": undefined,
+          "title": "it should be able to compare booleans for inequality.",
+          "type": "case",
+        },
+        Object {
+          "message": "it should be able to compare numbers for equality.",
+          "ok": true,
+          "parent": undefined,
+          "title": "it should be able to compare numbers for equality.",
+          "type": "case",
+        },
+        Object {
+          "message": "it should be able to compare strings for equality.",
+          "ok": true,
+          "parent": undefined,
+          "title": "it should be able to compare strings for equality.",
+          "type": "case",
+        },
+      ],
+    },
+    Object {
+      "cases": Array [
+        Object {
+          "actual": 210,
+          "expected": 2110,
+          "generatedMessage": true,
+          "message": "210 == 2110",
+          "name": "AssertionError",
+          "ok": false,
+          "operator": "==",
+          "parent": "something like a class",
+          "stack": "AssertionError: 210 == 2110
+    at /Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:136:20
+    at Object._report (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:106:17)
+    at Object.equal (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:135:14)
+    at /Users/kasargeant/dev/projects/bayeux/test/js/samples/bayeux.test.js:32:12
+    at Object.<anonymous> (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:199:13)
+    at handleItem (/Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:14:13)
+    at /Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:16:36
+    at /Users/kasargeant/dev/projects/bayeux/test/js/samples/bayeux.test.js:24:9
+    at Object.<anonymous> (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:199:13)
+    at handleItem (/Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:14:13)",
+          "title": "it should have assigned the correct height.",
+          "type": "case",
+        },
+        Object {
+          "message": "it should have assigned the correct width.",
+          "ok": true,
+          "parent": "something like a class",
+          "title": "it should have assigned the correct width.",
+          "type": "case",
+        },
+        Object {
+          "message": "it should have calculated the correct area.",
+          "ok": true,
+          "parent": "something like a class",
+          "title": "it should have calculated the correct area.",
+          "type": "case",
+        },
+      ],
+      "name": "something like a class",
+      "parent": "Examples",
+    },
+    Object {
+      "cases": Array [
+        Object {
+          "ok": true,
+          "parent": "something within a callback",
+          "type": "case",
+        },
+        Object {
+          "ok": true,
+          "parent": "something within a callback",
+          "type": "case",
+        },
+      ],
+      "name": "something within a callback",
+      "parent": "Examples",
+    },
+  ],
+}
+`;

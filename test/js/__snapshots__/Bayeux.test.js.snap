@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Class: Bayeux Core functions it should log when a fail on a failed test case 1`] = `
+Array [
+  Object {
+    "actual": "ho!",
+    "code": undefined,
+    "expected": "hi!",
+    "generatedMessage": true,
+    "message": "'ho!' == 'hi!'",
+    "name": "AssertionError",
+    "ok": false,
+    "operator": "==",
+    "stack": "AssertionError: 'ho!' == 'hi!'
+    at /Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:229:20
+    at Object._report (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:38:17)
+    at Object.equal (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:228:14)
+    at Object.<anonymous> (/Users/kasargeant/dev/projects/bayeux/test/js/Bayeux.test.js:177:16)
+    at Object.asyncFn (/Users/kasargeant/dev/projects/bayeux/node_modules/jest-jasmine2/build/jasmine-async.js:68:30)
+    at resolve (/Users/kasargeant/dev/projects/bayeux/node_modules/jest-jasmine2/build/queueRunner.js:38:12)
+    at mapper (/Users/kasargeant/dev/projects/bayeux/node_modules/jest-jasmine2/build/queueRunner.js:31:21)
+    at Promise.resolve.then.el (/Users/kasargeant/dev/projects/bayeux/node_modules/p-map/index.js:42:16)
+    at process._tickCallback (internal/process/next_tick.js:109:7)",
+    "title": "it should be able to compare strings for equality.",
+    "type": "case",
+  },
+]
+`;

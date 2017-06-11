@@ -122,7 +122,6 @@ describe("Class: Bayeux", function() {
             // Setup test
             JSON.stringify(Bayeux._collate(unitOutput));
 
-            expect(Bayeux.testReports).toEqual([]);
             expect(Bayeux.reports).toEqual([]);
             expect(Bayeux.fnArray).toEqual([]);
             expect(Bayeux.snapshots).toEqual({});
@@ -132,16 +131,61 @@ describe("Class: Bayeux", function() {
             Bayeux._cleanup();
         });
 
-        // it("it should have cleaned up all temporary variable after every unit test.", function() {
-        //
-        //     // Setup test
-        //     Bayeux._report("some description", function() {});
-        //
-        //     expect(Bayeux._reports).toEqual([]);
-        //
-        //     // Cleanup test
-        //     Bayeux._cleanup();
+        it("it should log when a test is being run.", function(done) {
+
+            // Setup test
+            // test: function(message, fn) {
+            //     this.fnArray.push(function(done) {
+            //         this.reports.push({type: "test", message: message});
+            //         fn(done);
+            //     }.bind(this));
+            // },
+            expect(Bayeux.reports).toEqual([]);
+
+            expect(Bayeux.fnArray.length).toEqual(0);
+            Bayeux.test("something", function(testDone) {testDone();});
+            expect(Bayeux.fnArray.length).toEqual(1);
+
+            Bayeux._executeTests(function() {
+                expect(Bayeux.reports).toEqual([{"message": "something", "type": "test"}]);
+
+                // Explicit cleanup
+                Bayeux._cleanup();
+
+                done();
+            });
+
+
+        });
+
+        it("it should log when a pass on a successful test case", function() {
+
+            expect(Bayeux.reports).toEqual([]);
+            let actual = "hi!";
+            is.equal(actual, "hi!", "it should be able to compare strings for equality.");
+            expect(Bayeux.reports).toEqual([{"message": "it should be able to compare strings for equality.", "ok": true, "title": "it should be able to compare strings for equality.", "type": "case"}]);
+
+            // Explicit cleanup
+            Bayeux._cleanup();
+        });
+
+
+        it("it should log when a fail on a failed test case", function() {
+
+            expect(Bayeux.reports).toEqual([]);
+            let actual = "ho!";
+            is.equal(actual, "hi!", "it should be able to compare strings for equality.");
+            expect(Bayeux.reports).toMatchSnapshot();
+
+            // Explicit cleanup
+            Bayeux._cleanup();
+        });
+
+
+        // it("it should log when a snapshot is first created for a test case", function() {
+        //     //TODO - test: it should log when a snapshot is first created for a test case
         // });
+
     });
 
 

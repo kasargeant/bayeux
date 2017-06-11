@@ -17,20 +17,59 @@ const series = require("async-series");
 const Bayeux = {
 
     debug: false,
-    testReports: [],
     reports: [],
     fnArray: [],
 
     snapshots: {},
     snapshotsUpdated: false,
 
+
+    _report: function(desc, fn) {
+        if(fn === "snapshot") {
+            this.reports.push({
+                type: "case",
+                ok: true,
+                title: desc,
+                message: "[NEW SNAPSHOT] " +  desc
+            });
+        } else {
+            try {
+                //console.log(desc + ": starting...");
+                fn();
+                this.reports.push({
+                    type: "case",
+                    ok: true,
+                    title: desc,
+                    message: desc
+                });
+            } catch(err) {
+                let errorReport = {
+                    type: "case",
+                    ok: false,
+                    title: desc,
+                    name: err.name,
+                    message: err.message,
+                    generatedMessage: err.generatedMessage,
+                    code: err.code,
+                    actual: err.actual,
+                    expected: err.expected,
+                    operator: err.operator,
+                    stack: err.stack
+                };
+                // console.log(desc + ": " + JSON.stringify(errorReport, null, 2));
+                this.reports.push(errorReport);
+            }
+        }
+    },
+
+
     _cleanup: function() {
-        this.testReports = [];
         this.reports = [];
         this.fnArray = [];
         this.snapshots = {};
         this.snapshotsUpdated = false;
     },
+
 
     _collate: function(reports) {
 
@@ -93,55 +132,18 @@ const Bayeux = {
         return unitReport; // For diagnostics only.
     },
 
-    _report: function(desc, fn) {
-        if(fn === "snapshot") {
-            this.reports.push({
-                type: "case",
-                ok: true,
-                title: desc,
-                message: "[NEW SNAPSHOT] " +  desc
-            });
-        } else {
-            try {
-                //console.log(desc + ": starting...");
-                fn();
-                this.reports.push({
-                    type: "case",
-                    ok: true,
-                    title: desc,
-                    message: desc
-                });
-            } catch(err) {
-                let errorReport = {
-                    type: "case",
-                    ok: false,
-                    title: desc,
-                    name: err.name,
-                    message: err.message,
-                    generatedMessage: err.generatedMessage,
-                    code: err.code,
-                    actual: err.actual,
-                    expected: err.expected,
-                    operator: err.operator,
-                    stack: err.stack
-                };
-                // console.log(desc + ": " + JSON.stringify(errorReport, null, 2));
-                this.reports.push(errorReport);
-            }
-        }
-    },
-
     // is.equal(square.height, 2110, "it should have assigned the right height.");
-    _executeTests: function() {
+    _executeTests: function(completionCallback) {
 
         series(this.fnArray, function(err) {
-            if(err) {throw err;}
-            this.fnArray = [];
-            // console.log(JSON.stringify(this.reports));
-            // console.log("=======");
-            this._collate(this.reports); // At this point the entire test unit is finished.
-            // Then cleanup
-            this._cleanup();
+
+            // If error - just throw it!
+            if(err) {
+                throw err;
+            } else {
+                completionCallback();
+            }
+
         }.bind(this));
 
     },
@@ -174,7 +176,13 @@ const Bayeux = {
         // Core of unit
         this.reports = [{type: "unit", message: message}];
         fn();
-        this._executeTests();
+        this._executeTests(function() {
+            // On completion...
+            // Collate results
+            this._collate(this.reports); // At this point the entire test unit is finished.
+            // Then cleanup all 'state'... ready for the next user;
+            this._cleanup();
+        }.bind(this));
 
         // If we have updated snapshots - save them.
         if(this.snapshotsUpdated === true) {

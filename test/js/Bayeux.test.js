@@ -130,8 +130,11 @@ describe("Class: Bayeux", function() {
 
     });
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // EQUAL
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    describe("User functions", function() {
+    describe("User functions: 'equal'", function() {
 
         // TYPICAL PASS
         // [{
@@ -160,8 +163,9 @@ describe("Class: Bayeux", function() {
         it("it should log when a 'pass' on a successful: equal()", function() {
             expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
-            let actual = "hi!";
-            is.equal(actual, "hi!", "it should be able to compare strings for equality.");
+            let actual = 1;
+            let expected = "1";
+            is.equal(actual, expected, "it should be able to compare strings for equality.");
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");
@@ -175,8 +179,9 @@ describe("Class: Bayeux", function() {
         it("it should log when a 'fail' on a failed: equal()", function() {
             expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
-            let actual = "ho!";
-            is.equal(actual, "hi!", "it should be able to compare strings for equality.");
+            let actual = 1;
+            let expected = "2";
+            is.equal(actual, expected, "it should be able to compare strings for equality.");
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");
@@ -184,9 +189,77 @@ describe("Class: Bayeux", function() {
             // FIXME expect(report.title).toBe("it should be able to compare strings for equality.");
             // FIXME expect(report.message).toBe("it should be able to compare strings for equality.");
             expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
-            expect(report.actual).toBe("ho!");
-            expect(report.expected).toBe("hi!");
+            expect(report.actual).toBe(actual);
+            expect(report.expected).toBe(expected);
             expect(report.operator).toBe("==");
+            expect(report.stack).toBeDefined();
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // equalDeep()
+        it("it should log when a 'pass' on a successful: equalDeep()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = {
+                a: "1",
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: ["1", {width: "200", height: "70"}, true]
+            };
+            let expected = {
+                a: 1,
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: [1, {width: 200, height: 70}, true]
+            };
+
+            is.equalDeep(actual, expected, "it should be able to compare objects for deep equality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(true);
+            //TODO expect(report.title).toBe("it should be able to compare strings for equality.");
+            expect(report.message).toBe("it should be able to compare objects for deep equality.");
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        it("it should log when a 'fail' on a failed: equalDeep()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = {
+                a: "1",
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: ["1", {width: "200", height: "701"}, true]
+            };
+            let expected = {
+                a: 1,
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: [1, {width: 200, height: 70}, true]
+            };
+            is.equalDeep(actual, expected, "it should be able to compare strings for equality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(false);
+            // FIXME expect(report.title).toBe("it should be able to compare strings for equality.");
+            // FIXME expect(report.message).toBe("it should be able to compare strings for equality.");
+            expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
+            expect(report.actual).toBe(actual);
+            expect(report.expected).toBe(expected);
+            expect(report.operator).toBe("deepEqual");
             expect(report.stack).toBeDefined();
 
             Bayeux._cleanup(); // Explicit cleanup
@@ -197,14 +270,15 @@ describe("Class: Bayeux", function() {
         it("it should log when a 'pass' on a successful: equalStrict()", function() {
             expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
-            let actual = "hi!";
-            is.equalStrict(actual, "hi!", "it should be able to compare strings for equality.");
+            let actual = 1;
+            let expected = 1;
+            is.equalStrict(actual, expected, "it should be able to compare strings for strict equality.");
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(true);
-            //TODO expect(report.title).toBe("it should be able to compare strings for equality.");
-            expect(report.message).toBe("it should be able to compare strings for equality.");
+            //TODO expect(report.title).toBe("it should be able to compare strings for strict equality.");
+            expect(report.message).toBe("it should be able to compare strings for strict equality.");
 
             Bayeux._cleanup(); // Explicit cleanup
         });
@@ -212,8 +286,77 @@ describe("Class: Bayeux", function() {
         it("it should log when a 'fail' on a failed: equalStrict()", function() {
             expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
-            let actual = "ho!";
-            is.equalStrict(actual, "hi!", "it should be able to compare strings for equality.");
+            let actual = 1;
+            let expected = "1";
+            is.equalStrict(actual, expected, "it should be able to compare strings for strict equality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(false);
+            // FIXME expect(report.title).toBe("it should be able to compare strings for strict equality.");
+            // FIXME expect(report.message).toBe("it should be able to compare strings for strict equality.");
+            expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
+            expect(report.actual).toBe(actual);
+            expect(report.expected).toBe(expected);
+            expect(report.operator).toBe("===");
+            expect(report.stack).toBeDefined();
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // equalStrictDeep()
+        it("it should log when a 'pass' on a successful: equalStrictDeep()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = {
+                a: 1,
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: [1, {width: 200, height: 70}, true]
+            };
+            let expected = {
+                a: 1,
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: [1, {width: 200, height: 70}, true]
+            };
+
+            is.equalStrictDeep(actual, expected, "it should be able to compare objects for deep strict equality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(true);
+            //TODO expect(report.title).toBe("it should be able to compare strings for equality.");
+            expect(report.message).toBe("it should be able to compare objects for deep strict equality.");
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        it("it should log when a 'fail' on a failed: equalStrictDeep()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = {
+                a: "1", // NOTE: DELIBERATE ERROR
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: [1, {width: 200, height: 70}, true]
+            };
+            let expected = {
+                a: 1,
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: [1, {width: 200, height: 70}, true]
+            };
+            is.equalStrictDeep(actual, expected, "it should be able to compare strings for equality.");
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");
@@ -221,9 +364,253 @@ describe("Class: Bayeux", function() {
             // FIXME expect(report.title).toBe("it should be able to compare strings for equality.");
             // FIXME expect(report.message).toBe("it should be able to compare strings for equality.");
             expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
-            expect(report.actual).toBe("ho!");
-            expect(report.expected).toBe("hi!");
-            expect(report.operator).toBe("===");
+            expect(report.actual).toBe(actual);
+            expect(report.expected).toBe(expected);
+            expect(report.operator).toBe("deepStrictEqual");
+            expect(report.stack).toBeDefined();
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+
+    });
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // NOT-EQUAL
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    describe("User functions: 'notEqual'", function() {
+
+        // TYPICAL PASS
+        // [{
+        //      "message": "it should be able to compare strings for notEquality.",
+        //      "ok": true,
+        //      "title": "it should be able to compare strings for notEquality.",
+        //      "type": "case"
+        // }]
+
+        // TYPICAL FAIL
+        // [{
+        //         "type": "case",
+        //         "ok": false,
+        //         "title": "it should be able to compare strings for notEquality.",
+        //         "name": "AssertionError",
+        //         "message": "'ho!' == 'hi!'",
+        //         "generatedMessage": true,
+        //         "actual": "ho!",
+        //         "expected": "hi!",
+        //         "operator": "==",
+        //         "stack": "AssertionError: 'ho!' == 'hi!'\n    at /Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:229:20\n    at Object._report (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:38:17)\n    at Object.equal (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:228:14)\n    at /Users/kasargeant/dev/projects/bayeux/test/js/samples/bayeux.test.js:22:12\n    at Object.<anonymous> (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:155:13)\n    at handleItem (/Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:14:13)\n    at series (/Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:30:3)\n    at Object._executeTests (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:138:9)\n    at Object.unit (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:179:14)\n    at unit (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:441:38)"
+        // }]
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // notEqual()
+        it("it should log when a 'pass' on a successful: notEqual()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = 1;
+            let expected = "2";
+            is.notEqual(actual, expected, "it should be able to compare strings for notEquality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(true);
+            //TODO expect(report.title).toBe("it should be able to compare strings for notEquality.");
+            expect(report.message).toBe("it should be able to compare strings for notEquality.");
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        it("it should log when a 'fail' on a failed: notEqual()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = 1;
+            let expected = "1";
+            is.notEqual(actual, expected, "it should be able to compare strings for notEquality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(false);
+            // FIXME expect(report.title).toBe("it should be able to compare strings for notEquality.");
+            // FIXME expect(report.message).toBe("it should be able to compare strings for notEquality.");
+            expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
+            expect(report.actual).toBe(actual);
+            expect(report.expected).toBe(expected);
+            expect(report.operator).toBe("!=");
+            expect(report.stack).toBeDefined();
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // notEqualDeep()
+        it("it should log when a 'pass' on a successful: notEqualDeep()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = {
+                a: "1",
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: ["1", {width: "200", height: "701"}, true]
+            };
+            let expected = {
+                a: 1,
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: [1, {width: 200, height: 70}, true]
+            };
+            is.notEqualDeep(actual, expected, "it should be able to compare objects for deep notEquality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(true);
+            //TODO expect(report.title).toBe("it should be able to compare strings for notEquality.");
+            expect(report.message).toBe("it should be able to compare objects for deep notEquality.");
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        it("it should log when a 'fail' on a failed: notEqualDeep()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = {
+                a: "1",
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: ["1", {width: "200", height: "70"}, true]
+            };
+            let expected = {
+                a: 1,
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: [1, {width: 200, height: 70}, true]
+            };
+
+            is.notEqualDeep(actual, expected, "it should be able to compare strings for notEquality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(false);
+            // FIXME expect(report.title).toBe("it should be able to compare strings for notEquality.");
+            // FIXME expect(report.message).toBe("it should be able to compare strings for notEquality.");
+            expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
+            expect(report.actual).toBe(actual);
+            expect(report.expected).toBe(expected);
+            expect(report.operator).toBe("notDeepEqual");
+            expect(report.stack).toBeDefined();
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // notEqualStrict()
+        it("it should log when a 'pass' on a successful: notEqualStrict()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = 1;
+            let expected = "1";
+            is.notEqualStrict(actual, expected, "it should be able to compare strings for strict notEquality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(true);
+            //TODO expect(report.title).toBe("it should be able to compare strings for strict notEquality.");
+            expect(report.message).toBe("it should be able to compare strings for strict notEquality.");
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        it("it should log when a 'fail' on a failed: notEqualStrict()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = 1;
+            let expected = 1;
+            is.notEqualStrict(actual, expected, "it should be able to compare strings for strict notEquality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(false);
+            // FIXME expect(report.title).toBe("it should be able to compare strings for strict notEquality.");
+            // FIXME expect(report.message).toBe("it should be able to compare strings for strict notEquality.");
+            expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
+            expect(report.actual).toBe(actual);
+            expect(report.expected).toBe(expected);
+            expect(report.operator).toBe("!==");
+            expect(report.stack).toBeDefined();
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // notEqualStrictDeep()
+        it("it should log when a 'pass' on a successful: notEqualStrictDeep()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = {
+                a: "1", // NOTE: DELIBERATE ERROR
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: [1, {width: 200, height: 70}, true]
+            };
+            let expected = {
+                a: 1,
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: [1, {width: 200, height: 70}, true]
+            };
+            is.notEqualStrictDeep(actual, expected, "it should be able to compare objects for deep strict notEquality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(true);
+            //TODO expect(report.title).toBe("it should be able to compare strings for notEquality.");
+            expect(report.message).toBe("it should be able to compare objects for deep strict notEquality.");
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        it("it should log when a 'fail' on a failed: notEqualStrictDeep()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = {
+                a: 1,
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: [1, {width: 200, height: 70}, true]
+            };
+            let expected = {
+                a: 1,
+                b: {
+                    name: "dog",
+                    type: "animal"
+                },
+                c: [1, {width: 200, height: 70}, true]
+            };
+            is.notEqualStrictDeep(actual, expected, "it should be able to compare strings for notEquality.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(false);
+            // FIXME expect(report.title).toBe("it should be able to compare strings for notEquality.");
+            // FIXME expect(report.message).toBe("it should be able to compare strings for notEquality.");
+            expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
+            expect(report.actual).toBe(actual);
+            expect(report.expected).toBe(expected);
+            expect(report.operator).toBe("notDeepStrictEqual");
             expect(report.stack).toBeDefined();
 
             Bayeux._cleanup(); // Explicit cleanup

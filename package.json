@@ -36,9 +36,9 @@
   "scripts": {
     "exp-coveralls": "nyc report --reporter=text-lcov | coveralls",
     "exp-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "exp-test": "./bin/bayeux ./test/js/samples/*.test.js",
-    "exp-test-cover": "nyc ./bin/bayeux ./test/js/samples/*.test.js",
-    "exp-test-cover-single": "nyc node ./test/js/samples/Tinter16.test.js",
+    "bayeux-test": "./bin/bayeux ./test/js/samples/*.test.js",
+    "bayeux-test-cover": "nyc ./bin/bayeux ./test/js/samples/*.test.js",
+    "bayeux-test-cover-single": "nyc node ./test/js/samples/Tinter16.test.js",
     "test": "jest --config ./conf/jest.json",
     "test-cover": "jest --config ./conf/jest.json --coverage",
     "test-update": "jest --config ./conf/jest.json --updateSnapshot"

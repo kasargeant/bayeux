@@ -75,7 +75,7 @@ if(argv.help === true) {
         console.log(`\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%`);
         console.log(`Bayeux Command Line Interface.\nCopyright 2016-2017 Kyle Alexis Sargeant.  Distributed under AGPL-3.0 license.`);
         console.log(`%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n`);
-        runner.runTests(moduleDirectory, workingDirectory, argv._[0], argv);
+        runner.runTests(moduleDirectory, workingDirectory, argv);
     } else {
         console.error(`Error: Could not recognise path '${argv._[0]}'`);
         showHelp();

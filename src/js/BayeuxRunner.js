@@ -82,12 +82,26 @@ class BayeuxRunner {
         this._reportJSON(JSON.parse(stdout));
     }
 
-    runTests(moduleDirectory, workingDirectory, globPath) {
-        let paths = glob.sync(globPath);
+    runTests(moduleDirectory, workingDirectory, args) {
+        console.log(`Given args: ${JSON.stringify(args)}`);
+
+        let paths;
+        if(args._ !== undefined && args._.constructor === Array) {
+            console.log(`Using path array: ${JSON.stringify(args._)}`);
+            paths = args._;
+        } else {
+            console.log(`Using path glob: ${args._[0]}`);
+            paths = glob.sync(args._[0]);
+        }
+        console.log(`  have paths: ${JSON.stringify(paths)}`);
+
+        let count = 0;
         for(let filePath of paths) {
             console.log(`Testing: ${filePath}`);
             this._runTest(moduleDirectory, workingDirectory, filePath);
+            count++;
         }
+        console.log(`Tested ${count} files.`);
     }
 
 }

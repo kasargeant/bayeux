@@ -116,21 +116,7 @@ const Bayeux = {
         }
 
 
-        // Select test output format and destination
-        let format = "json";
-        let destination = "stdout";
-
-        let unitReportSerialized = "";
-        if(format === "json") {
-            unitReportSerialized = JSON.stringify(unitReport, null, 2);
-        }
-
-        if(destination === "stdout") {
-            console.log(unitReportSerialized);
-        } else if(destination === "file") {
-            let filename = unitReport.name.replace(/ /g, "_") + ".out.json";
-            fs.writeFileSync(filename, unitReportSerialized);
-        }
+        // Return the collated report
         return unitReport; // For diagnostics only.
     },
 
@@ -181,8 +167,26 @@ const Bayeux = {
         this._executeTests(function() {
             // On completion...
             // Collate results
-            this._collate(this.reports); // At this point the entire test unit is finished.
-            // Then cleanup all 'state'... ready for the next user;
+            let unitReport = this._collate(this.reports); // At this point the entire test unit is finished.
+
+            // Output results
+            // Select test output format and destination
+            let format = "json";
+            let destination = "stdout";
+
+            let unitReportSerialized = "";
+            if(format === "json") {
+                unitReportSerialized = JSON.stringify(unitReport, null, 2);
+            }
+
+            if(destination === "stdout") {
+                console.log(unitReportSerialized);
+            } else if(destination === "file") {
+                let filename = unitReport.name.replace(/ /g, "_") + ".out.json";
+                fs.writeFileSync(filename, unitReportSerialized);
+            }
+
+            // Finally, cleanup all 'state'... ready for the next user;
             this._cleanup();
         }.bind(this));
 

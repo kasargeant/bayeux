@@ -116,21 +116,7 @@ const Bayeux = {
         }
 
 
-        // Select test output format and destination
-        let format = "json";
-        let destination = "stdout";
-
-        let unitReportSerialized = "";
-        if(format === "json") {
-            unitReportSerialized = JSON.stringify(unitReport, null, 2);
-        }
-
-        if(destination === "stdout") {
-            console.log(unitReportSerialized);
-        } else if(destination === "file") {
-            let filename = unitReport.name.replace(/ /g, "_") + ".out.json";
-            fs.writeFileSync(filename, unitReportSerialized);
-        }
+        // Return the collated report
         return unitReport; // For diagnostics only.
     },
 
@@ -181,8 +167,26 @@ const Bayeux = {
         this._executeTests(function() {
             // On completion...
             // Collate results
-            this._collate(this.reports); // At this point the entire test unit is finished.
-            // Then cleanup all 'state'... ready for the next user;
+            let unitReport = this._collate(this.reports); // At this point the entire test unit is finished.
+
+            // Output results
+            // Select test output format and destination
+            let format = "json";
+            let destination = "stdout";
+
+            let unitReportSerialized = "";
+            if(format === "json") {
+                unitReportSerialized = JSON.stringify(unitReport, null, 2);
+            }
+
+            if(destination === "stdout") {
+                console.log(unitReportSerialized);
+            } else if(destination === "file") {
+                let filename = unitReport.name.replace(/ /g, "_") + ".out.json";
+                fs.writeFileSync(filename, unitReportSerialized);
+            }
+
+            // Finally, cleanup all 'state'... ready for the next user;
             this._cleanup();
         }.bind(this));
 
@@ -246,19 +250,6 @@ const Bayeux = {
     },
 
     /**
-     * Tests whether the two parameters are deep equal (using strict equality).
-     * @example is.equalDeepStrict(someComplexObj, someOtherComplexObj, "it should be able to clone correctly.");
-     * @param {*} actual - the actual value
-     * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
-     */
-    equalDeepStrict: function(actual, expected, msg) {
-        this._report(msg, function() {
-            assert.deepStrictEqual(actual, expected);
-        });
-    },
-
-    /**
      * Tests whether the two parameters are equal (using strict equality).
      * @example is.equalStrict(someComplexObj, someOtherComplexObj, "it should be able to clone correctly.");
      * @param {*} actual - the actual value
@@ -270,7 +261,20 @@ const Bayeux = {
             assert.strictEqual(actual, expected);
         });
     },
-
+    
+    /**
+     * Tests whether the two parameters are deep equal (using strict equality).
+     * @example is.equalStrictDeep(someComplexObj, someOtherComplexObj, "it should be able to clone correctly.");
+     * @param {*} actual - the actual value
+     * @param {*} expected - the expected value
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    equalStrictDeep: function(actual, expected, msg) {
+        this._report(msg, function() {
+            assert.deepStrictEqual(actual, expected);
+        });
+    },
+    
     /**
      * Tests whether the two parameters are not equal.
      * @example is.notEqual(square.height, 2110, "it shouldn't have been assigned the height pre-initialisation.");
@@ -298,19 +302,6 @@ const Bayeux = {
     },
 
     /**
-     * Tests whether the two parameters are not deep equal (using strict equality).
-     * @example is.notEqualDeepStrict(someComplexObj, someOtherComplexObj, "it should be unique.");
-     * @param {*} actual - the actual value
-     * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
-     */
-    notEqualDeepStrict: function(actual, expected, msg) {
-        this._report(msg, function() {
-            assert.notDeepStrictEqual(actual, expected);
-        });
-    },
-
-    /**
      * Tests whether the two parameters are not equal (using strict equality).
      * @example is.notEqualStrict(someComplexObj, someOtherComplexObj, "it should be unique.");
      * @param {*} actual - the actual value
@@ -320,6 +311,19 @@ const Bayeux = {
     notEqualStrict: function(actual, expected, msg) {
         this._report(msg, function() {
             assert.notStrictEqual(actual, expected);
+        });
+    },
+
+    /**
+     * Tests whether the two parameters are not deep equal (using strict equality).
+     * @example is.notEqualStrictDeep(someComplexObj, someOtherComplexObj, "it should be unique.");
+     * @param {*} actual - the actual value
+     * @param {*} expected - the expected value
+     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     */
+    notEqualStrictDeep: function(actual, expected, msg) {
+        this._report(msg, function() {
+            assert.notDeepStrictEqual(actual, expected);
         });
     },
 

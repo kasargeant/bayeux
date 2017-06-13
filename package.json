@@ -34,6 +34,7 @@
     "npm": "~3.10.10"
   },
   "scripts": {
+    "docs": "jsdoc -c ./conf/jsdoc.json -r",
     "exp-coveralls": "nyc report --reporter=text-lcov | coveralls",
     "exp-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "bayeux-test": "./bin/bayeux ./test/js/samples/*.test.js",
@@ -58,6 +59,7 @@
     "async-series": "0.0.1",
     "codecov": "^2.2.0",
     "glob": "^7.1.2",
+    "jsdoc": "^3.4.3",
     "minimist": "^1.2.0",
     "nyc": "^11.0.2",
     "tap": "^10.3.3",

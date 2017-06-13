@@ -14,6 +14,12 @@ const assert = require("assert");
 const series = require("async-series");
 
 // Component
+
+/**
+ * @class
+ * @static
+ * @type {{debug: boolean, reports: Array, fnArray: Array, snapshots: {}, snapshotsUpdated: boolean, _report: Bayeux._report, _cleanup: Bayeux._cleanup, _collate: Bayeux._collate, _executeTests: Bayeux._executeTests, test: Bayeux.test, unit: Bayeux.unit, $$$$$$$$$$$$$$$$$$$$$debugDividerOnly: Bayeux.$$$$$$$$$$$$$$$$$$$$$debugDividerOnly, equal: Bayeux.equal, equalDeep: Bayeux.equalDeep, notEqual: Bayeux.notEqual, notEqualDeep: Bayeux.notEqualDeep, error: Bayeux.error, thrown: Bayeux.thrown, notThrown: Bayeux.notThrown, fail: Bayeux.fail, pass: Bayeux.pass, truthy: Bayeux.truthy, snapshot: Bayeux.snapshot}}
+ */
 const Bayeux = {
 
     debug: false,
@@ -224,106 +230,74 @@ const Bayeux = {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /**
-     * Tests whether the two parameters are not equal.
+     * Tests whether the two parameters are equal (using default of strict equality).
      * @example is.equal(square.height, 2110, "it should have assigned the right height.");
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
      * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {boolean} isStrict - If true, test uses strict comparison.
      */
-    equal: function(actual, expected, msg) {
+    equal: function(actual, expected, msg, isStrict=true) {
         this._report(msg, function() {
-            assert.equal(actual, expected);
+            if(isStrict === true) {
+                assert.strictEqual(actual, expected);
+            } else {
+                assert.equal(actual, expected);
+            }
         });
     },
 
     /**
-     * Tests whether the two parameters are deep equal.
+     * Tests whether the two parameters are deep equal (using default of strict equality).
      * @example is.equalDeep(someComplexObj, someOtherComplexObj, "it should be able to clone correctly.");
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
      * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {boolean} isStrict - If true, test uses strict comparison.
      */
-    equalDeep: function(actual, expected, msg) {
+    equalDeep: function(actual, expected, msg, isStrict=true) {
         this._report(msg, function() {
-            assert.deepEqual(actual, expected);
-        });
-    },
-
-    /**
-     * Tests whether the two parameters are equal (using strict equality).
-     * @example is.equalStrict(someComplexObj, someOtherComplexObj, "it should be able to clone correctly.");
-     * @param {*} actual - the actual value
-     * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
-     */
-    equalStrict: function(actual, expected, msg) {
-        this._report(msg, function() {
-            assert.strictEqual(actual, expected);
+            if(isStrict === true) {
+                assert.deepStrictEqual(actual, expected);
+            } else {
+                assert.deepEqual(actual, expected);
+            }
         });
     },
     
     /**
-     * Tests whether the two parameters are deep equal (using strict equality).
-     * @example is.equalStrictDeep(someComplexObj, someOtherComplexObj, "it should be able to clone correctly.");
-     * @param {*} actual - the actual value
-     * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
-     */
-    equalStrictDeep: function(actual, expected, msg) {
-        this._report(msg, function() {
-            assert.deepStrictEqual(actual, expected);
-        });
-    },
-    
-    /**
-     * Tests whether the two parameters are not equal.
+     * Tests whether the two parameters are not equal (using default of strict equality).
      * @example is.notEqual(square.height, 2110, "it shouldn't have been assigned the height pre-initialisation.");
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
      * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {boolean} isStrict - If true, test uses strict comparison.
      */
-    notEqual: function(actual, expected, msg) {
+    notEqual: function(actual, expected, msg, isStrict=true) {
         this._report(msg, function() {
-            assert.notEqual(actual, expected);
+            if(isStrict === true) {
+                assert.notStrictEqual(actual, expected);
+            } else {
+                assert.notEqual(actual, expected);
+            }
         });
     },
 
     /**
-     * Tests whether the two parameters are not deep equal.
+     * Tests whether the two parameters are not deep equal (using default of strict equality).
      * @example is.notEqualDeep(someComplexObj, someOtherComplexObj, "it should be unique.");
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
      * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {boolean} isStrict - If true, test uses strict comparison.
      */
-    notEqualDeep: function(actual, expected, msg) {
+    notEqualDeep: function(actual, expected, msg, isStrict=true) {
         this._report(msg, function() {
-            assert.notDeepEqual(actual, expected);
-        });
-    },
-
-    /**
-     * Tests whether the two parameters are not equal (using strict equality).
-     * @example is.notEqualStrict(someComplexObj, someOtherComplexObj, "it should be unique.");
-     * @param {*} actual - the actual value
-     * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
-     */
-    notEqualStrict: function(actual, expected, msg) {
-        this._report(msg, function() {
-            assert.notStrictEqual(actual, expected);
-        });
-    },
-
-    /**
-     * Tests whether the two parameters are not deep equal (using strict equality).
-     * @example is.notEqualStrictDeep(someComplexObj, someOtherComplexObj, "it should be unique.");
-     * @param {*} actual - the actual value
-     * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
-     */
-    notEqualStrictDeep: function(actual, expected, msg) {
-        this._report(msg, function() {
-            assert.notDeepStrictEqual(actual, expected);
+            if(isStrict === true) {
+                assert.notDeepStrictEqual(actual, expected);
+            } else {
+                assert.notDeepEqual(actual, expected);
+            }
         });
     },
 
@@ -334,7 +308,7 @@ const Bayeux = {
      * @param {*} expected - the expected value
      * @param {string} msg - a test description or message. NOTE: REQUIRED!
      */
-    ifError: function(actual, expected, msg) {
+    error: function(actual, expected, msg) {
         this._report(msg, function() {
             assert.ifError(actual, expected);
         });
@@ -432,6 +406,6 @@ const Bayeux = {
 // Exports
 module.exports = {
     is: Bayeux,
-    unit: function(desc, fn) {Bayeux.unit(desc, fn);},
     test: function(desc, fn) {Bayeux.test(desc, fn);},
+    unit: function(desc, fn) {Bayeux.unit(desc, fn);}
 };

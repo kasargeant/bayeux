@@ -132,7 +132,7 @@ function generateTestScript(descObj) {
 // Exports
 module.exports = generateTestScript;
 
-
-
-let out = extractDefinition("../scratch/Pageant.js");
-console.log(out.toString());
+//
+//
+// let out = extractDefinition("../scratch/Pageant.js");
+// console.log(out.toString());

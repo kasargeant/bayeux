@@ -254,6 +254,3 @@ class Bayeux {
 // Exports
 module.exports = Bayeux;
 
-let bay = new Bayeux();
-// bay.runTests("tapeSimple.js");
-bay.runTests("simple.test.js");

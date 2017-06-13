@@ -17,7 +17,7 @@ const runner = new BayeuxRunner();
 
 let argv = require("minimist")(process.argv.slice(2), {
     string: "task",
-    alias: {c: "conf", d: "debug", h: "help", r: "cover", u: "update", v: "version"},
+    alias: {c: "conf", d: "debug", g: "generate", h: "help", r: "cover", u: "update", v: "version"},
     default: {task: "build"},
     "--": true
 });
@@ -40,6 +40,7 @@ const help = `
     Flags:
       --conf,       -c  Use a specific configuration file.
       --debug,      -d  Operate in verbose debug mode.
+      --generate,   -h  Generates a unit test script for the required file.
       --help,       -h  Shows this information.
       --cover,      -r  Provide coverage stats whilst executing tests.
       --update,     -u  Force update of all snapshots.
@@ -62,19 +63,27 @@ function showHelp() {
     console.log(help);
 }
 
+function showHeader() {
+    console.log(`\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%`);
+    console.log(`Bayeux Command Line Interface.\nCopyright 2016-2017 Kyle Alexis Sargeant.  Distributed under AGPL-3.0 license.`);
+    console.log(`%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n`);
+}
+
 // Respond to user input
 if(argv.help === true) {
     showHelp();
 } else if(argv.version === true) {
     let warhorsePackage = require(moduleDirectory + "/" + "package.json");
     console.log(`Bayeux version: ${warhorsePackage.version}`);
+} else if(argv.generate !== undefined) {
+    showHeader();
+    argv._[0] = argv.generate;
+    runner.generateTests(moduleDirectory, workingDirectory, argv);
 } else if(argv._.length > 0) {
 
     let testPath = argv._[0];
     if(testPath && testPath.length > 0) {
-        console.log(`\n%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%`);
-        console.log(`Bayeux Command Line Interface.\nCopyright 2016-2017 Kyle Alexis Sargeant.  Distributed under AGPL-3.0 license.`);
-        console.log(`%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n`);
+        showHeader();
         runner.runTests(moduleDirectory, workingDirectory, argv);
     } else {
         console.error(`Error: Could not recognise path '${argv._[0]}'`);

@@ -8,8 +8,11 @@
 
 // Imports
 const child = require("child_process");
+const fs = require("fs");
+const path = require("path");
 const glob = require("glob");
 const tinter = require("tinter");
+const reflector = require("./Reflector");
 
 // Component
 class BayeuxRunner {
@@ -68,6 +71,43 @@ class BayeuxRunner {
         console.log("");
     }
 
+
+    _resolvePaths(args) {
+        // Resolve test file path(s)
+        let paths;
+        if(args._ !== undefined && args._.constructor === Array) {
+            console.log(`Using path array: ${JSON.stringify(args._)}`);
+            paths = args._;
+        } else {
+            console.log(`Using path glob: ${args._[0]}`);
+            paths = glob.sync(args._[0]);
+        }
+        console.log(`  have paths: ${JSON.stringify(paths)}`);
+        return paths;
+    }
+
+    _generateTest(moduleDirectory, workingDirectory, fileName) {
+        let unit = require(fileName);
+        return reflector(unit);
+    }
+
+    generateTests(moduleDirectory, workingDirectory, args) {
+        console.log(`Given args: ${JSON.stringify(args)}`);
+
+        // Resolve test file path(s)
+        let paths = this._resolvePaths(args);
+
+        // Generate test unit
+        let count = 0;
+        for(let filePath of paths) {
+            console.log(`Generating unit: ${filePath}`);
+            let unitTestScript = this._generateTest(moduleDirectory, workingDirectory, filePath);
+            let unitTestScriptPath = path.join(workingDirectory, filePath) + ".test.js";
+            fs.writeFileSync(unitTestScriptPath, unitTestScript);
+            count++;
+        }
+        console.log(`Generated ${count} files.`);
+    }
     _runTest(moduleDirectory, workingDirectory, fileName) {
 
         // Execute test file and capture output
@@ -85,19 +125,13 @@ class BayeuxRunner {
     runTests(moduleDirectory, workingDirectory, args) {
         console.log(`Given args: ${JSON.stringify(args)}`);
 
-        let paths;
-        if(args._ !== undefined && args._.constructor === Array) {
-            console.log(`Using path array: ${JSON.stringify(args._)}`);
-            paths = args._;
-        } else {
-            console.log(`Using path glob: ${args._[0]}`);
-            paths = glob.sync(args._[0]);
-        }
-        console.log(`  have paths: ${JSON.stringify(paths)}`);
+        // Resolve test file path(s)
+        let paths = this._resolvePaths(args);
 
+        // Execute test units
         let count = 0;
         for(let filePath of paths) {
-            console.log(`Testing: ${filePath}`);
+            console.log(`Testing unit: ${filePath}`);
             this._runTest(moduleDirectory, workingDirectory, filePath);
             count++;
         }

@@ -37,7 +37,33 @@ I hope it proves as useful to you as it is proving itself to me! :)
 
     npm install bayeux
 
-## USAGE
+## USAGE: CLI (Command Line Interface)
+    
+```
+    Usage
+      $ bayeux <flags> <path>
+
+    Arguments:
+      flags,        (Detailed in the section below.)
+      path          Path to the unit test(s).  Can be glob.
+
+    Flags:
+      --conf,       -c  Use a specific configuration file.
+      --debug,      -d  Operate in verbose debug mode.
+      --generate,   -h  Generates a unit test script for the required file.
+      --help,       -h  Shows this information.
+      --cover,      -r  Provide coverage stats whilst executing tests.
+      --update,     -u  Force update of all snapshots.
+      --version,    -v  Shows Warhorse CLI version.
+
+    Examples
+      $ bayeux test/*.test.js
+      $ bayeux --conf ./conf/bayeux.json
+      $ bayeux --cover specific.test.js
+      $ bayeux -d -u ./test/**/*.test.js
+```
+
+## USAGE: Unit tests
 
 I always think examples are the best docs!  So here's a complete but simple working example:-
 
@@ -104,57 +130,57 @@ unit("it will test the class: Square", function() {
 
 ## DOCUMENTATION
 
-The entire Bayeux API is:-
+The entire Bayeux testing API is short, predicable and should offer no 'surprises':-
 
 #### Equality/Inequality
 
-To test whether the two parameters are equal.
+To test whether the two parameters are equal:-
     
     is.equal(actual, expected, msg[, isStrict])
 
-To test whether the two parameters are not equal.
+To test whether the two parameters are not equal:-
     
     is.notEqual(actual, expected, msg[, isStrict])
 
-Tests whether the two parameters are deep equal.
+To test whether the two parameters are deep equal:-
 
     equalDeep(actual, expected, msg[, isStrict])
 
-Tests whether the two parameters are not deep equal.
+To test whether the two parameters are not deep equal:-
 
     notEqualDeep(actual, expected, msg[, isStrict])
 
 #### Catching and Throwing Errors
 
-Tests whether any error (or a specific error) was thrown.
+To test whether any error (or a specific error) was thrown:-
 
     is.thrown(block, msg)
 
-Tests whether any error (or a specific error) was not thrown.
+To test whether any error (or a specific error) was not thrown:-
 
     is.notThrown(block, msg)
 
-Tests whether actual is an error - and if so - it then throws it.
+To test whether actual is an error - and if so - it then throws it:-
  
     is.error(actual, expected, msg)
 
 #### Truthiness and Falsiness
 
-Tests whether the single given parameter is 'truthy'.
+To test whether the single given parameter is 'truthy':-
 
     is.truthy(actual, msg)
 
-Tests whether the single given parameter is 'falsey'.
+To test whether the single given parameter is 'falsey':-
 
     is.falsey(actual, msg) (NOTE: TO BE IMPLEMENTED)
 
 #### Misc.
 
-Asserts an automatic test 'fail'.
+To trigger an automatic test 'fail':-
 
     is.fail(msg)
 
-Asserts an automatic test 'pass'.
+To trigger an automatic test 'pass':-
     
     is.pass(msg)
 

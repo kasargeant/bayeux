@@ -1,5 +1,8 @@
 "use strict";
 
+// Imports
+const child = require("child_process");
+
 const myObj = {
     a: "some property",
     printA: function() {
@@ -10,6 +13,10 @@ const myObj = {
     }
 };
 
+function extractDefinition(targetPath) {
+    let stdout = child.execSync(`jsdoc ${targetPath} -t templates/haruki -d console -q format=json`);
+    return stdout;
+}
 
 // function extractParameters(fnStr) {
 //     let begin = fnStr.indexOf("(") + 1;
@@ -124,3 +131,8 @@ function generateTestScript(descObj) {
 
 // Exports
 module.exports = generateTestScript;
+
+//
+//
+// let out = extractDefinition("../scratch/Pageant.js");
+// console.log(out.toString());

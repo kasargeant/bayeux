@@ -1,7 +1,7 @@
 "use strict";
 
 // Imports
-const {is, unit, test} = require("../../../src/js/Bayeux");
+const {is, test, unit} = require("../../../src/js/Bayeux");
 
 // Unit(s)
 const Square = require("../../../src/js/Square");
@@ -48,7 +48,7 @@ unit("Examples", function() {
 
         // use the function
         sayHello("World", function(err, value) {
-            is.ifError(err);
+            is.error(err);
             is.equal(value, "Hello World");
             done(); // Indicate the test has finished (within callback)
         });

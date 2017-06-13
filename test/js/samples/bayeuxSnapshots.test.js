@@ -1,7 +1,7 @@
 "use strict";
 
 // Imports
-const {is, unit, test} = require("../../../src/js/Bayeux");
+const {is, test, unit} = require("../../../src/js/Bayeux");
 
 // Unit(s)
 

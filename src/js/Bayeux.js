@@ -383,18 +383,6 @@ const Bayeux = {
     },
 
     /**
-     * Tests whether the single given parameter is 'falsey' (i.e. allowing coercion etc.)
-     * @example is.falsey(someValue, "it should be complete.");
-     * @param {*} actual - the actual value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
-     */
-    falsey: function(actual, msg) {
-        this._report(msg, function() {
-            assert.ok(!actual);
-        });
-    },
-
-    /**
      * Tests whether the single given parameter is 'truthy' (i.e. allowing coercion etc.)
      * @example is.truthy(someValue, "it should be complete.");
      * @param {*} actual - the actual value

@@ -617,5 +617,133 @@ describe("Class: Bayeux", function() {
         });
 
     });
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // TRUTH
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    describe("User functions: 'truthiness'", function() {
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // truthy()
+        it("it should log when a 'pass' on a successful: truthy()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = 1;
+            is.truthy(actual, "it should be able to determine if a value is truthy.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(true);
+            //TODO expect(report.title).toBe("it should be able to compare strings for notEquality.");
+            expect(report.message).toBe("it should be able to determine if a value is truthy.");
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        it("it should log when a 'fail' on a failed: truthy()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = 0;
+            is.truthy(actual, "it should be able to determine if a value is not truthy.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(false);
+            // FIXME expect(report.title).toBe("it should be able to compare strings for notEquality.");
+            // FIXME expect(report.message).toBe("it should be able to compare strings for notEquality.");
+            expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
+            expect(report.actual).toBe(actual);
+            expect(report.operator).toBe("==");
+            expect(report.stack).toBeDefined();
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+    });
+
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ERRORS (EXCEPTION-HANDLING)
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    //FIXME - NEED TO ADD CASES WHEN CHECKING FOR SPECIFIC ERROR TYPES!!!
+
+    describe("User functions: 'exceptions'", function() {
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // thrown()
+        it("it should log when a 'pass' on a successful: thrown()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = function() {
+                throw new Error("Error!");
+            };
+            is.thrown(actual, "it should be able to determine if an error was thrown.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(true);
+            //TODO expect(report.title).toBe("it should be able to compare strings for notEquality.");
+            expect(report.message).toBe("it should be able to determine if an error was thrown.");
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        it("it should log when a 'fail' on a failed: thrown()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = function() {
+                return "kitten";
+            };
+            is.thrown(actual, "it should be able to determine if an error was not thrown.");
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(false);
+            // FIXME expect(report.title).toBe("it should be able to compare strings for notEquality.");
+            expect(report.message.slice(0, 27)).toBe("Missing expected exception.");
+            expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
+            expect(report.stack).toBeDefined();
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // notThrown()
+        it("it should log when a 'pass' on a successful: notThrown()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = function() {
+                return "kitten";
+            };
+            is.notThrown(actual, "it should be able to determine if an error was not thrown.");
+
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(true);
+            //TODO expect(report.title).toBe("it should be able to compare strings for notEquality.");
+            expect(report.message).toBe("it should be able to determine if an error was not thrown.");
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+
+        it("it should log when a 'fail' on a failed: notThrown()", function() {
+            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+
+            let actual = function() {
+                throw new Error("Error!");
+            };
+            is.notThrown(actual, "it should be able to determine if an error was thrown.");
+            let report = Bayeux.reports[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(false);
+            // FIXME expect(report.title).toBe("it should be able to compare strings for notEquality.");
+            expect(report.message.slice(0, 23)).toBe("Got unwanted exception.");
+            expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
+            expect(report.stack).toBeDefined();
+
+            Bayeux._cleanup(); // Explicit cleanup
+        });
+    });
 });
 

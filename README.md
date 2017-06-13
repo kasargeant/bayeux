@@ -1,8 +1,26 @@
 # BAYEUX [![npm](https://img.shields.io/npm/v/bayeux.svg)]() [![Build Status](https://travis-ci.org/kasargeant/bayeux.svg?branch=master)](https://travis-ci.org/kasargeant/tinter)  [![Coverage Status](https://coveralls.io/repos/github/kasargeant/bayeux/badge.svg?branch=master)](https://coveralls.io/github/kasargeant/bayeux?branch=master)
 
+![Bayeux](/docs/img/bayeux_tapestry.png)
+
 A simple, reliable and pragmatic JavaScript test framework.
 
 **(Warning: Pre-alpha software, not yet production-ready.)**
+
+## WHY?
+
+The APIs of today's mainstream test frameworks are verbose.  And why?...
+
+...when in fact almost all tests that you could possibly write for a unit can be achieved with little more than 'assert', the occassion snapshot match and the even more occasional little bit of mocking.  Oh and coverage... which should be automatic anyway.
+
+So why should I as a developer have to deal with learning Mocha, Jasmine, Jest and then all their little quirks, gaps and differences - as I work on different we projects??? What a waste of time and energy!
+
+So I looked for something better... and I found it.  It was called TAP.  With much to like in its simple implementation and much that inspired in its design and principles - TAP for a time seemed like it could become the core of my development workflow.  
+
+However, although I loved its "minimal"... I didn't love its plain "missing"!  I didn't like the fact that it didn't offer a real end-to-end solution for my typical testing needs. And also, being honest, I didn't find the actual TAP report format itself very human or JS friendly.  I wanted simple, easily parseable JSON instead!
+
+So, following the essential principles of TAP... but updating it with the snapshot and mocking tooling that I needed for real production work... I wrote Bayeux.
+
+I hope it proves as useful to you as it is proving itself to me! :)
 
 ## FEATURES
 
@@ -11,7 +29,7 @@ A simple, reliable and pragmatic JavaScript test framework.
 * Doesn't require a special test runner... although one's including for printing 'pretty' reports.
 * Tiny test vocabulary means you can get your tests written quickly.
 * Out-the-box snapshot testing means that you can make complex tests considerably less brittle.
-* In short, it's: super f'cking simple, super f'cking solid and super f*cking fast!
+* Learn entire API in around a minute! ;)
 
 > ...how much more do *you people* want!!!
 

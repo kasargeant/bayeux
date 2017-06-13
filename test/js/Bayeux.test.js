@@ -701,7 +701,7 @@ describe("Class: Bayeux", function() {
             expect(report.type).toBe("case");
             expect(report.ok).toBe(false);
             // FIXME expect(report.title).toBe("it should be able to compare strings for notEquality.");
-            expect(report.message).toBe("Missing expected exception..");
+            expect(report.message.slice(0, 27)).toBe("Missing expected exception.");
             expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
             expect(report.stack).toBeDefined();
 
@@ -738,7 +738,7 @@ describe("Class: Bayeux", function() {
             expect(report.type).toBe("case");
             expect(report.ok).toBe(false);
             // FIXME expect(report.title).toBe("it should be able to compare strings for notEquality.");
-            expect(report.message).toBe("Got unwanted exception..");
+            expect(report.message.slice(0, 23)).toBe("Got unwanted exception.");
             expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
             expect(report.stack).toBeDefined();
 

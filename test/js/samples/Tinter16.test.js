@@ -1,6 +1,6 @@
 /**
  * @file Tinter16.test.js
- * @description Unit tests for the Tinter Class (Node/16-color [using CSS Named colors]).
+ * @description Unit tests for the Tinter Class (Node/16-color [using CSS4 Named colors]).
  * @author Kyle Alexis Sargeant <kasargeant@gmail.com> {@link https://github.com/kasargeant https://github.com/kasargeant}.
  * @copyright Kyle Alexis Sargeant 2017
  * @license See LICENSE.txt file included in this distribution.
@@ -19,7 +19,7 @@ const Tinter = require("tinter");
 const DUMMY_STRING = "Dummy String";
 
 // Unit test(s)
-unit("Class: Tinter (Node/16-color ANSI mode)", function() {
+unit("Class: Tinter (Node/16-color [using CSS Named colors])", function() {
 
     test("Style functions", function(done) {
 
@@ -79,22 +79,13 @@ unit("Class: Tinter (Node/16-color ANSI mode)", function() {
 
     test("Truecolor functions", function(done) {
 
-        is.equal(Tinter._styleTruecolor(DUMMY_STRING, [255,255,127], [192, 0, 55], "underline"),
-            `\x1b[4m\x1b[1m\x1b[48;2;192;0;55m\x1b[1m\x1b[38;2;255;255;127m${DUMMY_STRING}\x1b[0m`,
-            "it should degrade a truecolor RGB value to the correct named color - red.");
+        // private method
+        is.equal(Tinter._styleTruecolor(DUMMY_STRING, [255,255,127], [192, 0, 55], "underline"), `\x1b[4m\x1b[1m\x1b[48;2;192;0;55m\x1b[1m\x1b[38;2;255;255;127m${DUMMY_STRING}\x1b[0m`, "it should (privately) represent truecolor RGB values correctly - regardless of environment");
+        is.equal(Tinter._styleTruecolor(DUMMY_STRING, [255,255,127], [192, 0, 55]), `\x1b[1m\x1b[48;2;192;0;55m\x1b[1m\x1b[38;2;255;255;127m${DUMMY_STRING}\x1b[0m`, "it should (privately) represent truecolor RGB values correctly - regardless of environment when using defaults (3 params)");
+        is.equal(Tinter._styleTruecolor(DUMMY_STRING, [255,255,127]), `\x1b[1m\x1b[38;2;255;255;127m${DUMMY_STRING}\x1b[0m`, "it should (privately) represent truecolor RGB values correctly - regardless of environment when using defaults (2 params)");
+        is.equal(Tinter._styleTruecolor(DUMMY_STRING), `${DUMMY_STRING}\x1b[0m`, "it should (privately) represent truecolor RGB values correctly - regardless of environment when using defaults (1 params)");
 
-        is.equal(Tinter._styleTruecolor(DUMMY_STRING, [255,255,127], [192, 0, 55]),
-            `\x1b[1m\x1b[48;2;192;0;55m\x1b[1m\x1b[38;2;255;255;127m${DUMMY_STRING}\x1b[0m`,
-            "it should degrade a truecolor RGB value to the correct named color - red.");
-
-        is.equal(Tinter._styleTruecolor(DUMMY_STRING, [255,255,127]),
-            `\x1b[1m\x1b[38;2;255;255;127m${DUMMY_STRING}\x1b[0m`,
-            "it should degrade a truecolor RGB value to the correct named color - red.");
-
-        is.equal(Tinter._styleTruecolor(DUMMY_STRING),
-            `${DUMMY_STRING}\x1b[0m`,
-            "it should degrade a truecolor RGB value to the correct named color - red.");
-
+        // private method - TODO replace with rgb() to match 16M tests.
         is.equal(Tinter._degrade(DUMMY_STRING, [200, 10, 21], [2, 0, 200], "italic"),
             `\x1b[3m\x1b[1m\x1b[104m\x1b[1m\x1b[91m${DUMMY_STRING}\x1b[0m`,
             "it should degrade a set of truecolor RGB values correctly.");

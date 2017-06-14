@@ -94,16 +94,6 @@ unit("Class: Tinter (Node/16M+ truecolor [using CSS Named colors])", function() 
         done(); // Indicate the test has finished
     });
 
-
-
-
-
-
-
-
-
-
-
     test("Color degradation functions", function(done) {
 
         is.equal(Tinter._nearest16([10, 127, 0]), "black", "it should degrade a truecolor RGB value to the correct named color - black.");

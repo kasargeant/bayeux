@@ -1,6 +1,6 @@
 /**
- * @file Tinter16.test.js
- * @description Unit tests for the Tinter Class (Node/16-color [using CSS4 Named colors]).
+ * @file Tinter16M.test.js
+ * @description Unit tests for the Tinter Class (Node/16M+ truecolor [using CSS4 Named colors]).
  * @author Kyle Alexis Sargeant <kasargeant@gmail.com> {@link https://github.com/kasargeant https://github.com/kasargeant}.
  * @copyright Kyle Alexis Sargeant 2017
  * @license See LICENSE.txt file included in this distribution.
@@ -12,14 +12,14 @@
 const {is, test, unit} = require("../../../src/js/Bayeux");
 
 // Unit(s)
-process.env.TINTER_TEST = "16";
+process.env.TINTER_TEST = "16M";
 const Tinter = require("tinter");
 
 // Constants
 const DUMMY_STRING = "Dummy String";
 
 // Unit test(s)
-unit("Class: Tinter (Node/16-color [using CSS Named colors])", function() {
+unit("Class: Tinter (Node/16M+ truecolor [using CSS Named colors])", function() {
 
     test("Style functions", function(done) {
 
@@ -39,14 +39,14 @@ unit("Class: Tinter (Node/16-color [using CSS Named colors])", function() {
 
     test("Colorization functions (foreground)", function(done) {
 
-        is.equal(Tinter.black(DUMMY_STRING), `\x1b[1m\x1b[30m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as black.");
-        is.equal(Tinter.red(DUMMY_STRING), `\x1b[1m\x1b[91m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as red.");
-        is.equal(Tinter.green(DUMMY_STRING), `\x1b[1m\x1b[32m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as green.");
-        is.equal(Tinter.yellow(DUMMY_STRING), `\x1b[1m\x1b[93m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as yellow.");
-        is.equal(Tinter.blue(DUMMY_STRING), `\x1b[1m\x1b[94m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as blue.");
-        is.equal(Tinter.magenta(DUMMY_STRING), `\x1b[1m\x1b[95m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as magenta.");
-        is.equal(Tinter.cyan(DUMMY_STRING), `\x1b[1m\x1b[96m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as cyan.");
-        is.equal(Tinter.white(DUMMY_STRING), `\x1b[1m\x1b[97m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as white.");
+        is.equal(Tinter.black(DUMMY_STRING), `\x1b[1m\x1b[38;2;0;0;0m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as black.");
+        is.equal(Tinter.red(DUMMY_STRING), `\x1b[1m\x1b[38;2;255;0;0m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as red.");
+        is.equal(Tinter.green(DUMMY_STRING), `\x1b[1m\x1b[38;2;0;128;0m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as green.");
+        is.equal(Tinter.yellow(DUMMY_STRING), `\x1b[1m\x1b[38;2;255;255;0m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as yellow.");
+        is.equal(Tinter.blue(DUMMY_STRING), `\x1b[1m\x1b[38;2;0;0;255m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as blue.");
+        is.equal(Tinter.magenta(DUMMY_STRING), `\x1b[1m\x1b[38;2;255;0;255m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as magenta.");
+        is.equal(Tinter.cyan(DUMMY_STRING), `\x1b[1m\x1b[38;2;0;255;255m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as cyan.");
+        is.equal(Tinter.white(DUMMY_STRING), `\x1b[1m\x1b[38;2;255;255;255m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string as white.");
         is.equal(Tinter.default(DUMMY_STRING), `\x1b[39m${DUMMY_STRING}`, "it should be able mark a string as default.");
 
         done(); // Indicate the test has finished
@@ -54,14 +54,14 @@ unit("Class: Tinter (Node/16-color [using CSS Named colors])", function() {
 
     test("Colorization functions (background)", function(done) {
 
-        is.equal(Tinter.blackBg(DUMMY_STRING), `\x1b[1m\x1b[40m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a black background.");
-        is.equal(Tinter.redBg(DUMMY_STRING), `\x1b[1m\x1b[101m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a red background.");
-        is.equal(Tinter.greenBg(DUMMY_STRING), `\x1b[1m\x1b[42m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a green background.");
-        is.equal(Tinter.yellowBg(DUMMY_STRING), `\x1b[1m\x1b[103m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a yellow background.");
-        is.equal(Tinter.blueBg(DUMMY_STRING), `\x1b[1m\x1b[104m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a blue background.");
-        is.equal(Tinter.magentaBg(DUMMY_STRING), `\x1b[1m\x1b[105m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a magenta background.");
-        is.equal(Tinter.cyanBg(DUMMY_STRING), `\x1b[1m\x1b[106m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a cyan background.");
-        is.equal(Tinter.whiteBg(DUMMY_STRING), `\x1b[1m\x1b[107m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a white background.");
+        is.equal(Tinter.blackBg(DUMMY_STRING), `\x1b[1m\x1b[48;2;0;0;0m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a black background.");
+        is.equal(Tinter.redBg(DUMMY_STRING), `\x1b[1m\x1b[48;2;255;0;0m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a red background.");
+        is.equal(Tinter.greenBg(DUMMY_STRING), `\x1b[1m\x1b[48;2;0;128;0m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a green background.");
+        is.equal(Tinter.yellowBg(DUMMY_STRING), `\x1b[1m\x1b[48;2;255;255;0m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a yellow background.");
+        is.equal(Tinter.blueBg(DUMMY_STRING), `\x1b[1m\x1b[48;2;0;0;255m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a blue background.");
+        is.equal(Tinter.magentaBg(DUMMY_STRING), `\x1b[1m\x1b[48;2;255;0;255m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a magenta background.");
+        is.equal(Tinter.cyanBg(DUMMY_STRING), `\x1b[1m\x1b[48;2;0;255;255m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a cyan background.");
+        is.equal(Tinter.whiteBg(DUMMY_STRING), `\x1b[1m\x1b[48;2;255;255;255m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a white background.");
         is.equal(Tinter.defaultBg(DUMMY_STRING), `\x1b[49m${DUMMY_STRING}`, "it should be able mark a string with a default background..");
 
         done(); // Indicate the test has finished
@@ -69,10 +69,10 @@ unit("Class: Tinter (Node/16-color [using CSS Named colors])", function() {
 
     test("Colorization functions (composite)", function(done) {
 
-        is.equal(Tinter.style(DUMMY_STRING, "yellow", "blue", "italic"), `\x1b[3m\x1b[1m\x1b[104m\x1b[1m\x1b[93m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with overlapping characteristics.");
-        // is.equal(Tinter.rgb(DUMMY_STRING, [255,255,127], [192, 0, 55], "underline"), `\x1b[4m\x1b[1m\x1b[101m\x1b[1m\x1b[93m${DUMMY_STRING}\x1b[0m`, "it should degrade a truecolor to 16-color appropriately.");
-        is.equal(Tinter.Black(DUMMY_STRING), `\x1b[1m\x1b[30m${DUMMY_STRING}\x1b[0m`, "it should correctly support ANSI named colors.");
-        is.equal(Tinter.rebeccapurple(DUMMY_STRING), `\x1b[1m\x1b[34m${DUMMY_STRING}\x1b[0m`, "it should correctly support CSS4 named colors.");
+        is.equal(Tinter.style(DUMMY_STRING, "yellow", "blue", "italic"), `\x1b[3m\x1b[1m\x1b[48;2;0;0;255m\x1b[1m\x1b[38;2;255;255;0m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with overlapping characteristics.");
+        is.equal(Tinter.rgb(DUMMY_STRING, [255,255,127], [192, 0, 55], "underline"), `\x1b[4m\x1b[1m\x1b[48;2;192;0;55m\x1b[1m\x1b[38;2;255;255;127m${DUMMY_STRING}\x1b[0m`, "it should degrade a truecolor to 16-color appropriately.");
+        is.equal(Tinter.Black(DUMMY_STRING), `\x1b[1m\x1b[38;2;0;0;0m${DUMMY_STRING}\x1b[0m`, "it should correctly support ANSI named colors.");
+        is.equal(Tinter.rebeccapurple(DUMMY_STRING), `\x1b[1m\x1b[38;2;102;51;153m${DUMMY_STRING}\x1b[0m`, "it should correctly support CSS4 named colors.");
 
         done(); // Indicate the test has finished
     });
@@ -85,10 +85,11 @@ unit("Class: Tinter (Node/16-color [using CSS Named colors])", function() {
         is.equal(Tinter._styleTruecolor(DUMMY_STRING, [255,255,127]), `\x1b[1m\x1b[38;2;255;255;127m${DUMMY_STRING}\x1b[0m`, "it should (privately) represent truecolor RGB values correctly - regardless of environment when using defaults (2 params)");
         is.equal(Tinter._styleTruecolor(DUMMY_STRING), `${DUMMY_STRING}\x1b[0m`, "it should (privately) represent truecolor RGB values correctly - regardless of environment when using defaults (1 params)");
 
-        // private method - TODO replace with rgb() to match 16M tests.
-        is.equal(Tinter._degrade(DUMMY_STRING, [200, 10, 21], [2, 0, 200], "italic"),
-            `\x1b[3m\x1b[1m\x1b[104m\x1b[1m\x1b[91m${DUMMY_STRING}\x1b[0m`,
-            "it should degrade a set of truecolor RGB values correctly.");
+        // public method
+        is.equal(Tinter.rgb(DUMMY_STRING, [255,255,127], [192, 0, 55], "underline"), `\x1b[4m\x1b[1m\x1b[48;2;192;0;55m\x1b[1m\x1b[38;2;255;255;127m${DUMMY_STRING}\x1b[0m`, "it should NOT degrade truecolor RGB values in a 16M+ color environment");
+        is.equal(Tinter.rgb(DUMMY_STRING, [255,255,127], [192, 0, 55]), `\x1b[0m\x1b[1m\x1b[48;2;192;0;55m\x1b[1m\x1b[38;2;255;255;127m${DUMMY_STRING}\x1b[0m`, "it should NOT degrade truecolor RGB values in a 16M+ color environment when using defaults (3 params)");
+        is.equal(Tinter.rgb(DUMMY_STRING, [255,255,127]), `\x1b[0m\x1b[1m\x1b[48;2;0;0;0m\x1b[1m\x1b[38;2;255;255;127m${DUMMY_STRING}\x1b[0m`, "it should NOT degrade truecolor RGB values in a 16M+ color environment when using defaults (2 params)");
+        is.equal(Tinter.rgb(DUMMY_STRING), `\x1b[0m\x1b[1m\x1b[48;2;0;0;0m\x1b[1m\x1b[38;2;255;255;255m${DUMMY_STRING}\x1b[0m`, "it should NOT degrade truecolor RGB values in a 16M+ color environment when using defaults (1 params)");
 
         done(); // Indicate the test has finished
     });

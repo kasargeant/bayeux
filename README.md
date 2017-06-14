@@ -176,12 +176,9 @@ To test whether the single given parameter is 'falsey':-
 
 #### Misc.
 
-To trigger an automatic test 'fail':-
+To trigger an automatic test 'fail' or 'pass', there is:-
 
     is.fail(msg)
-
-To trigger an automatic test 'pass':-
-    
     is.pass(msg)
 
 

@@ -8,9 +8,9 @@
 
 "use strict";
 
-// Imports
-const {is, test, unit} = require("../../src/js/Bayeux");
-const Bayeux = is;
+// Import Bayeux and extract selected vocabulary.
+const Bayeux = require("../../src/js/Bayeux");
+const {equal, notEqual, deepEqual, notDeepEqual, test, unit} = Bayeux.TDD();
 
 // Constants
 const DUMMY_STRING = "Dummy String";
@@ -33,7 +33,6 @@ describe("Class: Bayeux", function() {
         });
 
         it("should have imported all named user helper functions.", function() {
-            expect(is).toBeDefined();
             expect(test).toBeDefined();
             expect(unit).toBeDefined();
         });
@@ -53,8 +52,6 @@ describe("Class: Bayeux", function() {
             // Setup test
             JSON.stringify(Bayeux._collate(unitOutput));
 
-            expect(Bayeux.reports).toEqual([]);
-            expect(Bayeux.fnArray).toEqual([]);
             expect(Bayeux.snapshots).toEqual({});
             expect(Bayeux.snapshotsUpdated).toEqual(false);
 
@@ -62,32 +59,32 @@ describe("Class: Bayeux", function() {
             Bayeux._cleanup();
         });
 
-        it("it should log when a test is being run.", function(done) {
-
-            // Setup test
-            // test: function(message, fn) {
-            //     this.fnArray.push(function(done) {
-            //         this.reports.push({type: "test", message: message});
-            //         fn(done);
-            //     }.bind(this));
-            // },
-            expect(Bayeux.reports).toEqual([]);
-
-            expect(Bayeux.fnArray.length).toEqual(0);
-            Bayeux.test("something", function(testDone) {testDone();});
-            expect(Bayeux.fnArray.length).toEqual(1);
-
-            Bayeux._executeTests(function() {
-                expect(Bayeux.reports).toEqual([{"message": "something", "type": "test"}]);
-
-                // Explicit cleanup
-                Bayeux._cleanup();
-
-                done();
-            });
-
-
-        });
+        // it("it should log when a test is being run.", function(done) {
+        //
+        //     // Setup test
+        //     // test: function(message, fn) {
+        //     //     this.fnArray.push(function(done) {
+        //     //         this.reports.push({type: "test", message: message});
+        //     //         fn(done);
+        //     //     }.bind(this));
+        //     // },
+        //     expect(Bayeux.reports).toEqual([]);
+        //
+        //     expect(Bayeux.fnArray.length).toEqual(0);
+        //     Bayeux.test("something", function(testDone) {testDone();});
+        //     expect(Bayeux.fnArray.length).toEqual(1);
+        //
+        //     Bayeux._executeTests(function() {
+        //         expect(Bayeux.reports).toEqual([{"message": "something", "type": "test"}]);
+        //
+        //         // Explicit cleanup
+        //         Bayeux._cleanup();
+        //
+        //         done();
+        //     });
+        //
+        //
+        // });
 
         it("it should log when a 'pass' on a successful test case", function() {
             expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
@@ -198,8 +195,8 @@ describe("Class: Bayeux", function() {
         });
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        // equalDeep()
-        it("it should log when a 'pass' on a successful: equalDeep(loose)", function() {
+        // deepEqual()
+        it("it should log when a 'pass' on a successful: deepEqual(loose)", function() {
             expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
             let actual = {
@@ -219,7 +216,7 @@ describe("Class: Bayeux", function() {
                 c: [1, {width: 200, height: 70}, true]
             };
 
-            is.equalDeep(actual, expected, "it does log a 'pass' when values are loosely deep equal.", false);
+            is.deepEqual(actual, expected, "it does log a 'pass' when values are loosely deep equal.", false);
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");
@@ -230,7 +227,7 @@ describe("Class: Bayeux", function() {
             Bayeux._cleanup(); // Explicit cleanup
         });
 
-        it("it should log when a 'fail' on a failed: equalDeep(loose)", function() {
+        it("it should log when a 'fail' on a failed: deepEqual(loose)", function() {
             expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
             let actual = {
@@ -249,7 +246,7 @@ describe("Class: Bayeux", function() {
                 },
                 c: [1, {width: 200, height: 70}, true]
             };
-            is.equalDeep(actual, expected, "it does log a 'fail' when values are not loosely deep equal.", false);
+            is.deepEqual(actual, expected, "it does log a 'fail' when values are not loosely deep equal.", false);
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");
@@ -306,7 +303,7 @@ describe("Class: Bayeux", function() {
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // EQUAL_DEEP - STRICT
-        it("it should log when a 'pass' on a successful: equalDeep(strict)", function() {
+        it("it should log when a 'pass' on a successful: deepEqual(strict)", function() {
             expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
             let actual = {
@@ -326,7 +323,7 @@ describe("Class: Bayeux", function() {
                 c: [1, {width: 200, height: 70}, true]
             };
 
-            is.equalDeep(actual, expected, "it does log a 'pass' when values are strictly deep equal.");
+            is.deepEqual(actual, expected, "it does log a 'pass' when values are strictly deep equal.");
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");
@@ -337,7 +334,7 @@ describe("Class: Bayeux", function() {
             Bayeux._cleanup(); // Explicit cleanup
         });
 
-        it("it should log when a 'fail' on a failed: equalDeep(strict)", function() {
+        it("it should log when a 'fail' on a failed: deepEqual(strict)", function() {
             expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
             let actual = {
@@ -356,7 +353,7 @@ describe("Class: Bayeux", function() {
                 },
                 c: [1, {width: 200, height: 70}, true]
             };
-            is.equalDeep(actual, expected, "it does log a 'fail' when values are not strictly deep equal.");
+            is.deepEqual(actual, expected, "it does log a 'fail' when values are not strictly deep equal.");
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");
@@ -444,7 +441,7 @@ describe("Class: Bayeux", function() {
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // NOT_EQUAL_DEEP - LOOSE
-        it("it should log when a 'pass' on a successful: notEqualDeep(loose)", function() {
+        it("it should log when a 'pass' on a successful: notDeepEqual(loose)", function() {
             expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
             let actual = {
@@ -463,7 +460,7 @@ describe("Class: Bayeux", function() {
                 },
                 c: [1, {width: 200, height: 70}, true]
             };
-            is.notEqualDeep(actual, expected, "it does log a 'pass' when values are not loosely deep equal.", false);
+            is.notDeepEqual(actual, expected, "it does log a 'pass' when values are not loosely deep equal.", false);
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");
@@ -474,7 +471,7 @@ describe("Class: Bayeux", function() {
             Bayeux._cleanup(); // Explicit cleanup
         });
 
-        it("it should log when a 'fail' on a failed: notEqualDeep(loose)", function() {
+        it("it should log when a 'fail' on a failed: notDeepEqual(loose)", function() {
             expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
             let actual = {
@@ -494,7 +491,7 @@ describe("Class: Bayeux", function() {
                 c: [1, {width: 200, height: 70}, true]
             };
 
-            is.notEqualDeep(actual, expected, "it does log a 'fail' when values are loosely deep equal.", false);
+            is.notDeepEqual(actual, expected, "it does log a 'fail' when values are loosely deep equal.", false);
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");
@@ -551,7 +548,7 @@ describe("Class: Bayeux", function() {
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // NOT_EQUAL_DEEP - STRICT
-        it("it should log when a 'pass' on a successful: notEqualDeep(strict)", function() {
+        it("it should log when a 'pass' on a successful: notDeepEqual(strict)", function() {
             expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
             let actual = {
@@ -570,7 +567,7 @@ describe("Class: Bayeux", function() {
                 },
                 c: [1, {width: 200, height: 70}, true]
             };
-            is.notEqualDeep(actual, expected, "it does log a 'pass' when values are not strictly deep equal.");
+            is.notDeepEqual(actual, expected, "it does log a 'pass' when values are not strictly deep equal.");
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");
@@ -581,7 +578,7 @@ describe("Class: Bayeux", function() {
             Bayeux._cleanup(); // Explicit cleanup
         });
 
-        it("it should log when a 'fail' on a failed: notEqualDeep(strict)", function() {
+        it("it should log when a 'fail' on a failed: notDeepEqual(strict)", function() {
             expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
             let actual = {
@@ -600,7 +597,7 @@ describe("Class: Bayeux", function() {
                 },
                 c: [1, {width: 200, height: 70}, true]
             };
-            is.notEqualDeep(actual, expected, "it does log a 'fail' when values are strictly deep equal.");
+            is.notDeepEqual(actual, expected, "it does log a 'fail' when values are strictly deep equal.");
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");

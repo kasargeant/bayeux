@@ -144,11 +144,11 @@ To test whether the two parameters are not equal:-
 
 To test whether the two parameters are deep equal:-
 
-    equalDeep(actual, expected, msg[, isStrict])
+    is.deepEqual(actual, expected, msg[, isStrict])
 
 To test whether the two parameters are not deep equal:-
 
-    notEqualDeep(actual, expected, msg[, isStrict])
+    is.notDeepEqual(actual, expected, msg[, isStrict])
 
 #### Catching and Throwing Errors
 

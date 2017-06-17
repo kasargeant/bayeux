@@ -18,13 +18,11 @@ const series = require("async-series");
 /**
  * @class
  * @static
- * @type {{debug: boolean, reports: Array, fnArray: Array, snapshots: {}, snapshotsUpdated: boolean, _report: Bayeux._report, _cleanup: Bayeux._cleanup, _collate: Bayeux._collate, _executeTests: Bayeux._executeTests, test: Bayeux.test, unit: Bayeux.unit, $$$$$$$$$$$$$$$$$$$$$debugDividerOnly: Bayeux.$$$$$$$$$$$$$$$$$$$$$debugDividerOnly, equal: Bayeux.equal, equalDeep: Bayeux.equalDeep, notEqual: Bayeux.notEqual, notEqualDeep: Bayeux.notEqualDeep, error: Bayeux.error, thrown: Bayeux.thrown, notThrown: Bayeux.notThrown, fail: Bayeux.fail, pass: Bayeux.pass, truthy: Bayeux.truthy, snapshot: Bayeux.snapshot}}
+ * @type {{debug: boolean, reports: Array, fnArray: Array, snapshots: {}, snapshotsUpdated: boolean, _report: Bayeux._report, _cleanup: Bayeux._cleanup, _collate: Bayeux._collate, _executeTests: Bayeux._executeTests, test: Bayeux.test, unit: Bayeux.unit, $$$$$$$$$$$$$$$$$$$$$debugDividerOnly: Bayeux.$$$$$$$$$$$$$$$$$$$$$debugDividerOnly, equal: Bayeux.equal, deepEqual: Bayeux.deepEqual, notEqual: Bayeux.notEqual, notDeepEqual: Bayeux.notDeepEqual, error: Bayeux.error, thrown: Bayeux.thrown, notThrown: Bayeux.notThrown, fail: Bayeux.fail, pass: Bayeux.pass, truthy: Bayeux.truthy, snapshot: Bayeux.snapshot}}
  */
 const Bayeux = {
 
     debug: false,
-    reports: [],
-    fnArray: [],
 
     snapshots: {},
     snapshotsUpdated: false,
@@ -32,7 +30,7 @@ const Bayeux = {
 
     _report: function(desc, fn) {
         if(fn === "snapshot") {
-            this.reports.push({
+            this.report({
                 type: "case",
                 ok: true,
                 unit: desc,
@@ -42,14 +40,14 @@ const Bayeux = {
             try {
                 //console.log(desc + ": starting...");
                 fn();
-                this.reports.push({
+                this.report({
                     type: "case",
                     ok: true,
                     unit: desc,
                     message: desc
                 });
             } catch(err) {
-                let errorReport = {
+                this.report({
                     type: "case",
                     ok: false,
                     unit: desc,
@@ -61,17 +59,12 @@ const Bayeux = {
                     expected: err.expected,
                     operator: err.operator,
                     stack: err.stack
-                };
-                // console.log(desc + ": " + JSON.stringify(errorReport, null, 2));
-                this.reports.push(errorReport);
+                });
             }
         }
     },
 
-
     _cleanup: function() {
-        this.reports = [];
-        this.fnArray = [];
         this.snapshots = {};
         this.snapshotsUpdated = false;
     },
@@ -90,9 +83,7 @@ const Bayeux = {
             tests: []
         };
         let unitReportCount = 0;
-        let testReport = {
-            cases: []
-        };
+        let testReport = null;
         let testReportCount = 0;
         for(let i = 0; i < reports.length; i++) {
             let report = reports[i];
@@ -104,12 +95,12 @@ const Bayeux = {
                 case "test":
                     if(testReportCount > 0) {
                         unitReport.tests.push(testReport);
-                        testReport = {
-                            name: report.message,
-                            parent: unitReport.name,
-                            cases: []
-                        };
                     }
+                    testReport = {
+                        name: report.message,
+                        parent: unitReport.name,
+                        cases: []
+                    };
                     testReportCount++;
                     break;
                 case "case":
@@ -120,6 +111,9 @@ const Bayeux = {
                     throw new Error("Unrecognisable test output.");
             }
         }
+        if(testReport !== null) {
+            unitReport.tests.push(testReport);
+        }
 
 
         // Return the collated report
@@ -127,28 +121,35 @@ const Bayeux = {
     },
 
     // is.equal(square.height, 2110, "it should have assigned the right height.");
-    _executeTests: function(completionCallback) {
+    test: null,
 
-        series(this.fnArray, function(err) {
+    _onCompletion: function(reports) {
+        // On completion...
+        // Collate results
+        let unitReport = this._collate(reports); // At this point the entire test unit is finished.
 
-            // If error - just throw it!
-            if(err) {
-                throw err;
-            } else {
-                completionCallback();
-            }
+        // Output results
+        // Select test output format and destination
+        let format = "json";
+        let destination = "stdout";
 
-        }.bind(this));
+        let unitReportSerialized = "";
+        if(format === "json") {
+            unitReportSerialized = JSON.stringify(unitReport, null, 2);
+        }
 
+        if(destination === "stdout") {
+            console.log(unitReportSerialized);
+        } else if(destination === "file") {
+            let filename = unitReport.name.replace(/ /g, "_") + ".out.json";
+            fs.writeFileSync(filename, unitReportSerialized);
+        }
+
+        // Finally, cleanup all 'state'... ready for the next user;
+        this._cleanup();
     },
 
-    // is.equal(square.height, 2110, "it should have assigned the right height.");
-    test: function(message, fn) {
-        this.fnArray.push(function(done) {
-            this.reports.push({type: "test", message: message});
-            fn(done);
-        }.bind(this));
-    },
+    report: null,
 
     unit: function(message, fn) {
         // If we have snapshots - load them.
@@ -167,40 +168,39 @@ const Bayeux = {
             if(this.debug) {console.warn("No snapshots directory.");}
         }
 
+        let reports = [];
+        this.report = function(msgObj) {
+            reports.push(msgObj);
+        };
+
+        let fnArray = [];
+        this.test = function(message, fn) {
+            fnArray.push(function(done) {
+                this.report({type: "test", message: message});
+                fn(done);
+            }.bind(this));
+        };
+
         // Core of unit
-        this.reports = [{type: "unit", message: message}];
+        this.report({type: "unit", message: message});
         fn();
-        this._executeTests(function() {
-            // On completion...
-            // Collate results
-            let unitReport = this._collate(this.reports); // At this point the entire test unit is finished.
+        series(fnArray, function(err) {
 
-            // Output results
-            // Select test output format and destination
-            let format = "json";
-            let destination = "stdout";
-
-            let unitReportSerialized = "";
-            if(format === "json") {
-                unitReportSerialized = JSON.stringify(unitReport, null, 2);
+            // If error - just throw it!
+            if(err) {
+                throw err;
+            } else {
+                this._onCompletion(reports);
             }
 
-            if(destination === "stdout") {
-                console.log(unitReportSerialized);
-            } else if(destination === "file") {
-                let filename = unitReport.name.replace(/ /g, "_") + ".out.json";
-                fs.writeFileSync(filename, unitReportSerialized);
-            }
-
-            // Finally, cleanup all 'state'... ready for the next user;
-            this._cleanup();
         }.bind(this));
 
         // If we have updated snapshots - save them.
         if(this.snapshotsUpdated === true) {
             // If there is no snapshots directory - make one.
-            if(!fs.existsSync(`./__snapshots__/`)) {
-                fs.mkdirSync(`./__snapshots__/`);
+            let SNAPSHOT_DIRECTORY = "./__snapshots__/";
+            if(!fs.existsSync(SNAPSHOT_DIRECTORY)) {
+                fs.mkdirSync(SNAPSHOT_DIRECTORY);
             }
 
             let snapshotsString = "";
@@ -214,7 +214,6 @@ const Bayeux = {
                 let value = this.snapshots[key];
                 snapshotsString += `exports[\`${key}\`] = \`${value}\`;\n\n`;
             }
-
 
             let snapshotFilename = message.replace(/ /g, "_") + ".snap.js";
             try {
@@ -249,13 +248,13 @@ const Bayeux = {
 
     /**
      * Tests whether the two parameters are deep equal (using default of strict equality).
-     * @example is.equalDeep(someComplexObj, someOtherComplexObj, "it should be able to clone correctly.");
+     * @example is.deepEqual(someComplexObj, someOtherComplexObj, "it should be able to clone correctly.");
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
      * @param {string} msg - a test description or message. NOTE: REQUIRED!
      * @param {boolean} isStrict - If true, test uses strict comparison.
      */
-    equalDeep: function(actual, expected, msg, isStrict=true) {
+    deepEqual: function(actual, expected, msg, isStrict=true) {
         this._report(msg, function() {
             if(isStrict === true) {
                 assert.deepStrictEqual(actual, expected);
@@ -285,13 +284,13 @@ const Bayeux = {
 
     /**
      * Tests whether the two parameters are not deep equal (using default of strict equality).
-     * @example is.notEqualDeep(someComplexObj, someOtherComplexObj, "it should be unique.");
+     * @example is.notDeepEqual(someComplexObj, someOtherComplexObj, "it should be unique.");
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
      * @param {string} msg - a test description or message. NOTE: REQUIRED!
      * @param {boolean} isStrict - If true, test uses strict comparison.
      */
-    notEqualDeep: function(actual, expected, msg, isStrict=true) {
+    notDeepEqual: function(actual, expected, msg, isStrict=true) {
         this._report(msg, function() {
             if(isStrict === true) {
                 assert.notDeepStrictEqual(actual, expected);
@@ -397,15 +396,40 @@ const Bayeux = {
             this.snapshotsUpdated = true;
             this._report(msg, "snapshot");
         }
+    },
+
+    expect: function(actual) {
+        return {
+            toEqual: function(expected, msg, isStrict) {Bayeux.equal(actual, expected, msg, isStrict);},
+            toNotEqual: function(expected, msg, isStrict) {Bayeux.notEqual(actual, expected, msg, isStrict);},
+            toDeepEqual: function(expected, msg, isStrict) {Bayeux.deepEqual(actual, expected, msg, isStrict);},
+            toNotDeepEqual: function(expected, msg, isStrict) {Bayeux.notDeepEqual(actual, expected, msg, isStrict);},
+            toThrow: function(block, msg) {Bayeux.thrown(block, msg);},
+            toNotThrow: function(block, msg) {Bayeux.notThrown(block, msg);},
+            toNotHaveError: function(expected, msg) {Bayeux.error(actual, expected, msg);}
+        };
+    },
+
+    TDD() {
+        return {
+            equal: function(actual, expected, msg, isStrict) {Bayeux.equal(actual, expected, msg, isStrict);},
+            notEqual: function(actual, expected, msg, isStrict) {Bayeux.notEqual(actual, expected, msg, isStrict);},
+            deepEqual: function(actual, expected, msg, isStrict) {Bayeux.deepEqual(actual, expected, msg, isStrict);},
+            notDeepEqual: function(actual, expected, msg, isStrict) {Bayeux.notDeepEqual(actual, expected, msg, isStrict);},
+            test: function(desc, fn) {Bayeux.test(desc, fn);},
+            unit: function(desc, fn) {Bayeux.unit(desc, fn);}
+        };
+    },
+
+    BDD() {
+        return {
+            describe: function(desc, fn) {Bayeux.unit(desc, fn);},
+            it: function(desc, fn) {Bayeux.test(desc, fn);},
+            expect: function(actual) {return Bayeux.expect(actual);}
+        };
     }
-
-
 };
 
 
 // Exports
-module.exports = {
-    is: Bayeux,
-    test: function(desc, fn) {Bayeux.test(desc, fn);},
-    unit: function(desc, fn) {Bayeux.unit(desc, fn);}
-};
+module.exports = Bayeux;

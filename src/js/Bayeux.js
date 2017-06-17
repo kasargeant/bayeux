@@ -410,6 +410,16 @@ const Bayeux = {
         };
     },
 
+    // BDD Api
+    BDD() {
+        return {
+            describe: function(desc, fn) {Bayeux.unit(desc, fn);},
+            it: function(desc, fn) {Bayeux.test(desc, fn);},
+            expect: function(actual) {return Bayeux.expect(actual);}
+        };
+    },
+
+    // TDD Api
     TDD() {
         return {
             equal: function(actual, expected, msg, isStrict) {Bayeux.equal(actual, expected, msg, isStrict);},
@@ -421,7 +431,8 @@ const Bayeux = {
         };
     },
 
-    BDD() {
+    // Compatibility API (experimental)
+    Jasmine() {
         return {
             describe: function(desc, fn) {Bayeux.unit(desc, fn);},
             it: function(desc, fn) {Bayeux.test(desc, fn);},

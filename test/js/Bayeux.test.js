@@ -87,23 +87,25 @@ describe("Class: Bayeux", function() {
         // });
 
         it("it should log when a 'pass' on a successful test case", function() {
-            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+            expect(Bayeux._checkReports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
-            let actual = "hi!";
-            is.equal(actual, "hi!", "it should be able to compare strings for equality.");
-            expect(Bayeux.reports).toEqual([{"message": "it should be able to compare strings for equality.", "ok": true, "unit": "it should be able to compare strings for equality.", "type": "case"}]);
+            unit("", function() {
+                let actual = "hi!";
+                equal(actual, "hi!", "it should be able to compare strings for equality.");
+                expect(Bayeux._checkReports).toEqual([{"message": "it should be able to compare strings for equality.", "ok": true, "unit": "it should be able to compare strings for equality.", "type": "case"}]);
+            });
 
             Bayeux._cleanup(); // Explicit cleanup
         });
 
 
         it("it should log when a 'fail' on a failed test case", function() {
-            expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+            expect(Bayeux._checkReports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
 
             let actual = "ho!";
-            is.equal(actual, "hi!", "it should be able to compare strings for equality.");
+            equal(actual, "hi!", "it should be able to compare strings for equality.");
 
-            let report = Bayeux.reports[0];
+            let report = Bayeux._checkReports[0];
                 // "actual": "ho!",
                 // "code": undefined,
                 // "expected": "hi!",
@@ -162,7 +164,7 @@ describe("Class: Bayeux", function() {
 
             let actual = 1;
             let expected = "1";
-            is.equal(actual, expected, "it does log a 'pass' when values are loosely equal.", false);
+            equal(actual, expected, "it does log a 'pass' when values are loosely equal.", false);
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");
@@ -178,7 +180,7 @@ describe("Class: Bayeux", function() {
 
             let actual = 1;
             let expected = "2";
-            is.equal(actual, expected, "it does log a 'fail' when values are not loosely equal.", false);
+            equal(actual, expected, "it does log a 'fail' when values are not loosely equal.", false);
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");
@@ -269,7 +271,7 @@ describe("Class: Bayeux", function() {
 
             let actual = 1;
             let expected = 1;
-            is.equal(actual, expected, "it does log a 'pass' when values are strictly equal.");
+            equal(actual, expected, "it does log a 'pass' when values are strictly equal.");
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");
@@ -285,7 +287,7 @@ describe("Class: Bayeux", function() {
 
             let actual = 1;
             let expected = "1";
-            is.equal(actual, expected, "it does log a 'fail' when values are not strictly equal.");
+            equal(actual, expected, "it does log a 'fail' when values are not strictly equal.");
 
             let report = Bayeux.reports[0];
             expect(report.type).toBe("case");

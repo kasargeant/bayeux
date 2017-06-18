@@ -22,16 +22,25 @@ So, following the essential principles of TAP... but updating it with the snapsh
 
 I hope it proves as useful to you as it is proving itself to me! :)
 
-## FEATURES
+## GOALS (i.e. future FEATURES)
 
-* Tiny, but capable, test vocabulary (even smaller than TAP!) means you can get your tests written quickly.
-* Out-the-box snapshot testing means that you can make complex tests considerably less brittle.
-* No *magic* globals like: 'describe' and 'it' - everything used is clearly imported. 
-* And no *black magic* behind-the-scenes either!  Test code runs the same as ordinary code.
-* Doesn't require a special test runner... although one's including for printing 'pretty' reports.
-* Extremely fast.
-* Learn entire API in around a minute! ;)
+### Design goals
 
+* To dramatically reduce the "bar" (effort) needed by developers and testers to produce good comprehensive test coverage across typical JS code.
+* To offer a test framework that out-the-box facilitates: TDD, BDD and SBE... "views" on an application.
+* To support the more useful "beyond assert" test features: snapshots, mocking (and auto-mocking).  Not a tool for everything by design.
+* To support reuse between tests.  Most common case being reusing selected parts of unit tests to satisfy use case/feature tests.
+* To automate (as far as possible) the WRITING of tests.
+* To automate completely the writing of specification and test reports.
+* To have tiny, but capable, test vocabulary in order to be easy to learn - and to keep tests readable but short.
+
+### Implementational Goals
+
+* To use an absolutely minimal "must-haves-only" API with no reliance on global variables or global keywords.  
+* To support tests(test suites) that require no special "runner" but execute like normal JS code. i.e. ad hoc from the command line.
+* To support test process isolation.
+* To be usable from the command-line and/or from a typical IDE environment e.g. WebStorm or VSE.
+* To be fast.
 
 ## INSTALLATION
 
@@ -70,39 +79,44 @@ I always think examples are the best docs!  So here's a complete but simple work
 ```javascript
 "use strict";
 
-// Imports
-const {is, test, unit} = require("../js/Bayeux");
+// Import Bayeux and extract selected vocabulary.
+const Bayeux = require("../../../src/js/Bayeux");
+const {given, test, unit} = Bayeux.TDD();
 
-// Unit test(s)
-unit("it will test the class: Square", function() {
+// Import Unit
+const Square = require("../../../src/js/Square");
 
-    // Setup
-    let actualBoolean = true;
-    let actualNumber = 42;
-    let actualString = "hi!";
-    let actualObj = {
-        word: "here",
-        valid: true
-    };
-    let expectedObj = {
-        word: "here",
-        valid: true
-    };
+// Constants
 
-    test("it should correctly match some values.", function(done) {
+// Test
+unit("Example: Simple unit test", function() {
 
-        is.equal(actualBoolean, true, "it does correctly match equality of booleans.");
+    const someBoolean = false;
+    const someNumber = 42;
+    const someString = "ho!";
 
-        is.equal(actualNumber, 42, "it does correctly match equality of numbers.");
+    test("single values", function(done) {
 
-        is.notEqual(actualString, "ho!", "it does correctly match inequality of strings.");
+        given("a boolean").expect(someBoolean).toNotEqual(true);
+        given("a number").expect(someNumber).toEqual(42);
+        given("a string").expect(someString).toEqual("hi!");
 
-        is.equalDeep(actualObj, expectedObj, "it does correctly match deep equality of objects.");
-
-        done(); // Indicate the test has finished
+        done(); // Indicate the test is done.
     });
 
-    test("it should be able to test something that uses a callback", function(done) {
+    test("an instantiated class", function(done) {
+
+        // Setup test
+        let square = new Square(210);
+
+        given("a square with a height").expect(square.height).toEqual(2110);
+        given("a square with a width").expect(square.width).toEqual(210);
+        given("a square with an area").expect(square.area).toEqual(44100);
+
+        done(); // Indicate the test is done.
+    });
+
+    test("something within a callback", function(done) {
         // define a simple function with callback(err, value)
         function sayHello(name, callback) {
             let err = false;
@@ -112,17 +126,49 @@ unit("it will test the class: Square", function() {
 
         // use the function
         sayHello("World", function(err, value) {
-            is.error(err);
-            is.equal(value, "Hello World", "it does have the right name within the callback.");
-            done(); // Indicate the test has finished (within callback)
+            given("a callback").expect(err).toNotBeError();
+            given("a successful callback").expect(value).toEqual("Hello World");
+            done(); // Indicate the test is done.
         });
     });
 
-    test("it should function asynchronously when using a timeout", function(done) {
+    test("something asynchronous like a timeout", function(done) {
         setTimeout(function() {
-            is.equal(true, true, "it does correctly trigger a timeout.");
-            done(); // Indicate the test has finished
+            given("an asynchronous function").expect(true).toEqual(true);
+            done(); // Indicate the test is done.
         }, 2000);
+    });
+
+});
+```
+
+## USAGE: Specification tests
+
+```javascript
+"use strict";
+
+// Import Bayeux and extract selected vocabulary.
+const Bayeux = require("../../../src/js/Bayeux");
+const {can, feature, when} = Bayeux.BDD();
+
+// Unit(s)
+process.env.TINTER_TEST = "16";
+const Tinter = require("tinter");
+
+// Constants
+const DUMMY_STRING = "Dummy String";
+
+// Specification
+feature("styles and colors correctly in a 16-color console environment", function() {
+
+    can("encode all style directives", function(done) {
+
+        when("it can mark a string as reset.").expect(Tinter.reset(DUMMY_STRING)).toEqual(`\x1b[0m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as plain.").expect(Tinter.plain(DUMMY_STRING)).toEqual(`\x1b[0m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as bright.").expect(Tinter.bright(DUMMY_STRING)).toEqual(`\x1b[1m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as dim.").expect(Tinter.dim(DUMMY_STRING)).toEqual(`\x1b[2m${DUMMY_STRING}\x1b[0m`);
+
+        done(); // Indicate the test is done.
     });
 
 });
@@ -132,23 +178,109 @@ unit("it will test the class: Square", function() {
 
 The entire Bayeux testing API is short, predicable and should offer no 'surprises':-
 
+### BDD: Specification test vocabulary
+
+Every specification test describes one and only one 'feature':-
+
+    feature("Import special .xyz reports.", function() {
+    
+        // Some tests...
+    
+    });
+
+Inside a feature function block you can list what the software must be able to do - to fulfil the feature's requirements:-
+
+    can("load the different formats that .xyz reports use", function(done) {
+    
+        // Specific cases...
+    
+        done(); // Indicate the test is done.
+    });
+
+And inside an ability block ("can"), specific checks (assertions/expectations) are done using a single syntax:-
+
+    when("it can do something or other").expect(theActualValue).toEqual(theExpectedValue);
+
+So a very simple but complete specification test might be:-
+
+    feature("Import special .xyz reports.", function() {
+    
+        can("load the different formats that .xyz reports use", function(done) {
+        
+            when("it can load ZTAR format data.").expect(theActualValue).toEqual(theExpectedValue);   
+            when("it can load streamed STT format data.").expect(theActualValue).toEqual(theExpectedValue);   
+            when("it can load NEW format data.").expect(theActualValue).toEqual(theExpectedValue);   
+                 
+            done(); // Indicate the test is done.
+        });    
+        
+    });
+
+In addition, specification tests can *reuse* existing unit tests - in order to fulfill their feature specification.  And to save the developer time...! ;)
+
+    when("it can load ZTAR format data.").test("./LoaderZTAR.unit.js", "loadFileXYZ");
+
+Bayeux will understand from this directive that you want the results of specific unit test - passed up to the calling specification check.  
+
+
+### TDD: Unit test vocabulary
+
+Every unit test has one and only one 'unit' function block:-
+
+    unit("Examples", function() {
+    
+        // Some tests...
+    
+    });
+
+Inside a unit function block you can list the tests you want executed on that unit:-
+
+    test("single values", function(done) {
+
+        // Some assertions...
+
+        done(); // Indicate the test is done.
+    });
+
+And inside a test, individual checks (assertions/expectations) are done using a single syntax:-
+
+    given("some thing/object/action/value").expect(theActualValue).toEqual(theExpectedValue);
+
+So a simple but complete specification test might be:-
+
+    unit("Object: Value Store", function() {
+    
+        let store = new Storage();
+
+        test("variable storage", function(done) {
+    
+            given("a key with a number value").expect(store.get("someKey")).toEqual(1234);
+            given("a key with a string value").expect(store.get("someOtherKey")).toEqual("someValue");
+            given("a key with an object value")
+                .expect(store.get("someObjKey"))
+                .toEqualSnapshot();
+    
+            done(); // Indicate the test is done.
+        });
+    });
+
 #### Equality/Inequality
 
 To test whether the two parameters are equal:-
     
-    is.equal(actual, expected, msg[, isStrict])
+    toEqual(actual, expected[, isStrict])
 
 To test whether the two parameters are not equal:-
     
-    is.notEqual(actual, expected, msg[, isStrict])
+    toNotEqual(actual, expected[, isStrict])
 
 To test whether the two parameters are deep equal:-
 
-    is.deepEqual(actual, expected, msg[, isStrict])
+    toDeepEqual(actual, expected[, isStrict])
 
 To test whether the two parameters are not deep equal:-
 
-    is.notDeepEqual(actual, expected, msg[, isStrict])
+    toNotDeepEqual(actual, expected[, isStrict])
 
 #### Catching and Throwing Errors
 

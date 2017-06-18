@@ -25,6 +25,8 @@ let argv = require("minimist")(process.argv.slice(2), {
 // return;
 let workingDirectory = process.cwd() + "/";
 let moduleDirectory = path.join(__dirname, "..") + "/";
+console.log("CWD: " + workingDirectory);
+console.log("MD: " + moduleDirectory);
 
 const help = `
   ============================================================================

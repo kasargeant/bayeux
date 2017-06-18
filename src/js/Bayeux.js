@@ -421,24 +421,24 @@ const Bayeux = {
 
     when: function(msg) {
         return {
-            expect: function(actual, msg) {
+            expect: function(actual) {
                 return {
-                    toEqual: function(expected, msg, isStrict) {Bayeux.equal(actual, expected, msg, isStrict);},
-                    toNotEqual: function(expected, msg, isStrict) {Bayeux.notEqual(actual, expected, msg, isStrict);},
-                    toDeepEqual: function(expected, msg, isStrict) {Bayeux.deepEqual(actual, expected, msg, isStrict);},
-                    toNotDeepEqual: function(expected, msg, isStrict) {Bayeux.notDeepEqual(actual, expected, msg, isStrict);},
-                    toThrow: function(block, msg) {Bayeux.thrown(block, msg);},
-                    toNotThrow: function(block, msg) {Bayeux.notThrown(block, msg);},
-                    toNotHaveError: function(expected, msg) {Bayeux.error(actual, expected, msg);}
+                    toEqual: function(expected, isStrict) {Bayeux.equal(actual, expected, msg, isStrict);},
+                    toNotEqual: function(expected, isStrict) {Bayeux.notEqual(actual, expected, msg, isStrict);},
+                    toDeepEqual: function(expected, isStrict) {Bayeux.deepEqual(actual, expected, msg, isStrict);},
+                    toNotDeepEqual: function(expected, isStrict) {Bayeux.notDeepEqual(actual, expected, msg, isStrict);},
+                    toThrow: function(block) {Bayeux.thrown(block, msg);},
+                    toNotThrow: function(block) {Bayeux.notThrown(block, msg);},
+                    toNotHaveError: function(expected) {Bayeux.error(actual, expected, msg);}
                 };
             },
             test: function(unitName, testName) {
-                let unitPath = path.resolve(process.cwd(), unitName);
+                // let unitPath = path.resolve(unitName);
                 // console.log("Cwd: " + process.cwd());
                 // console.log("__dirname: " + __dirname);
                 // console.log("__filename: " + __filename);
                 // console.log("Resolving path to: " + unitPath);
-                let cmdLine = `node ${unitPath}`;
+                let cmdLine = `node ${unitName}`;
                 let stdout = "{}";
                 try {
                     stdout = child.execSync(cmdLine);

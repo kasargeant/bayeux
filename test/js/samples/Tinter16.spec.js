@@ -25,46 +25,46 @@ feature("styles and colors correctly in a 16-color console environment", functio
     can("encode all style directives", function(done) {
 
         when("it can mark a string as reset.").expect(Tinter.reset(DUMMY_STRING)).toEqual(`\x1b[0m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as plain.").expect(Tinter.plain(DUMMY_STRING)).toEqual(`\x1b[0m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as bright.").expect(Tinter.bright(DUMMY_STRING)).toEqual(`\x1b[1m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as dim.").expect(Tinter.dim(DUMMY_STRING)).toEqual(`\x1b[2m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as plain.").expect(Tinter.plain(DUMMY_STRING)).toEqual(`\x1b[0m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as bright.").expect(Tinter.bright(DUMMY_STRING)).toEqual(`\x1b[1m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as dim.").expect(Tinter.dim(DUMMY_STRING)).toEqual(`\x1b[2m${DUMMY_STRING}\x1b[0m`);
 
-        when("it can mark string as italic.").expect(Tinter.italic(DUMMY_STRING)).toEqual(`\x1b[3m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as underline.").expect(Tinter.underline(DUMMY_STRING)).toEqual(`\x1b[4m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as blink.").expect(Tinter.blink(DUMMY_STRING)).toEqual(`\x1b[5m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as blink2.").expect(Tinter.blink2(DUMMY_STRING)).toEqual(`\x1b[6m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as inverse.").expect(Tinter.inverse(DUMMY_STRING)).toEqual(`\x1b[7m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as hidden.").expect(Tinter.hidden(DUMMY_STRING)).toEqual(`\x1b[8m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as italic.").expect(Tinter.italic(DUMMY_STRING)).toEqual(`\x1b[3m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as underline.").expect(Tinter.underline(DUMMY_STRING)).toEqual(`\x1b[4m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as blink.").expect(Tinter.blink(DUMMY_STRING)).toEqual(`\x1b[5m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as blink2.").expect(Tinter.blink2(DUMMY_STRING)).toEqual(`\x1b[6m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as inverse.").expect(Tinter.inverse(DUMMY_STRING)).toEqual(`\x1b[7m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as hidden.").expect(Tinter.hidden(DUMMY_STRING)).toEqual(`\x1b[8m${DUMMY_STRING}\x1b[0m`);
 
         done(); // Indicate the test is done.
     });
 
     can("encode all foreground color directives", function(done) {
 
-        when("it can mark string as black.").expect(Tinter.black(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[30m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as red.").expect(Tinter.red(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[91m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as green.").expect(Tinter.green(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[32m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as yellow.").expect(Tinter.yellow(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[93m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as blue.").expect(Tinter.blue(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[94m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as magenta.").expect(Tinter.magenta(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[95m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as cyan.").expect(Tinter.cyan(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[96m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as white.").expect(Tinter.white(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[97m${DUMMY_STRING}\x1b[0m`);
-        when("it can mark string as default.").expect(Tinter.default(DUMMY_STRING)).toEqual(`\x1b[39m${DUMMY_STRING}`);
+        when("it can mark a string as black.").expect(Tinter.black(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[30m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as red.").expect(Tinter.red(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[91m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as green.").expect(Tinter.green(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[32m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as yellow.").expect(Tinter.yellow(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[93m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as blue.").expect(Tinter.blue(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[94m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as magenta.").expect(Tinter.magenta(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[95m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as cyan.").expect(Tinter.cyan(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[96m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as white.").expect(Tinter.white(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[97m${DUMMY_STRING}\x1b[0m`);
+        when("it can mark a string as default.").expect(Tinter.default(DUMMY_STRING)).toEqual(`\x1b[39m${DUMMY_STRING}`);
 
         done(); // Indicate the test is done.
     });
 
     can("encode all background color directives", function(done) {
 
-        when("it can mark string background as blackBg.").expect(Tinter.blackBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[40m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a black background.");
-        when("it can mark string background as redBg.").expect(Tinter.redBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[101m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a red background.");
-        when("it can mark string background as greenBg.").expect(Tinter.greenBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[42m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a green background.");
-        when("it can mark string background as yellowBg.").expect(Tinter.yellowBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[103m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a yellow background.");
-        when("it can mark string background as blueBg.").expect(Tinter.blueBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[104m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a blue background.");
-        when("it can mark string background as magentaBg.").expect(Tinter.magentaBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[105m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a magenta background.");
-        when("it can mark string background as cyanBg.").expect(Tinter.cyanBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[106m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a cyan background.");
-        when("it marks a string background as whiteBg.").expect(Tinter.whiteBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[107m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a white background.");
-        when("it marks a string background as defaultBg.").expect(Tinter.defaultBg(DUMMY_STRING)).toEqual(`\x1b[49m${DUMMY_STRING}`, "it should be able mark a string with a default background..");
+        when("it can mark a string background as blackBg.").expect(Tinter.blackBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[40m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a black background.");
+        when("it can mark a string background as redBg.").expect(Tinter.redBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[101m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a red background.");
+        when("it can mark a string background as greenBg.").expect(Tinter.greenBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[42m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a green background.");
+        when("it can mark a string background as yellowBg.").expect(Tinter.yellowBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[103m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a yellow background.");
+        when("it can mark a string background as blueBg.").expect(Tinter.blueBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[104m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a blue background.");
+        when("it can mark a string background as magentaBg.").expect(Tinter.magentaBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[105m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a magenta background.");
+        when("it can mark a string background as cyanBg.").expect(Tinter.cyanBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[106m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a cyan background.");
+        when("it can mark a string background as whiteBg.").expect(Tinter.whiteBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[107m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a white background.");
+        when("it can mark a string background as defaultBg.").expect(Tinter.defaultBg(DUMMY_STRING)).toEqual(`\x1b[49m${DUMMY_STRING}`, "it should be able mark a string with a default background..");
 
         done(); // Indicate the test is done.
     });

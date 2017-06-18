@@ -9,7 +9,9 @@
 "use strict";
 
 // Imports
+const child = require("child_process");
 const fs = require("fs");
+const path = require("path");
 const assert = require("assert");
 const series = require("async-series");
 
@@ -39,12 +41,13 @@ const Bayeux = {
         } else {
             try {
                 //console.log(desc + ": starting...");
-                fn();
+                let actual = fn();
                 this.report({
                     type: "case",
                     ok: true,
                     unit: desc,
-                    message: desc
+                    message: desc,
+                    actual: actual
                 });
             } catch(err) {
                 this.report({
@@ -243,6 +246,7 @@ const Bayeux = {
             } else {
                 assert.equal(actual, expected);
             }
+            return actual;
         });
     },
 
@@ -261,6 +265,7 @@ const Bayeux = {
             } else {
                 assert.deepEqual(actual, expected);
             }
+            return actual;
         });
     },
     
@@ -279,6 +284,7 @@ const Bayeux = {
             } else {
                 assert.notEqual(actual, expected);
             }
+            return actual;
         });
     },
 
@@ -297,6 +303,7 @@ const Bayeux = {
             } else {
                 assert.notDeepEqual(actual, expected);
             }
+            return actual;
         });
     },
 
@@ -310,6 +317,7 @@ const Bayeux = {
     error: function(actual, expected, msg) {
         this._report(msg, function() {
             assert.ifError(actual, expected);
+            return actual;
         });
     },
 
@@ -364,6 +372,7 @@ const Bayeux = {
     truthy: function(actual, msg) {
         this._report(msg, function() {
             assert.ok(actual);
+            return actual;
         });
     },
 
@@ -398,7 +407,7 @@ const Bayeux = {
         }
     },
 
-    expect: function(actual) {
+    expect: function(actual, msg) {
         return {
             toEqual: function(expected, msg, isStrict) {Bayeux.equal(actual, expected, msg, isStrict);},
             toNotEqual: function(expected, msg, isStrict) {Bayeux.notEqual(actual, expected, msg, isStrict);},
@@ -410,22 +419,68 @@ const Bayeux = {
         };
     },
 
+    when: function(msg) {
+        return {
+            expect: function(actual, msg) {
+                return {
+                    toEqual: function(expected, msg, isStrict) {Bayeux.equal(actual, expected, msg, isStrict);},
+                    toNotEqual: function(expected, msg, isStrict) {Bayeux.notEqual(actual, expected, msg, isStrict);},
+                    toDeepEqual: function(expected, msg, isStrict) {Bayeux.deepEqual(actual, expected, msg, isStrict);},
+                    toNotDeepEqual: function(expected, msg, isStrict) {Bayeux.notDeepEqual(actual, expected, msg, isStrict);},
+                    toThrow: function(block, msg) {Bayeux.thrown(block, msg);},
+                    toNotThrow: function(block, msg) {Bayeux.notThrown(block, msg);},
+                    toNotHaveError: function(expected, msg) {Bayeux.error(actual, expected, msg);}
+                };
+            },
+            test: function(unitName, testName) {
+                let unitPath = path.resolve(process.cwd(), unitName);
+                // console.log("Cwd: " + process.cwd());
+                // console.log("__dirname: " + __dirname);
+                // console.log("__filename: " + __filename);
+                // console.log("Resolving path to: " + unitPath);
+                let cmdLine = `node ${unitPath}`;
+                let stdout = "{}";
+                try {
+                    stdout = child.execSync(cmdLine);
+                } catch(ex) {
+                    stdout = ex.stdout;
+                }
+                // At this point, stdout should contain an array of 0 or more test report objects.
+                if(stdout !== null) {
+                    let unitResult = JSON.parse(stdout.toString());
+                    for(let i = 0; i < unitResult.tests.length; i++) {
+                        let testResult = unitResult.tests[i];
+                        if(testResult.name === testName) {
+                            //console.log(JSON.stringify(testResult).toUpperCase());
+                            this.report({
+                                type: "case",
+                                ok: true,
+                                unit: unitName,
+                                message: testName
+                            });
+                        }
+                    }
+
+                    // let testResult = unitResult[testName];
+
+
+                }
+            }.bind(this)
+        };
+    },
     // BDD Api
     BDD() {
         return {
-            describe: function(desc, fn) {Bayeux.unit(desc, fn);},
-            it: function(desc, fn) {Bayeux.test(desc, fn);},
-            expect: function(actual) {return Bayeux.expect(actual);}
+            can: function(desc, fn) {Bayeux.test(desc, fn);},
+            feature: function(desc, fn) {Bayeux.unit(desc, fn);},
+            when: function(actual) {return Bayeux.when(actual);}
         };
     },
 
     // TDD Api
     TDD() {
         return {
-            equal: function(actual, expected, msg, isStrict) {Bayeux.equal(actual, expected, msg, isStrict);},
-            notEqual: function(actual, expected, msg, isStrict) {Bayeux.notEqual(actual, expected, msg, isStrict);},
-            deepEqual: function(actual, expected, msg, isStrict) {Bayeux.deepEqual(actual, expected, msg, isStrict);},
-            notDeepEqual: function(actual, expected, msg, isStrict) {Bayeux.notDeepEqual(actual, expected, msg, isStrict);},
+            given: function(actual) {return Bayeux.when(actual);},
             test: function(desc, fn) {Bayeux.test(desc, fn);},
             unit: function(desc, fn) {Bayeux.unit(desc, fn);}
         };

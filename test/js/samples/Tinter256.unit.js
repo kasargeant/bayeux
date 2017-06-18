@@ -1,6 +1,6 @@
 /**
- * @file Tinter16.unit.js
- * @description Unit tests for the Tinter Class (Node/16-color [using CSS4 Named colors]).
+ * @file Tinter256.test.js
+ * @description Unit tests for the Tinter Class (Node/256-color [using CSS4 Named colors]).
  * @author Kyle Alexis Sargeant <kasargeant@gmail.com> {@link https://github.com/kasargeant https://github.com/kasargeant}.
  * @copyright Kyle Alexis Sargeant 2017
  * @license See LICENSE.txt file included in this distribution.
@@ -13,14 +13,14 @@ const Bayeux = require("../../../src/js/Bayeux");
 const {given, test, unit} = Bayeux.TDD();
 
 // Import Unit
-process.env.TINTER_TEST = "16";
+process.env.TINTER_TEST = "256";
 const Tinter = require("tinter");
 
 // Constants
 const DUMMY_STRING = "Dummy String";
 
-// Test
-unit("Tinter (Node/16-color)", function() {
+// Unit test(s)
+unit("Tinter (Node/256-color)", function() {
 
     test("single style", function(done) {
 
@@ -40,14 +40,14 @@ unit("Tinter (Node/16-color)", function() {
 
     test("single foreground color", function(done) {
 
-        given("black.").expect(Tinter.black(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[30m${DUMMY_STRING}\x1b[0m`);
-        given("red.").expect(Tinter.red(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[91m${DUMMY_STRING}\x1b[0m`);
-        given("green.").expect(Tinter.green(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[32m${DUMMY_STRING}\x1b[0m`);
-        given("yellow.").expect(Tinter.yellow(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[93m${DUMMY_STRING}\x1b[0m`);
-        given("blue.").expect(Tinter.blue(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[94m${DUMMY_STRING}\x1b[0m`);
-        given("magenta.").expect(Tinter.magenta(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[95m${DUMMY_STRING}\x1b[0m`);
-        given("cyan.").expect(Tinter.cyan(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[96m${DUMMY_STRING}\x1b[0m`);
-        given("white.").expect(Tinter.white(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[97m${DUMMY_STRING}\x1b[0m`);
+        given("black.").expect(Tinter.black(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[38;5;16m${DUMMY_STRING}\x1b[0m`);
+        given("red.").expect(Tinter.red(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[38;5;196m${DUMMY_STRING}\x1b[0m`);
+        given("green.").expect(Tinter.green(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[38;5;34m${DUMMY_STRING}\x1b[0m`);
+        given("yellow.").expect(Tinter.yellow(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[38;5;226m${DUMMY_STRING}\x1b[0m`);
+        given("blue.").expect(Tinter.blue(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[38;5;21m${DUMMY_STRING}\x1b[0m`);
+        given("magenta.").expect(Tinter.magenta(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[38;5;201m${DUMMY_STRING}\x1b[0m`);
+        given("cyan.").expect(Tinter.cyan(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[38;5;51m${DUMMY_STRING}\x1b[0m`);
+        given("white.").expect(Tinter.white(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[38;5;231m${DUMMY_STRING}\x1b[0m`);
         given("default.").expect(Tinter.default(DUMMY_STRING)).toEqual(`\x1b[39m${DUMMY_STRING}`);
 
         done(); // Indicate the test is done.
@@ -55,36 +55,36 @@ unit("Tinter (Node/16-color)", function() {
 
     test("single background color", function(done) {
 
-        given("blackBg.").expect(Tinter.blackBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[40m${DUMMY_STRING}\x1b[0m`);
-        given("redBg.").expect(Tinter.redBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[101m${DUMMY_STRING}\x1b[0m`);
-        given("greenBg.").expect(Tinter.greenBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[42m${DUMMY_STRING}\x1b[0m`);
-        given("yellowBg.").expect(Tinter.yellowBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[103m${DUMMY_STRING}\x1b[0m`);
-        given("blueBg.").expect(Tinter.blueBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[104m${DUMMY_STRING}\x1b[0m`);
-        given("magentaBg.").expect(Tinter.magentaBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[105m${DUMMY_STRING}\x1b[0m`);
-        given("cyanBg.").expect(Tinter.cyanBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[106m${DUMMY_STRING}\x1b[0m`);
-        given("whiteBg.").expect(Tinter.whiteBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[107m${DUMMY_STRING}\x1b[0m`);
-        given("defaultBg.").expect(Tinter.defaultBg(DUMMY_STRING)).toEqual(`\x1b[49m${DUMMY_STRING}`);
+        given("blackBg.").expect(Tinter.blackBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[48;5;16m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a black background.");
+        given("redBg.").expect(Tinter.redBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[48;5;196m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a red background.");
+        given("greenBg.").expect(Tinter.greenBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[48;5;34m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a green background.");
+        given("yellowBg.").expect(Tinter.yellowBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[48;5;226m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a yellow background.");
+        given("blueBg.").expect(Tinter.blueBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[48;5;21m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a blue background.");
+        given("magentaBg.").expect(Tinter.magentaBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[48;5;201m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a magenta background.");
+        given("cyanBg.").expect(Tinter.cyanBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[48;5;51m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a cyan background.");
+        given("whiteBg.").expect(Tinter.whiteBg(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[48;5;231m${DUMMY_STRING}\x1b[0m`, "it should be able mark a string with a white background.");
+        given("defaultBg.").expect(Tinter.defaultBg(DUMMY_STRING)).toEqual(`\x1b[49m${DUMMY_STRING}`, "it should be able mark a string with a default background..");
 
         done(); // Indicate the test is done.
     });
 
     test("ANSI color naming", function(done) {
-        given("Black").expect(Tinter.Black(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[30m${DUMMY_STRING}\x1b[0m`);
+        given("Black").expect(Tinter.Black(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[38;5;16m${DUMMY_STRING}\x1b[0m`);
         done(); // Indicate the test is done.
     });
 
     test("CSS4 color naming", function(done) {
-        given("rebeccapurple").expect(Tinter.rebeccapurple(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[34m${DUMMY_STRING}\x1b[0m`);
+        given("rebeccapurple").expect(Tinter.rebeccapurple(DUMMY_STRING)).toEqual(`\x1b[1m\x1b[38;5;97m${DUMMY_STRING}\x1b[0m`);
         done(); // Indicate the test is done.
     });
-    
+
     test("composite colors and style", function(done) {
 
-        given("foreground color, background color and style").expect(Tinter.style(DUMMY_STRING, "yellow", "blue", "italic")).toEqual(`\x1b[3m\x1b[1m\x1b[104m\x1b[1m\x1b[93m${DUMMY_STRING}\x1b[0m`);
-        // expect(Tinter.rgb(DUMMY_STRING, [255,255,127], [192, 0, 55], "underline"), `\x1b[4m\x1b[1m\x1b[101m\x1b[1m\x1b[93m${DUMMY_STRING}\x1b[0m`, "it should degrade a truecolor to 16-color appropriately.");
+        given("foreground color, background color and style").expect(Tinter.style(DUMMY_STRING, "yellow", "blue", "italic")).toEqual(`\x1b[3m\x1b[1m\x1b[48;5;21m\x1b[1m\x1b[38;5;226m${DUMMY_STRING}\x1b[0m`);
+        //equal(Tinter.rgb(DUMMY_STRING, [255,255,127], [192, 0, 55], "underline"), `\x1b[4m\x1b[1m\x1b[48;5;196m\x1b[1m\x1b[38;5;226m${DUMMY_STRING}\x1b[0m`, "it should degrade a truecolor to 16-color appropriately.");
         done(); // Indicate the test is done.
     });
-    
+
     test("private truecolor styling", function(done) {
 
         // private method
@@ -96,7 +96,7 @@ unit("Tinter (Node/16-color)", function() {
         // private method - TODO replace with rgb() to match 16M tests.
         given("it degrades a truecolor value.")
             .expect(Tinter._degrade(DUMMY_STRING, [200, 10, 21], [2, 0, 200], "italic"))
-            .toEqual(`\x1b[3m\x1b[1m\x1b[104m\x1b[1m\x1b[91m${DUMMY_STRING}\x1b[0m`);
+            .toEqual(`\x1b[3m\x1b[1m\x1b[48;5;21m\x1b[1m\x1b[38;5;196m${DUMMY_STRING}\x1b[0m`);
 
         done(); // Indicate the test is done.
     });

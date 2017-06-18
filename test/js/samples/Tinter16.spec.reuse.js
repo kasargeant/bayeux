@@ -24,7 +24,9 @@ feature("styles and colors correctly in a 16-color console environment", functio
 
     can("encode all style directives", function(done) {
 
-        when("it can style a string").test("./Tinter16.unit.js", "single style");
+        when("it can style a string in 16-color consoles.").test("./Tinter16.unit.js", "single style");
+        when("it can style a string in 256-color consoles.").test("./Tinter256.unit.js", "single style");
+        when("it can style a string in TrueColor consoles.").test("./Tinter16M.unit.js", "single style");
 
         done(); // Indicate the test is done.
     });

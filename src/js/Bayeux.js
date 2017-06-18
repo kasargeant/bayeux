@@ -26,52 +26,39 @@ const Bayeux = {
 
     debug: false,
 
+
     snapshots: {},
     snapshotsUpdated: false,
+    snapshotDirectory: "./__snapshots__/",
 
-
+    // Used undercover by assertions.
     _report: function(desc, fn) {
-        if(fn === "snapshot") {
+        try {
+            //console.log(desc + ": starting...");
+            let actual = fn();
             this.report({
                 type: "case",
                 ok: true,
                 unit: desc,
-                message: "[NEW SNAPSHOT] " +  desc
+                message: desc,
+                actual: actual
             });
-        } else {
-            try {
-                //console.log(desc + ": starting...");
-                let actual = fn();
-                this.report({
-                    type: "case",
-                    ok: true,
-                    unit: desc,
-                    message: desc,
-                    actual: actual
-                });
-            } catch(err) {
-                this.report({
-                    type: "case",
-                    ok: false,
-                    unit: desc,
-                    name: err.name,
-                    message: err.message,
-                    generatedMessage: err.generatedMessage,
-                    code: err.code,
-                    actual: err.actual,
-                    expected: err.expected,
-                    operator: err.operator,
-                    stack: err.stack
-                });
-            }
+        } catch(err) {
+            this.report({
+                type: "case",
+                ok: false,
+                unit: desc,
+                name: err.name,
+                message: err.message,
+                generatedMessage: err.generatedMessage,
+                code: err.code,
+                actual: err.actual,
+                expected: err.expected,
+                operator: err.operator,
+                stack: err.stack
+            });
         }
     },
-
-    _cleanup: function() {
-        this.snapshots = {};
-        this.snapshotsUpdated = false;
-    },
-
 
     _collate: function(reports) {
 
@@ -147,9 +134,6 @@ const Bayeux = {
             let filename = unitReport.name.replace(/ /g, "_") + ".out.json";
             fs.writeFileSync(filename, unitReportSerialized);
         }
-
-        // Finally, cleanup all 'state'... ready for the next user;
-        this._cleanup();
     },
 
     report: null,
@@ -157,12 +141,16 @@ const Bayeux = {
     unit: function(message, fn) {
         // If we have snapshots - load them.
         if(this.debug) {console.log("CWD: " + process.cwd());}
-        if(fs.existsSync("./__snapshots__/")) {
+
+        let snapshotPath = path.resolve(process.cwd(), this.snapshotDirectory);
+
+        if(fs.existsSync(snapshotPath)) {
             let snapshotFilename = message.replace(/ /g, "_") + ".snap.js";
             //console.log("SNAPSHOT: " + snapshotFilename);
             this.snapshots = null;
             try {
-                this.snapshots = require(`${process.cwd()}/__snapshots__/${snapshotFilename}`);
+                // this.snapshots = require(`${process.cwd()}/__snapshots__/${snapshotFilename}`);
+                this.snapshots = require(path.resolve(snapshotPath, snapshotFilename));
             } catch(err) {
                 if(this.debug) {console.warn("No snapshots for this unit.");}
                 this.snapshots = {};
@@ -200,10 +188,11 @@ const Bayeux = {
 
         // If we have updated snapshots - save them.
         if(this.snapshotsUpdated === true) {
+            //console.log("HAVE SNAPSHOTS TO UPDATE!");
             // If there is no snapshots directory - make one.
-            let SNAPSHOT_DIRECTORY = "./__snapshots__/";
-            if(!fs.existsSync(SNAPSHOT_DIRECTORY)) {
-                fs.mkdirSync(SNAPSHOT_DIRECTORY);
+            let snapshotPath = path.resolve(process.cwd(), this.snapshotDirectory);
+            if(!fs.existsSync(snapshotPath)) {
+                fs.mkdirSync(snapshotPath);
             }
 
             let snapshotsString = "";
@@ -376,34 +365,32 @@ const Bayeux = {
         });
     },
 
-    // assert(value[, message])
-    // assert.fail(message)
-    // assert.fail(actual, expected, message, operator)
-    // assert.ok(value[, message])
+    snapshot: function(actual, msg) {
 
-    snapshot: function(a, msg) {
-        // this._report(msg, function() {
-        //     assert.equal(a, a);
-        // });
         let key = msg;
         let snapshot = this.snapshots[key];
-        //console.log("SNAPSHOT = " + JSON.stringify(snapshot));
+        //console.log("HAVE SNAPSHOT ALREADY = " + JSON.stringify(snapshot));
 
-        let type = typeof(a);
+        let type = typeof(actual);
         let value = "";
         switch(type) {
             default:
-                value = JSON.stringify(a);
+                value = JSON.stringify(actual);
         }
 
         if(snapshot !== undefined) {
             // We have an existing snapshot - to test against.
-            this.equal(value, snapshot, msg);
+            this.equal(value, snapshot, msg); // Note this implicitly will use this._report()
         } else {
             // We need to make a new snapshot.
             this.snapshots[key] = value;
             this.snapshotsUpdated = true;
-            this._report(msg, "snapshot");
+            this.report({
+                type: "case",
+                ok: true,
+                unit: msg,
+                message: "[CREATING NEW SNAPSHOT]"
+            });
         }
     },
 
@@ -415,7 +402,8 @@ const Bayeux = {
             toNotDeepEqual: function(expected, msg, isStrict) {Bayeux.notDeepEqual(actual, expected, msg, isStrict);},
             toThrow: function(block, msg) {Bayeux.thrown(block, msg);},
             toNotThrow: function(block, msg) {Bayeux.notThrown(block, msg);},
-            toNotHaveError: function(expected, msg) {Bayeux.error(actual, expected, msg);}
+            toNotBeError: function(expected, msg) {Bayeux.error(actual, expected, msg);},
+            toEqualSnapshot: function() {Bayeux.snapshot(actual, msg);}
         };
     },
 
@@ -429,7 +417,8 @@ const Bayeux = {
                     toNotDeepEqual: function(expected, isStrict) {Bayeux.notDeepEqual(actual, expected, msg, isStrict);},
                     toThrow: function(block) {Bayeux.thrown(block, msg);},
                     toNotThrow: function(block) {Bayeux.notThrown(block, msg);},
-                    toNotHaveError: function(expected) {Bayeux.error(actual, expected, msg);}
+                    toNotBeError: function(expected) {Bayeux.error(actual, expected, msg);},
+                    toEqualSnapshot: function() {Bayeux.snapshot(actual, msg);}
                 };
             },
             test: function(unitName, testName) {
@@ -456,7 +445,7 @@ const Bayeux = {
                                 type: "case",
                                 ok: true,
                                 unit: unitName,
-                                message: testName
+                                message: msg
                             });
                         }
                     }

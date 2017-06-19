@@ -1,6 +1,6 @@
 {
   "name": "bayeux",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "A simple, capable and pragmatic Tap-based test framework.",
   "keywords": [
     "javascript",

@@ -159,8 +159,8 @@ describe("Class: Bayeux", function() {
         // }]
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        // MOCKKKKKINNNNNGG!!!!
-        it("it should log when a 'pass' on a successful: equal(loose) MOCKED", function() {
+        // equal()
+        it("it should log when a 'pass' on a successful: equal(loose)", function() {
 
             simple.mock(Bayeux, "report");
 
@@ -171,8 +171,6 @@ describe("Class: Bayeux", function() {
             console.log(Bayeux.report.called);
             console.log(Bayeux.report.callCount);
             console.log(Bayeux.report.lastCall.arg); // First parameter of the last call
-            // console.log(Bayeux.report.lastCall.args[1]); // Second parameter of the last call
-            // console.log(Bayeux.report.calls[0].returned);
 
 
             let report = Bayeux.report.lastCall.arg;
@@ -180,31 +178,6 @@ describe("Class: Bayeux", function() {
             expect(report.ok).toBe(true);
             //TODO expect(report.title).toBe("it should be able to compare strings for equality.");
             expect(report.message).toBe("it does log a 'pass' when values are loosely equal.");
-
-        });
-
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        // equal()
-        it("it should log when a 'pass' on a successful: equal(loose)", function() {
-
-            unit("a unit", function() {
-                test("a test", function() {
-
-                    let actual = 1;
-                    let expected = "1";
-                    given("it does log a 'pass' when values are loosely equal.").expect(actual).toEqual(expected, false);
-
-                    let reports = Bayeux._getReports();
-                    expect(reports.length).toBe(3);
-
-                    let report = reports[2];
-                    expect(report.type).toBe("case");
-                    expect(report.ok).toBe(true);
-                    //TODO expect(report.title).toBe("it should be able to compare strings for equality.");
-                    expect(report.message).toBe("it does log a 'pass' when values are loosely equal.");
-
-                });
-            });
 
         });
 

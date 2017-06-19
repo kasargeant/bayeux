@@ -67,6 +67,7 @@ class BayeuxRunner {
         console.log(`   \x1b[32mTests passed: (${testsPassed}/${testsTotal})\x1b[0m`);
         if(testsFailed) {
             console.log(`   \x1b[31mTests failed: (${testsFailed}/${testsTotal})\x1b[0m`);
+            throw new Error();
         }
         console.log("");
     }

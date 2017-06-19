@@ -68,4 +68,13 @@ unit("Examples", function() {
         }, 2000);
     });
 
+
+    test("a file's contents", function(done) {
+
+        given("a file with a single line").expectFile("../../data/single_line.txt").toEqual("This is a text file - used by Bayeux unit tests.");
+        given("a file with multiple lines").expectFile("../../data/multi_line.txt").toEqualSnapshot();
+
+        done(); // Indicate the test is done.
+    });
+
 });

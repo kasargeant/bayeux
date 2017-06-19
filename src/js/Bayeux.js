@@ -421,6 +421,25 @@ const Bayeux = {
                     toEqualSnapshot: function() {Bayeux.snapshot(actual, msg);}
                 };
             },
+            expectFile: function(filePath, fileType="string") {
+                let actual = null;
+                try {
+                    actual = fs.readFileSync(filePath);
+                } catch(err) {
+                    throw err;
+                }
+                actual = (fileType === "string") ? actual.toString() : actual;
+                return {
+                    toEqual: function(expected, isStrict) {Bayeux.equal(actual, expected, msg, isStrict);},
+                    toNotEqual: function(expected, isStrict) {Bayeux.notEqual(actual, expected, msg, isStrict);},
+                    toDeepEqual: function(expected, isStrict) {Bayeux.deepEqual(actual, expected, msg, isStrict);},
+                    toNotDeepEqual: function(expected, isStrict) {Bayeux.notDeepEqual(actual, expected, msg, isStrict);},
+                    toThrow: function(block) {Bayeux.thrown(block, msg);},
+                    toNotThrow: function(block) {Bayeux.notThrown(block, msg);},
+                    toNotBeError: function(expected) {Bayeux.error(actual, expected, msg);},
+                    toEqualSnapshot: function() {Bayeux.snapshot(actual, msg);}
+                };
+            },
             test: function(unitName, testName) {
                 // let unitPath = path.resolve(unitName);
                 // console.log("Cwd: " + process.cwd());

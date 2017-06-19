@@ -20,7 +20,7 @@ const series = require("async-series");
 /**
  * @class
  * @static
- * @type {{debug: boolean, reports: Array, fnArray: Array, snapshots: {}, snapshotsUpdated: boolean, _report: Bayeux._report, _cleanup: Bayeux._cleanup, _collate: Bayeux._collate, _executeTests: Bayeux._executeTests, test: Bayeux.test, unit: Bayeux.unit, $$$$$$$$$$$$$$$$$$$$$debugDividerOnly: Bayeux.$$$$$$$$$$$$$$$$$$$$$debugDividerOnly, equal: Bayeux.equal, deepEqual: Bayeux.deepEqual, notEqual: Bayeux.notEqual, notDeepEqual: Bayeux.notDeepEqual, error: Bayeux.error, thrown: Bayeux.thrown, notThrown: Bayeux.notThrown, fail: Bayeux.fail, pass: Bayeux.pass, truthy: Bayeux.truthy, snapshot: Bayeux.snapshot}}
+ * @type {{debug: boolean, reports: Array, fnArray: Array, snapshots: {}, snapshotsUpdated: boolean, _reportCase: Bayeux._reportCase, _cleanup: Bayeux._cleanup, _collate: Bayeux._collate, _executeTests: Bayeux._executeTests, test: Bayeux.test, unit: Bayeux.unit, $$$$$$$$$$$$$$$$$$$$$debugDividerOnly: Bayeux.$$$$$$$$$$$$$$$$$$$$$debugDividerOnly, equal: Bayeux.equal, deepEqual: Bayeux.deepEqual, notEqual: Bayeux.notEqual, notDeepEqual: Bayeux.notDeepEqual, error: Bayeux.error, thrown: Bayeux.thrown, notThrown: Bayeux.notThrown, fail: Bayeux.fail, pass: Bayeux.pass, truthy: Bayeux.truthy, snapshot: Bayeux.snapshot}}
  */
 const Bayeux = {
 
@@ -31,7 +31,7 @@ const Bayeux = {
     snapshotDirectory: "./__snapshots__/",
 
     // Used undercover by assertions.
-    _report: function(desc, fn) {
+    _reportCase: function(desc, fn) {
         try {
             //console.log(desc + ": starting...");
             let actual = fn();
@@ -112,16 +112,11 @@ const Bayeux = {
     // is.equal(square.height, 2110, "it should have assigned the right height.");
     test: null,
 
-    _onCompletion: function(reports) {
+    _onCompletion: function(unitReport, destination="stdout", format="json") {
         // On completion...
         // Collate results
-        let unitReport = this._collate(reports); // At this point the entire test unit is finished.
 
         // Output results
-        // Select test output format and destination
-        let format = "json";
-        let destination = "stdout";
-
         let unitReportSerialized = "";
         if(format === "json") {
             unitReportSerialized = JSON.stringify(unitReport, null, 2);
@@ -132,10 +127,14 @@ const Bayeux = {
         } else if(destination === "file") {
             let filename = unitReport.name.replace(/ /g, "_") + ".out.json";
             fs.writeFileSync(filename, unitReportSerialized);
+        } else if(destination === "return") {
+            return unitReportSerialized;
         }
     },
 
     report: null,
+    _getReports: null, // DEBUG ONLY
+    _clearReports: null, // DEBUG ONLY
 
     unit: function(message, fn) {
         // If we have snapshots - load them.
@@ -163,6 +162,14 @@ const Bayeux = {
             reports.push(msgObj);
         };
 
+        // DEBUG ONLY
+        this._clearReports = function() {
+            reports = [];
+        };
+        this._getReports = function() {
+            return reports;
+        };
+
         let fnArray = [];
         this.test = function(message, fn) {
             fnArray.push(function(done) {
@@ -180,7 +187,10 @@ const Bayeux = {
             if(err) {
                 throw err;
             } else {
-                this._onCompletion(reports);
+                // At this point the entire unit test is finished.
+                // console.log(JSON.stringify(reports));
+                let unitReport = this._collate(reports);
+                this._onCompletion(unitReport);
             }
 
         }.bind(this));
@@ -228,7 +238,7 @@ const Bayeux = {
      * @param {boolean} isStrict - If true, test uses strict comparison.
      */
     equal: function(actual, expected, msg, isStrict=true) {
-        this._report(msg, function() {
+        this._reportCase(msg, function() {
             if(isStrict === true) {
                 assert.strictEqual(actual, expected);
             } else {
@@ -247,7 +257,7 @@ const Bayeux = {
      * @param {boolean} isStrict - If true, test uses strict comparison.
      */
     deepEqual: function(actual, expected, msg, isStrict=true) {
-        this._report(msg, function() {
+        this._reportCase(msg, function() {
             if(isStrict === true) {
                 assert.deepStrictEqual(actual, expected);
             } else {
@@ -266,7 +276,7 @@ const Bayeux = {
      * @param {boolean} isStrict - If true, test uses strict comparison.
      */
     notEqual: function(actual, expected, msg, isStrict=true) {
-        this._report(msg, function() {
+        this._reportCase(msg, function() {
             if(isStrict === true) {
                 assert.notStrictEqual(actual, expected);
             } else {
@@ -285,7 +295,7 @@ const Bayeux = {
      * @param {boolean} isStrict - If true, test uses strict comparison.
      */
     notDeepEqual: function(actual, expected, msg, isStrict=true) {
-        this._report(msg, function() {
+        this._reportCase(msg, function() {
             if(isStrict === true) {
                 assert.notDeepStrictEqual(actual, expected);
             } else {
@@ -303,7 +313,7 @@ const Bayeux = {
      * @param {string} msg - a test description or message. NOTE: REQUIRED!
      */
     error: function(actual, expected, msg) {
-        this._report(msg, function() {
+        this._reportCase(msg, function() {
             assert.ifError(actual, expected);
             return actual;
         });
@@ -316,7 +326,7 @@ const Bayeux = {
      * @param {string} msg - a test description or message. NOTE: REQUIRED!
      */
     thrown: function(block, msg) {
-        this._report(msg, function() {
+        this._reportCase(msg, function() {
             assert.throws(block);
         });
     },
@@ -328,7 +338,7 @@ const Bayeux = {
      * @param {string} msg - a test description or message. NOTE: REQUIRED!
      */
     notThrown: function(block, msg) {
-        this._report(msg, function() {
+        this._reportCase(msg, function() {
             assert.doesNotThrow(block);
         });
     },
@@ -358,7 +368,7 @@ const Bayeux = {
      * @param {string} msg - a test description or message. NOTE: REQUIRED!
      */
     truthy: function(actual, msg) {
-        this._report(msg, function() {
+        this._reportCase(msg, function() {
             assert.ok(actual);
             return actual;
         });
@@ -379,7 +389,7 @@ const Bayeux = {
 
         if(snapshot !== undefined) {
             // We have an existing snapshot - to test against.
-            this.equal(value, snapshot, msg); // Note this implicitly will use this._report()
+            this.equal(value, snapshot, msg); // Note this implicitly will use this._reportCase()
         } else {
             // We need to make a new snapshot.
             this.snapshots[key] = value;
@@ -393,18 +403,18 @@ const Bayeux = {
         }
     },
 
-    expect: function(actual, msg) {
-        return {
-            toEqual: function(expected, msg, isStrict) {Bayeux.equal(actual, expected, msg, isStrict);},
-            toNotEqual: function(expected, msg, isStrict) {Bayeux.notEqual(actual, expected, msg, isStrict);},
-            toDeepEqual: function(expected, msg, isStrict) {Bayeux.deepEqual(actual, expected, msg, isStrict);},
-            toNotDeepEqual: function(expected, msg, isStrict) {Bayeux.notDeepEqual(actual, expected, msg, isStrict);},
-            toThrow: function(block, msg) {Bayeux.thrown(block, msg);},
-            toNotThrow: function(block, msg) {Bayeux.notThrown(block, msg);},
-            toNotBeError: function(expected, msg) {Bayeux.error(actual, expected, msg);},
-            toEqualSnapshot: function() {Bayeux.snapshot(actual, msg);}
-        };
-    },
+    // expect: function(actual, msg) {
+    //     return {
+    //         toEqual: function(expected, msg, isStrict) {Bayeux.equal(actual, expected, msg, isStrict);},
+    //         toNotEqual: function(expected, msg, isStrict) {Bayeux.notEqual(actual, expected, msg, isStrict);},
+    //         toDeepEqual: function(expected, msg, isStrict) {Bayeux.deepEqual(actual, expected, msg, isStrict);},
+    //         toNotDeepEqual: function(expected, msg, isStrict) {Bayeux.notDeepEqual(actual, expected, msg, isStrict);},
+    //         toThrow: function(block, msg) {Bayeux.thrown(block, msg);},
+    //         toNotThrow: function(block, msg) {Bayeux.notThrown(block, msg);},
+    //         toNotBeError: function(expected, msg) {Bayeux.error(actual, expected, msg);},
+    //         toEqualSnapshot: function() {Bayeux.snapshot(actual, msg);}
+    //     };
+    // },
 
     when: function(msg) {
         return {

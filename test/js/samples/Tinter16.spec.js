@@ -71,7 +71,7 @@ feature("styles and colors correctly in a 16-color console environment", functio
 
     can("encode all composite color/style directives?", function(done) {
 
-        when("it marks a string with overlapping characteristics.").expect(Tinter.style(DUMMY_STRING, "yellow", "blue", "italic"), `\x1b[3m\x1b[1m\x1b[104m\x1b[1m\x1b[93m${DUMMY_STRING}\x1b[0m`);
+        when("it marks a string with overlapping characteristics.").expect(Tinter.style(DUMMY_STRING, "yellow", "blue", "italic")).toEqual(`\x1b[3m\x1b[1m\x1b[104m\x1b[1m\x1b[93m${DUMMY_STRING}\x1b[0m`);
         // expect(Tinter.rgb(DUMMY_STRING, [255,255,127], [192, 0, 55], "underline"), `\x1b[4m\x1b[1m\x1b[101m\x1b[1m\x1b[93m${DUMMY_STRING}\x1b[0m`, "it should degrade a truecolor to 16-color appropriately.");
         done(); // Indicate the test is done.
     });

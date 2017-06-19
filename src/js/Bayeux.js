@@ -38,15 +38,14 @@ const Bayeux = {
             this.report({
                 type: "case",
                 ok: true,
-                unit: desc,
-                message: desc,
+                description: desc,
                 actual: actual
             });
         } catch(err) {
             this.report({
                 type: "case",
                 ok: false,
-                unit: desc,
+                description: desc,
                 name: err.name,
                 message: err.message,
                 generatedMessage: err.generatedMessage,
@@ -78,7 +77,7 @@ const Bayeux = {
             let report = reports[i];
             switch(report.type) {
                 case "unit":
-                    unitReport.name = report.message;
+                    unitReport.name = report.description;
                     unitReportCount++;
                     break;
                 case "test":
@@ -86,7 +85,7 @@ const Bayeux = {
                         unitReport.tests.push(testReport);
                     }
                     testReport = {
-                        name: report.message,
+                        name: report.description,
                         parent: unitReport.name,
                         cases: []
                     };
@@ -136,14 +135,14 @@ const Bayeux = {
     _getReports: null, // DEBUG ONLY
     _clearReports: null, // DEBUG ONLY
 
-    unit: function(message, fn) {
+    unit: function(description, fn) {
         // If we have snapshots - load them.
         if(this.debug) {console.log("CWD: " + process.cwd());}
 
         let snapshotPath = path.resolve(process.cwd(), this.snapshotDirectory);
 
         if(fs.existsSync(snapshotPath)) {
-            let snapshotFilename = message.replace(/ /g, "_") + ".snap.js";
+            let snapshotFilename = description.replace(/ /g, "_") + ".snap.js";
             //console.log("SNAPSHOT: " + snapshotFilename);
             this.snapshots = null;
             try {
@@ -171,15 +170,15 @@ const Bayeux = {
         };
 
         let fnArray = [];
-        this.test = function(message, fn) {
+        this.test = function(description, fn) {
             fnArray.push(function(done) {
-                this.report({type: "test", message: message});
+                this.report({type: "test", description: description});
                 fn(done);
             }.bind(this));
         };
 
         // Core of unit
-        this.report({type: "unit", message: message});
+        this.report({type: "unit", description: description});
         fn();
         series(fnArray, function(err) {
 
@@ -188,7 +187,7 @@ const Bayeux = {
                 throw err;
             } else {
                 // At this point the entire unit test is finished.
-                // console.log(JSON.stringify(reports));
+                // console.log("REPORTS: " + JSON.stringify(reports));
                 let unitReport = this._collate(reports);
                 this._onCompletion(unitReport);
             }
@@ -216,7 +215,7 @@ const Bayeux = {
                 snapshotsString += `exports[\`${key}\`] = \`${value}\`;\n\n`;
             }
 
-            let snapshotFilename = message.replace(/ /g, "_") + ".snap.js";
+            let snapshotFilename = description.replace(/ /g, "_") + ".snap.js";
             try {
                 fs.writeFileSync(`./__snapshots__/${snapshotFilename}`, snapshotsString);
             } catch(err) {
@@ -234,7 +233,7 @@ const Bayeux = {
      * @example is.equal(square.height, 2110, "it should have assigned the right height.");
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      * @param {boolean} isStrict - If true, test uses strict comparison.
      */
     equal: function(actual, expected, msg, isStrict=true) {
@@ -253,7 +252,7 @@ const Bayeux = {
      * @example is.deepEqual(someComplexObj, someOtherComplexObj, "it should be able to clone correctly.");
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      * @param {boolean} isStrict - If true, test uses strict comparison.
      */
     deepEqual: function(actual, expected, msg, isStrict=true) {
@@ -272,7 +271,7 @@ const Bayeux = {
      * @example is.notEqual(square.height, 2110, "it shouldn't have been assigned the height pre-initialisation.");
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      * @param {boolean} isStrict - If true, test uses strict comparison.
      */
     notEqual: function(actual, expected, msg, isStrict=true) {
@@ -291,7 +290,7 @@ const Bayeux = {
      * @example is.notDeepEqual(someComplexObj, someOtherComplexObj, "it should be unique.");
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      * @param {boolean} isStrict - If true, test uses strict comparison.
      */
     notDeepEqual: function(actual, expected, msg, isStrict=true) {
@@ -310,7 +309,7 @@ const Bayeux = {
      *
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      */
     error: function(actual, expected, msg) {
         this._reportCase(msg, function() {
@@ -323,11 +322,12 @@ const Bayeux = {
      * Tests whether an error was thrown.
      * @example is.thrown(someFunc(123), "it should throw an error/exception.");
      * @param {*} block - the code block
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {*} error - an optional error match.
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      */
-    thrown: function(block, msg) {
+    thrown: function(block, error, msg) {
         this._reportCase(msg, function() {
-            assert.throws(block);
+            assert.throws(block, error);
         });
     },
 
@@ -335,18 +335,19 @@ const Bayeux = {
      * Tests whether an error was not thrown.
      * @example is.notThrown(someFunc(123), "it should not throw an error/exception.");
      * @param {*} block - the code block
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {*} error - an optional error match.
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      */
-    notThrown: function(block, msg) {
+    notThrown: function(block, error, msg) {
         this._reportCase(msg, function() {
-            assert.doesNotThrow(block);
+            assert.doesNotThrow(block, error);
         });
     },
 
     /**
      * Asserts an automatic test 'fail'.
      * @example is.fail("it should meet the criteria.");
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      */
     fail: function(msg) {
         // TODO - implement direct reporting i.e. override test reporting
@@ -355,7 +356,7 @@ const Bayeux = {
     /**
      * Asserts an automatic test 'pass'.
      * @example is.pass("it should meet the criteria.");
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      */
     pass: function(msg) {
         // TODO - implement direct reporting i.e. override test reporting
@@ -365,7 +366,7 @@ const Bayeux = {
      * Tests whether the single given parameter is 'truthy' (i.e. allowing coercion etc.)
      * @example is.truthy(someValue, "it should be complete.");
      * @param {*} actual - the actual value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      */
     truthy: function(actual, msg) {
         this._reportCase(msg, function() {
@@ -397,8 +398,7 @@ const Bayeux = {
             this.report({
                 type: "case",
                 ok: true,
-                unit: msg,
-                message: "[CREATING NEW SNAPSHOT]"
+                description: "[CREATING NEW SNAPSHOT]"
             });
         }
     },
@@ -424,8 +424,8 @@ const Bayeux = {
                     toNotEqual: function(expected, isStrict) {Bayeux.notEqual(actual, expected, msg, isStrict);},
                     toDeepEqual: function(expected, isStrict) {Bayeux.deepEqual(actual, expected, msg, isStrict);},
                     toNotDeepEqual: function(expected, isStrict) {Bayeux.notDeepEqual(actual, expected, msg, isStrict);},
-                    toThrow: function(block) {Bayeux.thrown(block, msg);},
-                    toNotThrow: function(block) {Bayeux.notThrown(block, msg);},
+                    toThrow: function(error) {Bayeux.thrown(actual, error, msg);},
+                    toNotThrow: function(error) {Bayeux.notThrown(actual, error, msg);},
                     toNotBeError: function(expected) {Bayeux.error(actual, expected, msg);},
                     toEqualSnapshot: function() {Bayeux.snapshot(actual, msg);}
                 };
@@ -473,7 +473,7 @@ const Bayeux = {
                                 type: "case",
                                 ok: true,
                                 unit: unitName,
-                                message: msg
+                                description: msg
                             });
                         }
                     }

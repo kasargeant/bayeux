@@ -8,7 +8,7 @@
           "type": "case",
           "ok": true,
           "unit": "reset",
-          "message": "reset",
+          "description": "reset",
           "actual": "\u001b[0mDummy String\u001b[0m",
           "parent": "single style"
         },
@@ -16,7 +16,7 @@
           "type": "case",
           "ok": true,
           "unit": "plain",
-          "message": "plain",
+          "description": "plain",
           "actual": "\u001b[0mDummy String\u001b[0m",
           "parent": "single style"
         },
@@ -24,7 +24,7 @@
           "type": "case",
           "ok": true,
           "unit": "bright",
-          "message": "bright",
+          "description": "bright",
           "actual": "\u001b[1mDummy String\u001b[0m",
           "parent": "single style"
         },
@@ -32,7 +32,7 @@
           "type": "case",
           "ok": true,
           "unit": "dim",
-          "message": "dim",
+          "description": "dim",
           "actual": "\u001b[2mDummy String\u001b[0m",
           "parent": "single style"
         },
@@ -40,7 +40,7 @@
           "type": "case",
           "ok": true,
           "unit": "italic",
-          "message": "italic",
+          "description": "italic",
           "actual": "\u001b[3mDummy String\u001b[0m",
           "parent": "single style"
         },
@@ -48,7 +48,7 @@
           "type": "case",
           "ok": true,
           "unit": "underline",
-          "message": "underline",
+          "description": "underline",
           "actual": "\u001b[4mDummy String\u001b[0m",
           "parent": "single style"
         },
@@ -56,7 +56,7 @@
           "type": "case",
           "ok": true,
           "unit": "blink",
-          "message": "blink",
+          "description": "blink",
           "actual": "\u001b[5mDummy String\u001b[0m",
           "parent": "single style"
         },
@@ -64,7 +64,7 @@
           "type": "case",
           "ok": true,
           "unit": "blink2",
-          "message": "blink2",
+          "description": "blink2",
           "actual": "\u001b[6mDummy String\u001b[0m",
           "parent": "single style"
         },
@@ -72,7 +72,7 @@
           "type": "case",
           "ok": true,
           "unit": "inverse",
-          "message": "inverse",
+          "description": "inverse",
           "actual": "\u001b[7mDummy String\u001b[0m",
           "parent": "single style"
         },
@@ -80,7 +80,7 @@
           "type": "case",
           "ok": true,
           "unit": "hidden",
-          "message": "hidden",
+          "description": "hidden",
           "actual": "\u001b[8mDummy String\u001b[0m",
           "parent": "single style"
         }
@@ -94,7 +94,7 @@
           "type": "case",
           "ok": true,
           "unit": "black.",
-          "message": "black.",
+          "description": "black.",
           "actual": "\u001b[1m\u001b[30mDummy String\u001b[0m",
           "parent": "single foreground color"
         },
@@ -102,7 +102,7 @@
           "type": "case",
           "ok": true,
           "unit": "red.",
-          "message": "red.",
+          "description": "red.",
           "actual": "\u001b[1m\u001b[91mDummy String\u001b[0m",
           "parent": "single foreground color"
         },
@@ -110,7 +110,7 @@
           "type": "case",
           "ok": true,
           "unit": "green.",
-          "message": "green.",
+          "description": "green.",
           "actual": "\u001b[1m\u001b[32mDummy String\u001b[0m",
           "parent": "single foreground color"
         },
@@ -118,7 +118,7 @@
           "type": "case",
           "ok": true,
           "unit": "yellow.",
-          "message": "yellow.",
+          "description": "yellow.",
           "actual": "\u001b[1m\u001b[93mDummy String\u001b[0m",
           "parent": "single foreground color"
         },
@@ -126,7 +126,7 @@
           "type": "case",
           "ok": true,
           "unit": "blue.",
-          "message": "blue.",
+          "description": "blue.",
           "actual": "\u001b[1m\u001b[94mDummy String\u001b[0m",
           "parent": "single foreground color"
         },
@@ -134,7 +134,7 @@
           "type": "case",
           "ok": true,
           "unit": "magenta.",
-          "message": "magenta.",
+          "description": "magenta.",
           "actual": "\u001b[1m\u001b[95mDummy String\u001b[0m",
           "parent": "single foreground color"
         },
@@ -142,7 +142,7 @@
           "type": "case",
           "ok": true,
           "unit": "cyan.",
-          "message": "cyan.",
+          "description": "cyan.",
           "actual": "\u001b[1m\u001b[96mDummy String\u001b[0m",
           "parent": "single foreground color"
         },
@@ -150,7 +150,7 @@
           "type": "case",
           "ok": true,
           "unit": "white.",
-          "message": "white.",
+          "description": "white.",
           "actual": "\u001b[1m\u001b[97mDummy String\u001b[0m",
           "parent": "single foreground color"
         },
@@ -158,7 +158,7 @@
           "type": "case",
           "ok": true,
           "unit": "default.",
-          "message": "default.",
+          "description": "default.",
           "actual": "\u001b[39mDummy String",
           "parent": "single foreground color"
         }
@@ -172,7 +172,7 @@
           "type": "case",
           "ok": true,
           "unit": "blackBg.",
-          "message": "blackBg.",
+          "description": "blackBg.",
           "actual": "\u001b[1m\u001b[40mDummy String\u001b[0m",
           "parent": "single background color"
         },
@@ -180,7 +180,7 @@
           "type": "case",
           "ok": true,
           "unit": "redBg.",
-          "message": "redBg.",
+          "description": "redBg.",
           "actual": "\u001b[1m\u001b[101mDummy String\u001b[0m",
           "parent": "single background color"
         },
@@ -188,7 +188,7 @@
           "type": "case",
           "ok": true,
           "unit": "greenBg.",
-          "message": "greenBg.",
+          "description": "greenBg.",
           "actual": "\u001b[1m\u001b[42mDummy String\u001b[0m",
           "parent": "single background color"
         },
@@ -196,7 +196,7 @@
           "type": "case",
           "ok": true,
           "unit": "yellowBg.",
-          "message": "yellowBg.",
+          "description": "yellowBg.",
           "actual": "\u001b[1m\u001b[103mDummy String\u001b[0m",
           "parent": "single background color"
         },
@@ -204,7 +204,7 @@
           "type": "case",
           "ok": true,
           "unit": "blueBg.",
-          "message": "blueBg.",
+          "description": "blueBg.",
           "actual": "\u001b[1m\u001b[104mDummy String\u001b[0m",
           "parent": "single background color"
         },
@@ -212,7 +212,7 @@
           "type": "case",
           "ok": true,
           "unit": "magentaBg.",
-          "message": "magentaBg.",
+          "description": "magentaBg.",
           "actual": "\u001b[1m\u001b[105mDummy String\u001b[0m",
           "parent": "single background color"
         },
@@ -220,7 +220,7 @@
           "type": "case",
           "ok": true,
           "unit": "cyanBg.",
-          "message": "cyanBg.",
+          "description": "cyanBg.",
           "actual": "\u001b[1m\u001b[106mDummy String\u001b[0m",
           "parent": "single background color"
         },
@@ -228,7 +228,7 @@
           "type": "case",
           "ok": true,
           "unit": "whiteBg.",
-          "message": "whiteBg.",
+          "description": "whiteBg.",
           "actual": "\u001b[1m\u001b[107mDummy String\u001b[0m",
           "parent": "single background color"
         },
@@ -236,7 +236,7 @@
           "type": "case",
           "ok": true,
           "unit": "defaultBg.",
-          "message": "defaultBg.",
+          "description": "defaultBg.",
           "actual": "\u001b[49mDummy String",
           "parent": "single background color"
         }
@@ -250,7 +250,7 @@
           "type": "case",
           "ok": true,
           "unit": "Black",
-          "message": "Black",
+          "description": "Black",
           "actual": "\u001b[1m\u001b[30mDummy String\u001b[0m",
           "parent": "ANSI color naming"
         }
@@ -264,7 +264,7 @@
           "type": "case",
           "ok": true,
           "unit": "rebeccapurple",
-          "message": "rebeccapurple",
+          "description": "rebeccapurple",
           "actual": "\u001b[1m\u001b[34mDummy String\u001b[0m",
           "parent": "CSS4 color naming"
         }
@@ -278,7 +278,7 @@
           "type": "case",
           "ok": true,
           "unit": "foreground color, background color and style",
-          "message": "foreground color, background color and style",
+          "description": "foreground color, background color and style",
           "actual": "\u001b[3m\u001b[1m\u001b[104m\u001b[1m\u001b[93mDummy String\u001b[0m",
           "parent": "composite colors and style"
         }
@@ -292,7 +292,7 @@
           "type": "case",
           "ok": true,
           "unit": "a string, RGB foreground and background colors, and a style (All params)",
-          "message": "a string, RGB foreground and background colors, and a style (All params)",
+          "description": "a string, RGB foreground and background colors, and a style (All params)",
           "actual": "\u001b[4m\u001b[1m\u001b[48;2;192;0;55m\u001b[1m\u001b[38;2;255;255;127mDummy String\u001b[0m",
           "parent": "private truecolor styling"
         },
@@ -300,7 +300,7 @@
           "type": "case",
           "ok": true,
           "unit": "a string, RGB foreground and background colors (3 params)",
-          "message": "a string, RGB foreground and background colors (3 params)",
+          "description": "a string, RGB foreground and background colors (3 params)",
           "actual": "\u001b[1m\u001b[48;2;192;0;55m\u001b[1m\u001b[38;2;255;255;127mDummy String\u001b[0m",
           "parent": "private truecolor styling"
         },
@@ -308,7 +308,7 @@
           "type": "case",
           "ok": true,
           "unit": "a string, RGB foreground color (2 params)",
-          "message": "a string, RGB foreground color (2 params)",
+          "description": "a string, RGB foreground color (2 params)",
           "actual": "\u001b[1m\u001b[38;2;255;255;127mDummy String\u001b[0m",
           "parent": "private truecolor styling"
         },
@@ -316,7 +316,7 @@
           "type": "case",
           "ok": true,
           "unit": "a string (1 param)",
-          "message": "a string (1 param)",
+          "description": "a string (1 param)",
           "actual": "Dummy String\u001b[0m",
           "parent": "private truecolor styling"
         },
@@ -324,7 +324,7 @@
           "type": "case",
           "ok": true,
           "unit": "it degrades a truecolor value.",
-          "message": "it degrades a truecolor value.",
+          "description": "it degrades a truecolor value.",
           "actual": "\u001b[3m\u001b[1m\u001b[104m\u001b[1m\u001b[91mDummy String\u001b[0m",
           "parent": "private truecolor styling"
         }
@@ -338,7 +338,7 @@
           "type": "case",
           "ok": true,
           "unit": "an RGB value close to black.",
-          "message": "an RGB value close to black.",
+          "description": "an RGB value close to black.",
           "actual": "black",
           "parent": "private degrading from RGB values to named colors"
         },
@@ -346,7 +346,7 @@
           "type": "case",
           "ok": true,
           "unit": "an RGB value close to red.",
-          "message": "an RGB value close to red.",
+          "description": "an RGB value close to red.",
           "actual": "red",
           "parent": "private degrading from RGB values to named colors"
         },
@@ -354,7 +354,7 @@
           "type": "case",
           "ok": true,
           "unit": "an RGB value close to green.",
-          "message": "an RGB value close to green.",
+          "description": "an RGB value close to green.",
           "actual": "green",
           "parent": "private degrading from RGB values to named colors"
         },
@@ -362,7 +362,7 @@
           "type": "case",
           "ok": true,
           "unit": "an RGB value close to blue.",
-          "message": "an RGB value close to blue.",
+          "description": "an RGB value close to blue.",
           "actual": "blue",
           "parent": "private degrading from RGB values to named colors"
         },
@@ -370,7 +370,7 @@
           "type": "case",
           "ok": true,
           "unit": "an RGB value close to yellow.",
-          "message": "an RGB value close to yellow.",
+          "description": "an RGB value close to yellow.",
           "actual": "yellow",
           "parent": "private degrading from RGB values to named colors"
         },
@@ -378,7 +378,7 @@
           "type": "case",
           "ok": true,
           "unit": "an RGB value close to magenta.",
-          "message": "an RGB value close to magenta.",
+          "description": "an RGB value close to magenta.",
           "actual": "magenta",
           "parent": "private degrading from RGB values to named colors"
         },
@@ -386,7 +386,7 @@
           "type": "case",
           "ok": true,
           "unit": "an RGB value close to cyan.",
-          "message": "an RGB value close to cyan.",
+          "description": "an RGB value close to cyan.",
           "actual": "cyan",
           "parent": "private degrading from RGB values to named colors"
         },
@@ -394,7 +394,7 @@
           "type": "case",
           "ok": true,
           "unit": "an RGB value close to white.",
-          "message": "an RGB value close to white.",
+          "description": "an RGB value close to white.",
           "actual": "white",
           "parent": "private degrading from RGB values to named colors"
         }

@@ -41,7 +41,7 @@ class BayeuxRunner {
             for(let i = 0; i < report.cases.length; i++) {
                 let result = report.cases[i];
 
-                let name = result.message;
+                let name = result.description;
                 let filename = result.file;
                 let line = result.line;
                 let column = result.column;

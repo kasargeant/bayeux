@@ -24,9 +24,8 @@ const series = require("async-series");
  */
 const Bayeux = {
 
+    // Minimal state - TODO - Ideally remove all state.
     debug: false,
-
-
     snapshots: {},
     snapshotsUpdated: false,
     snapshotDirectory: "./__snapshots__/",
@@ -494,14 +493,14 @@ const Bayeux = {
         };
     },
 
-    // Compatibility API (experimental)
-    Jasmine() {
-        return {
-            describe: function(desc, fn) {Bayeux.unit(desc, fn);},
-            it: function(desc, fn) {Bayeux.test(desc, fn);},
-            expect: function(actual) {return Bayeux.expect(actual);}
-        };
-    }
+    // // Compatibility API (experimental)
+    // Jasmine() {
+    //     return {
+    //         describe: function(desc, fn) {Bayeux.unit(desc, fn);},
+    //         it: function(desc, fn) {Bayeux.test(desc, fn);},
+    //         expect: function(actual) {return Bayeux.expect(actual);}
+    //     };
+    // }
 };
 
 

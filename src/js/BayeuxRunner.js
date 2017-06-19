@@ -111,18 +111,18 @@ class BayeuxRunner {
     }
     _runTest(moduleDirectory, workingDirectory, fileName) {
 
+        // Switch to directory that contains the test.
         let absolutePath = path.resolve(fileName);
         let newWorkingDirectory = path.dirname(absolutePath);
-        console.log("Starting directory: " + process.cwd());
+        console.log("Switching directory from: " + process.cwd());
         try {
             process.chdir(newWorkingDirectory);
-            console.log("New directory: " + process.cwd());
+            console.log("to new directory: " + process.cwd());
         }
         catch(err) {
             throw err;
         }
         fileName = path.basename(absolutePath);
-
 
         // Execute test file and capture output
         let cmdLine = `node ${fileName}`;

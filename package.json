@@ -47,7 +47,7 @@
   "devDependencies": {
     "coveralls": "^2.13.1",
     "jest": "^20.0.4",
-    "jest-html-reporter": "^0.1.0",
+    "jest-html-reporter": "^0.1.2",
     "minami": "^1.2.3"
   },
   "jest-html-reporter": {
@@ -61,9 +61,9 @@
     "jsdoc": "^3.4.3",
     "minimist": "^1.2.0",
     "nyc": "^11.0.2",
-    "tap": "^10.3.3",
+    "tap": "^10.4.0",
     "tap-parser": "^5.4.0",
     "tape": "^4.6.3",
-    "tinter": "^0.4.3"
+    "tinter": "^0.4.5"
   }
 }

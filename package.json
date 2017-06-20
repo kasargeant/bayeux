@@ -47,8 +47,10 @@
   "devDependencies": {
     "coveralls": "^2.13.1",
     "jest": "^20.0.4",
-    "jest-html-reporter": "^0.1.2",
-    "minami": "^1.2.3"
+    "jest-html-reporter": "^0.3.0",
+    "minami": "^1.2.3",
+    "tap-parser": "^5.4.0",
+    "tape": "^4.6.3"
   },
   "jest-html-reporter": {
     "pageTitle": "Test Results",
@@ -62,9 +64,6 @@
     "minimist": "^1.2.0",
     "nyc": "^11.0.2",
     "simple-mock": "^0.8.0",
-    "tap": "^10.4.0",
-    "tap-parser": "^5.4.0",
-    "tape": "^4.6.3",
     "tinter": "^0.4.5"
   }
 }

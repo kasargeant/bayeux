@@ -20,7 +20,7 @@ const Tinter = require("tinter");
 const DUMMY_STRING = "Dummy String";
 
 // Specification
-feature("styles and colors correctly in a 16-color console environment", function() {
+feature("styles and colors correctly in all console environments", function() {
 
     can("encode all style directives", function(done) {
 

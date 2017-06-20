@@ -17,13 +17,24 @@ const reflector = require("./Reflector");
 // Component
 class BayeuxRunner {
     constructor() {
-
     }
 
-    _reportJSON(unitReport) {
+    _reportJSON(unitReport, reportType="unit") {
+
+        let reportTitle, testTitle;
+        switch(reportType) {
+            case "spec":
+                reportTitle = "Specification Test Report";
+                testTitle = "Requirement";
+                break;
+            default:
+                // i.e. "unit" case
+                reportTitle = "Unit Test Report";
+                testTitle = "Test";
+        }
 
         console.log("");
-        console.log(`Unit Report`);
+        console.log(`${reportTitle.toUpperCase()}: ${unitReport.name}`);
 
         let reports = unitReport.tests;
 
@@ -37,7 +48,7 @@ class BayeuxRunner {
             testsTotal += report.cases.length;
 
             console.log("");
-            console.log(`  Test: ${report.name} (${report.cases.length} tests).`);
+            console.log(`  ${testTitle}: ${report.name} (${report.cases.length} tests).`);
             for(let i = 0; i < report.cases.length; i++) {
                 let result = report.cases[i];
 
@@ -77,13 +88,13 @@ class BayeuxRunner {
         // Resolve test file path(s)
         let paths;
         if(args._ !== undefined && args._.constructor === Array) {
-            console.log(`Using path array: ${JSON.stringify(args._)}`);
+            //console.log(`Using path array: ${JSON.stringify(args._)}`);   // DEBUG ONLY
             paths = args._;
         } else {
-            console.log(`Using path glob: ${args._[0]}`);
+            //console.log(`Using path glob: ${args._[0]}`);                 // DEBUG ONLY
             paths = glob.sync(args._[0]);
         }
-        console.log(`  have paths: ${JSON.stringify(paths)}`);
+        //console.log(`  have paths: ${JSON.stringify(paths)}`);            // DEBUG ONLY
         return paths;
     }
 
@@ -124,6 +135,11 @@ class BayeuxRunner {
         }
         fileName = path.basename(absolutePath);
 
+        let fileExtIdx = fileName.indexOf(".");
+        let fileExt = (fileExtIdx !== -1) ? fileName.slice(fileExtIdx) : null;
+        //console.log("EXT: " + fileExt);
+        let reportType = (fileExt === ".spec.js") ? "spec" : "unit";
+
         // Execute test file and capture output
         let cmdLine = `node ${fileName}`;
         let stdout = "{}";
@@ -133,11 +149,11 @@ class BayeuxRunner {
             stdout = ex.stdout;
         }
 
-        this._reportJSON(JSON.parse(stdout));
+        this._reportJSON(JSON.parse(stdout), reportType);
     }
 
     runTests(moduleDirectory, workingDirectory, args) {
-        console.log(`Given args: ${JSON.stringify(args)}`);
+        //console.log(`Given args: ${JSON.stringify(args)}`);   // DEBUG ONLY
 
         // Resolve test file path(s)
         let paths = this._resolvePaths(args);

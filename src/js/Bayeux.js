@@ -20,34 +20,32 @@ const series = require("async-series");
 /**
  * @class
  * @static
- * @type {{debug: boolean, reports: Array, fnArray: Array, snapshots: {}, snapshotsUpdated: boolean, _report: Bayeux._report, _cleanup: Bayeux._cleanup, _collate: Bayeux._collate, _executeTests: Bayeux._executeTests, test: Bayeux.test, unit: Bayeux.unit, $$$$$$$$$$$$$$$$$$$$$debugDividerOnly: Bayeux.$$$$$$$$$$$$$$$$$$$$$debugDividerOnly, equal: Bayeux.equal, deepEqual: Bayeux.deepEqual, notEqual: Bayeux.notEqual, notDeepEqual: Bayeux.notDeepEqual, error: Bayeux.error, thrown: Bayeux.thrown, notThrown: Bayeux.notThrown, fail: Bayeux.fail, pass: Bayeux.pass, truthy: Bayeux.truthy, snapshot: Bayeux.snapshot}}
+ * @type {{debug: boolean, reports: Array, fnArray: Array, snapshots: {}, snapshotsUpdated: boolean, _reportCase: Bayeux._reportCase, _cleanup: Bayeux._cleanup, _collate: Bayeux._collate, _executeTests: Bayeux._executeTests, test: Bayeux.test, unit: Bayeux.unit, $$$$$$$$$$$$$$$$$$$$$debugDividerOnly: Bayeux.$$$$$$$$$$$$$$$$$$$$$debugDividerOnly, equal: Bayeux.equal, deepEqual: Bayeux.deepEqual, notEqual: Bayeux.notEqual, notDeepEqual: Bayeux.notDeepEqual, error: Bayeux.error, thrown: Bayeux.thrown, notThrown: Bayeux.notThrown, fail: Bayeux.fail, pass: Bayeux.pass, truthy: Bayeux.truthy, snapshot: Bayeux.snapshot}}
  */
 const Bayeux = {
 
+    // Minimal state - TODO - Ideally remove all state.
     debug: false,
-
-
     snapshots: {},
     snapshotsUpdated: false,
     snapshotDirectory: "./__snapshots__/",
 
     // Used undercover by assertions.
-    _report: function(desc, fn) {
+    _reportCase: function(desc, fn) {
         try {
             //console.log(desc + ": starting...");
             let actual = fn();
             this.report({
                 type: "case",
                 ok: true,
-                unit: desc,
-                message: desc,
+                description: desc,
                 actual: actual
             });
         } catch(err) {
             this.report({
                 type: "case",
                 ok: false,
-                unit: desc,
+                description: desc,
                 name: err.name,
                 message: err.message,
                 generatedMessage: err.generatedMessage,
@@ -79,7 +77,7 @@ const Bayeux = {
             let report = reports[i];
             switch(report.type) {
                 case "unit":
-                    unitReport.name = report.message;
+                    unitReport.name = report.description;
                     unitReportCount++;
                     break;
                 case "test":
@@ -87,7 +85,7 @@ const Bayeux = {
                         unitReport.tests.push(testReport);
                     }
                     testReport = {
-                        name: report.message,
+                        name: report.description,
                         parent: unitReport.name,
                         cases: []
                     };
@@ -113,16 +111,11 @@ const Bayeux = {
     // is.equal(square.height, 2110, "it should have assigned the right height.");
     test: null,
 
-    _onCompletion: function(reports) {
+    _onCompletion: function(unitReport, destination="stdout", format="json") {
         // On completion...
         // Collate results
-        let unitReport = this._collate(reports); // At this point the entire test unit is finished.
 
         // Output results
-        // Select test output format and destination
-        let format = "json";
-        let destination = "stdout";
-
         let unitReportSerialized = "";
         if(format === "json") {
             unitReportSerialized = JSON.stringify(unitReport, null, 2);
@@ -133,19 +126,23 @@ const Bayeux = {
         } else if(destination === "file") {
             let filename = unitReport.name.replace(/ /g, "_") + ".out.json";
             fs.writeFileSync(filename, unitReportSerialized);
+        } else if(destination === "return") {
+            return unitReportSerialized;
         }
     },
 
     report: null,
+    _getReports: null, // DEBUG ONLY
+    _clearReports: null, // DEBUG ONLY
 
-    unit: function(message, fn) {
+    unit: function(description, fn) {
         // If we have snapshots - load them.
         if(this.debug) {console.log("CWD: " + process.cwd());}
 
         let snapshotPath = path.resolve(process.cwd(), this.snapshotDirectory);
 
         if(fs.existsSync(snapshotPath)) {
-            let snapshotFilename = message.replace(/ /g, "_") + ".snap.js";
+            let snapshotFilename = description.replace(/ /g, "_") + ".snap.js";
             //console.log("SNAPSHOT: " + snapshotFilename);
             this.snapshots = null;
             try {
@@ -164,16 +161,24 @@ const Bayeux = {
             reports.push(msgObj);
         };
 
+        // DEBUG ONLY
+        this._clearReports = function() {
+            reports = [];
+        };
+        this._getReports = function() {
+            return reports;
+        };
+
         let fnArray = [];
-        this.test = function(message, fn) {
+        this.test = function(description, fn) {
             fnArray.push(function(done) {
-                this.report({type: "test", message: message});
+                this.report({type: "test", description: description});
                 fn(done);
             }.bind(this));
         };
 
         // Core of unit
-        this.report({type: "unit", message: message});
+        this.report({type: "unit", description: description});
         fn();
         series(fnArray, function(err) {
 
@@ -181,7 +186,10 @@ const Bayeux = {
             if(err) {
                 throw err;
             } else {
-                this._onCompletion(reports);
+                // At this point the entire unit test is finished.
+                // console.log("REPORTS: " + JSON.stringify(reports));
+                let unitReport = this._collate(reports);
+                this._onCompletion(unitReport);
             }
 
         }.bind(this));
@@ -207,7 +215,7 @@ const Bayeux = {
                 snapshotsString += `exports[\`${key}\`] = \`${value}\`;\n\n`;
             }
 
-            let snapshotFilename = message.replace(/ /g, "_") + ".snap.js";
+            let snapshotFilename = description.replace(/ /g, "_") + ".snap.js";
             try {
                 fs.writeFileSync(`./__snapshots__/${snapshotFilename}`, snapshotsString);
             } catch(err) {
@@ -225,11 +233,11 @@ const Bayeux = {
      * @example is.equal(square.height, 2110, "it should have assigned the right height.");
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      * @param {boolean} isStrict - If true, test uses strict comparison.
      */
     equal: function(actual, expected, msg, isStrict=true) {
-        this._report(msg, function() {
+        this._reportCase(msg, function() {
             if(isStrict === true) {
                 assert.strictEqual(actual, expected);
             } else {
@@ -244,11 +252,11 @@ const Bayeux = {
      * @example is.deepEqual(someComplexObj, someOtherComplexObj, "it should be able to clone correctly.");
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      * @param {boolean} isStrict - If true, test uses strict comparison.
      */
     deepEqual: function(actual, expected, msg, isStrict=true) {
-        this._report(msg, function() {
+        this._reportCase(msg, function() {
             if(isStrict === true) {
                 assert.deepStrictEqual(actual, expected);
             } else {
@@ -263,11 +271,11 @@ const Bayeux = {
      * @example is.notEqual(square.height, 2110, "it shouldn't have been assigned the height pre-initialisation.");
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      * @param {boolean} isStrict - If true, test uses strict comparison.
      */
     notEqual: function(actual, expected, msg, isStrict=true) {
-        this._report(msg, function() {
+        this._reportCase(msg, function() {
             if(isStrict === true) {
                 assert.notStrictEqual(actual, expected);
             } else {
@@ -282,11 +290,11 @@ const Bayeux = {
      * @example is.notDeepEqual(someComplexObj, someOtherComplexObj, "it should be unique.");
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      * @param {boolean} isStrict - If true, test uses strict comparison.
      */
     notDeepEqual: function(actual, expected, msg, isStrict=true) {
-        this._report(msg, function() {
+        this._reportCase(msg, function() {
             if(isStrict === true) {
                 assert.notDeepStrictEqual(actual, expected);
             } else {
@@ -301,10 +309,10 @@ const Bayeux = {
      *
      * @param {*} actual - the actual value
      * @param {*} expected - the expected value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      */
     error: function(actual, expected, msg) {
-        this._report(msg, function() {
+        this._reportCase(msg, function() {
             assert.ifError(actual, expected);
             return actual;
         });
@@ -314,11 +322,12 @@ const Bayeux = {
      * Tests whether an error was thrown.
      * @example is.thrown(someFunc(123), "it should throw an error/exception.");
      * @param {*} block - the code block
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {*} error - an optional error match.
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      */
-    thrown: function(block, msg) {
-        this._report(msg, function() {
-            assert.throws(block);
+    thrown: function(block, error, msg) {
+        this._reportCase(msg, function() {
+            assert.throws(block, error);
         });
     },
 
@@ -326,18 +335,19 @@ const Bayeux = {
      * Tests whether an error was not thrown.
      * @example is.notThrown(someFunc(123), "it should not throw an error/exception.");
      * @param {*} block - the code block
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {*} error - an optional error match.
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      */
-    notThrown: function(block, msg) {
-        this._report(msg, function() {
-            assert.doesNotThrow(block);
+    notThrown: function(block, error, msg) {
+        this._reportCase(msg, function() {
+            assert.doesNotThrow(block, error);
         });
     },
 
     /**
      * Asserts an automatic test 'fail'.
      * @example is.fail("it should meet the criteria.");
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      */
     fail: function(msg) {
         // TODO - implement direct reporting i.e. override test reporting
@@ -346,7 +356,7 @@ const Bayeux = {
     /**
      * Asserts an automatic test 'pass'.
      * @example is.pass("it should meet the criteria.");
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      */
     pass: function(msg) {
         // TODO - implement direct reporting i.e. override test reporting
@@ -356,10 +366,10 @@ const Bayeux = {
      * Tests whether the single given parameter is 'truthy' (i.e. allowing coercion etc.)
      * @example is.truthy(someValue, "it should be complete.");
      * @param {*} actual - the actual value
-     * @param {string} msg - a test description or message. NOTE: REQUIRED!
+     * @param {string} msg - a test description or title. NOTE: REQUIRED!
      */
     truthy: function(actual, msg) {
-        this._report(msg, function() {
+        this._reportCase(msg, function() {
             assert.ok(actual);
             return actual;
         });
@@ -380,7 +390,7 @@ const Bayeux = {
 
         if(snapshot !== undefined) {
             // We have an existing snapshot - to test against.
-            this.equal(value, snapshot, msg); // Note this implicitly will use this._report()
+            this.equal(value, snapshot, msg); // Note this implicitly will use this._reportCase()
         } else {
             // We need to make a new snapshot.
             this.snapshots[key] = value;
@@ -388,28 +398,46 @@ const Bayeux = {
             this.report({
                 type: "case",
                 ok: true,
-                unit: msg,
-                message: "[CREATING NEW SNAPSHOT]"
+                description: "[CREATING NEW SNAPSHOT]"
             });
         }
     },
 
-    expect: function(actual, msg) {
-        return {
-            toEqual: function(expected, msg, isStrict) {Bayeux.equal(actual, expected, msg, isStrict);},
-            toNotEqual: function(expected, msg, isStrict) {Bayeux.notEqual(actual, expected, msg, isStrict);},
-            toDeepEqual: function(expected, msg, isStrict) {Bayeux.deepEqual(actual, expected, msg, isStrict);},
-            toNotDeepEqual: function(expected, msg, isStrict) {Bayeux.notDeepEqual(actual, expected, msg, isStrict);},
-            toThrow: function(block, msg) {Bayeux.thrown(block, msg);},
-            toNotThrow: function(block, msg) {Bayeux.notThrown(block, msg);},
-            toNotBeError: function(expected, msg) {Bayeux.error(actual, expected, msg);},
-            toEqualSnapshot: function() {Bayeux.snapshot(actual, msg);}
-        };
-    },
+    // expect: function(actual, msg) {
+    //     return {
+    //         toEqual: function(expected, msg, isStrict) {Bayeux.equal(actual, expected, msg, isStrict);},
+    //         toNotEqual: function(expected, msg, isStrict) {Bayeux.notEqual(actual, expected, msg, isStrict);},
+    //         toDeepEqual: function(expected, msg, isStrict) {Bayeux.deepEqual(actual, expected, msg, isStrict);},
+    //         toNotDeepEqual: function(expected, msg, isStrict) {Bayeux.notDeepEqual(actual, expected, msg, isStrict);},
+    //         toThrow: function(block, msg) {Bayeux.thrown(block, msg);},
+    //         toNotThrow: function(block, msg) {Bayeux.notThrown(block, msg);},
+    //         toNotBeError: function(expected, msg) {Bayeux.error(actual, expected, msg);},
+    //         toEqualSnapshot: function() {Bayeux.snapshot(actual, msg);}
+    //     };
+    // },
 
     when: function(msg) {
         return {
             expect: function(actual) {
+                return {
+                    toEqual: function(expected, isStrict) {Bayeux.equal(actual, expected, msg, isStrict);},
+                    toNotEqual: function(expected, isStrict) {Bayeux.notEqual(actual, expected, msg, isStrict);},
+                    toDeepEqual: function(expected, isStrict) {Bayeux.deepEqual(actual, expected, msg, isStrict);},
+                    toNotDeepEqual: function(expected, isStrict) {Bayeux.notDeepEqual(actual, expected, msg, isStrict);},
+                    toThrow: function(error) {Bayeux.thrown(actual, error, msg);},
+                    toNotThrow: function(error) {Bayeux.notThrown(actual, error, msg);},
+                    toNotBeError: function(expected) {Bayeux.error(actual, expected, msg);},
+                    toEqualSnapshot: function() {Bayeux.snapshot(actual, msg);}
+                };
+            },
+            expectFile: function(filePath, fileType="string") {
+                let actual = null;
+                try {
+                    actual = fs.readFileSync(filePath);
+                } catch(err) {
+                    throw err;
+                }
+                actual = (fileType === "string") ? actual.toString() : actual;
                 return {
                     toEqual: function(expected, isStrict) {Bayeux.equal(actual, expected, msg, isStrict);},
                     toNotEqual: function(expected, isStrict) {Bayeux.notEqual(actual, expected, msg, isStrict);},
@@ -445,7 +473,7 @@ const Bayeux = {
                                 type: "case",
                                 ok: true,
                                 unit: unitName,
-                                message: msg
+                                description: msg
                             });
                         }
                     }
@@ -475,14 +503,14 @@ const Bayeux = {
         };
     },
 
-    // Compatibility API (experimental)
-    Jasmine() {
-        return {
-            describe: function(desc, fn) {Bayeux.unit(desc, fn);},
-            it: function(desc, fn) {Bayeux.test(desc, fn);},
-            expect: function(actual) {return Bayeux.expect(actual);}
-        };
-    }
+    // // Compatibility API (experimental)
+    // Jasmine() {
+    //     return {
+    //         describe: function(desc, fn) {Bayeux.unit(desc, fn);},
+    //         it: function(desc, fn) {Bayeux.test(desc, fn);},
+    //         expect: function(actual) {return Bayeux.expect(actual);}
+    //     };
+    // }
 };
 
 

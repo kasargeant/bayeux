@@ -1,0 +1,405 @@
+{
+  "tests": [
+    {
+      "name": "single style",
+      "parent": "Tinter (Node/16-color)",
+      "cases": [
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "reset",
+          "description": "reset",
+          "actual": "\u001b[0mDummy String\u001b[0m",
+          "parent": "single style"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "plain",
+          "description": "plain",
+          "actual": "\u001b[0mDummy String\u001b[0m",
+          "parent": "single style"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "bright",
+          "description": "bright",
+          "actual": "\u001b[1mDummy String\u001b[0m",
+          "parent": "single style"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "dim",
+          "description": "dim",
+          "actual": "\u001b[2mDummy String\u001b[0m",
+          "parent": "single style"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "italic",
+          "description": "italic",
+          "actual": "\u001b[3mDummy String\u001b[0m",
+          "parent": "single style"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "underline",
+          "description": "underline",
+          "actual": "\u001b[4mDummy String\u001b[0m",
+          "parent": "single style"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "blink",
+          "description": "blink",
+          "actual": "\u001b[5mDummy String\u001b[0m",
+          "parent": "single style"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "blink2",
+          "description": "blink2",
+          "actual": "\u001b[6mDummy String\u001b[0m",
+          "parent": "single style"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "inverse",
+          "description": "inverse",
+          "actual": "\u001b[7mDummy String\u001b[0m",
+          "parent": "single style"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "hidden",
+          "description": "hidden",
+          "actual": "\u001b[8mDummy String\u001b[0m",
+          "parent": "single style"
+        }
+      ]
+    },
+    {
+      "name": "single foreground color",
+      "parent": "Tinter (Node/16-color)",
+      "cases": [
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "black.",
+          "description": "black.",
+          "actual": "\u001b[1m\u001b[30mDummy String\u001b[0m",
+          "parent": "single foreground color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "red.",
+          "description": "red.",
+          "actual": "\u001b[1m\u001b[91mDummy String\u001b[0m",
+          "parent": "single foreground color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "green.",
+          "description": "green.",
+          "actual": "\u001b[1m\u001b[32mDummy String\u001b[0m",
+          "parent": "single foreground color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "yellow.",
+          "description": "yellow.",
+          "actual": "\u001b[1m\u001b[93mDummy String\u001b[0m",
+          "parent": "single foreground color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "blue.",
+          "description": "blue.",
+          "actual": "\u001b[1m\u001b[94mDummy String\u001b[0m",
+          "parent": "single foreground color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "magenta.",
+          "description": "magenta.",
+          "actual": "\u001b[1m\u001b[95mDummy String\u001b[0m",
+          "parent": "single foreground color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "cyan.",
+          "description": "cyan.",
+          "actual": "\u001b[1m\u001b[96mDummy String\u001b[0m",
+          "parent": "single foreground color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "white.",
+          "description": "white.",
+          "actual": "\u001b[1m\u001b[97mDummy String\u001b[0m",
+          "parent": "single foreground color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "default.",
+          "description": "default.",
+          "actual": "\u001b[39mDummy String",
+          "parent": "single foreground color"
+        }
+      ]
+    },
+    {
+      "name": "single background color",
+      "parent": "Tinter (Node/16-color)",
+      "cases": [
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "blackBg.",
+          "description": "blackBg.",
+          "actual": "\u001b[1m\u001b[40mDummy String\u001b[0m",
+          "parent": "single background color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "redBg.",
+          "description": "redBg.",
+          "actual": "\u001b[1m\u001b[101mDummy String\u001b[0m",
+          "parent": "single background color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "greenBg.",
+          "description": "greenBg.",
+          "actual": "\u001b[1m\u001b[42mDummy String\u001b[0m",
+          "parent": "single background color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "yellowBg.",
+          "description": "yellowBg.",
+          "actual": "\u001b[1m\u001b[103mDummy String\u001b[0m",
+          "parent": "single background color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "blueBg.",
+          "description": "blueBg.",
+          "actual": "\u001b[1m\u001b[104mDummy String\u001b[0m",
+          "parent": "single background color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "magentaBg.",
+          "description": "magentaBg.",
+          "actual": "\u001b[1m\u001b[105mDummy String\u001b[0m",
+          "parent": "single background color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "cyanBg.",
+          "description": "cyanBg.",
+          "actual": "\u001b[1m\u001b[106mDummy String\u001b[0m",
+          "parent": "single background color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "whiteBg.",
+          "description": "whiteBg.",
+          "actual": "\u001b[1m\u001b[107mDummy String\u001b[0m",
+          "parent": "single background color"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "defaultBg.",
+          "description": "defaultBg.",
+          "actual": "\u001b[49mDummy String",
+          "parent": "single background color"
+        }
+      ]
+    },
+    {
+      "name": "ANSI color naming",
+      "parent": "Tinter (Node/16-color)",
+      "cases": [
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "Black",
+          "description": "Black",
+          "actual": "\u001b[1m\u001b[30mDummy String\u001b[0m",
+          "parent": "ANSI color naming"
+        }
+      ]
+    },
+    {
+      "name": "CSS4 color naming",
+      "parent": "Tinter (Node/16-color)",
+      "cases": [
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "rebeccapurple",
+          "description": "rebeccapurple",
+          "actual": "\u001b[1m\u001b[34mDummy String\u001b[0m",
+          "parent": "CSS4 color naming"
+        }
+      ]
+    },
+    {
+      "name": "composite colors and style",
+      "parent": "Tinter (Node/16-color)",
+      "cases": [
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "foreground color, background color and style",
+          "description": "foreground color, background color and style",
+          "actual": "\u001b[3m\u001b[1m\u001b[104m\u001b[1m\u001b[93mDummy String\u001b[0m",
+          "parent": "composite colors and style"
+        }
+      ]
+    },
+    {
+      "name": "private truecolor styling",
+      "parent": "Tinter (Node/16-color)",
+      "cases": [
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "a string, RGB foreground and background colors, and a style (All params)",
+          "description": "a string, RGB foreground and background colors, and a style (All params)",
+          "actual": "\u001b[4m\u001b[1m\u001b[48;2;192;0;55m\u001b[1m\u001b[38;2;255;255;127mDummy String\u001b[0m",
+          "parent": "private truecolor styling"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "a string, RGB foreground and background colors (3 params)",
+          "description": "a string, RGB foreground and background colors (3 params)",
+          "actual": "\u001b[1m\u001b[48;2;192;0;55m\u001b[1m\u001b[38;2;255;255;127mDummy String\u001b[0m",
+          "parent": "private truecolor styling"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "a string, RGB foreground color (2 params)",
+          "description": "a string, RGB foreground color (2 params)",
+          "actual": "\u001b[1m\u001b[38;2;255;255;127mDummy String\u001b[0m",
+          "parent": "private truecolor styling"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "a string (1 param)",
+          "description": "a string (1 param)",
+          "actual": "Dummy String\u001b[0m",
+          "parent": "private truecolor styling"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "it degrades a truecolor value.",
+          "description": "it degrades a truecolor value.",
+          "actual": "\u001b[3m\u001b[1m\u001b[104m\u001b[1m\u001b[91mDummy String\u001b[0m",
+          "parent": "private truecolor styling"
+        }
+      ]
+    },
+    {
+      "name": "private degrading from RGB values to named colors",
+      "parent": "Tinter (Node/16-color)",
+      "cases": [
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "an RGB value close to black.",
+          "description": "an RGB value close to black.",
+          "actual": "black",
+          "parent": "private degrading from RGB values to named colors"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "an RGB value close to red.",
+          "description": "an RGB value close to red.",
+          "actual": "red",
+          "parent": "private degrading from RGB values to named colors"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "an RGB value close to green.",
+          "description": "an RGB value close to green.",
+          "actual": "green",
+          "parent": "private degrading from RGB values to named colors"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "an RGB value close to blue.",
+          "description": "an RGB value close to blue.",
+          "actual": "blue",
+          "parent": "private degrading from RGB values to named colors"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "an RGB value close to yellow.",
+          "description": "an RGB value close to yellow.",
+          "actual": "yellow",
+          "parent": "private degrading from RGB values to named colors"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "an RGB value close to magenta.",
+          "description": "an RGB value close to magenta.",
+          "actual": "magenta",
+          "parent": "private degrading from RGB values to named colors"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "an RGB value close to cyan.",
+          "description": "an RGB value close to cyan.",
+          "actual": "cyan",
+          "parent": "private degrading from RGB values to named colors"
+        },
+        {
+          "type": "case",
+          "ok": true,
+          "unit": "an RGB value close to white.",
+          "description": "an RGB value close to white.",
+          "actual": "white",
+          "parent": "private degrading from RGB values to named colors"
+        }
+      ]
+    }
+  ],
+  "name": "Tinter (Node/16-color)"
+}

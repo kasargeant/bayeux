@@ -95,11 +95,14 @@ describe("Class: Bayeux", function() {
                 test("a test", function() {
                     let actual = "hi!";
                     given("a test for string equality").expect(actual).toEqual("hi!");
-                    expect(Bayeux._getReports()).toEqual([
-                        {"description": "a unit", "type": "unit"},
-                        {"description": "a test", "type": "test"},
-                        {"actual": "hi!", "description": "a test for string equality", "ok": true, "type": "case"}
-                    ]);
+
+                    let reports = Bayeux._getReports();
+                    expect(reports.length).toBe(3);
+
+                    let report = reports[2];
+                    expect(report.type).toBe("case");
+                    expect(report.ok).toBe(true);
+                    expect(report.description).toBe("a test for string equality");
                 });
             });
         });
@@ -109,19 +112,27 @@ describe("Class: Bayeux", function() {
 
             unit("a unit", function() {
                 test("a test", function() {
-                    let actual = "ho!";
-                    given("a test for string equality").expect(actual).toEqual("hi!");
+                    let actual = "hi!";
+                    let expected = "ho!";
+
+                    given("a test for string equality").expect(actual).toEqual(expected);
+
                     let reports = Bayeux._getReports();
                     expect(reports.length).toBe(3);
-                    let caseReport = reports[2];
-                    expect(caseReport.stack).toBeDefined();
-                    caseReport.stack = ""; // NOTE: WE OVERWRITE THE 'stack' PROPERTY - IT IS TOO VARIABLE TO TEST.
-                    expect(reports).toEqual([
-                        {"description": "a unit", "type": "unit"},
-                        {"description": "a test", "type": "test"},
-                        {"actual": "ho!", "code": undefined, "expected": "hi!", "generatedMessage": true, "message": "'ho!' === 'hi!'", "name": "AssertionError", "ok": false, "operator": "===", "stack": "", "type": "case", "description": "a test for string equality"}]);
-                });
+
+                    let report = reports[2];
+                    expect(report.type).toBe("case");
+                    expect(report.ok).toBe(false);
+                    expect(report.description).toBe("a test for string equality");
+                    expect(report.message).toBe("'hi!' === 'ho!'");
+                    expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
+                    expect(report.actual).toBe(actual);
+                    expect(report.expected).toBe(expected);
+                    expect(report.operator).toBe("===");
+                    expect(report.stack).toBeDefined();
+                 });
             });
+
         });
         //
         //

@@ -16,7 +16,11 @@ const reflector = require("./Reflector");
 
 // Component
 class BayeuxRunner {
-    constructor() {
+    constructor(options) {
+        let defaults = {
+            haltOnFail: false   // Essential to be set to 'true' for CI pipelines.
+        };
+        this.config = Object.assign(defaults, options);
     }
 
     _reportJSON(unitReport, reportType="unit") {
@@ -33,7 +37,7 @@ class BayeuxRunner {
                 testTitle = "Test";
         }
 
-        console.log("");
+        console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         console.log(`${reportTitle.toUpperCase()}: ${unitReport.name}`);
 
         let reports = unitReport.tests;
@@ -78,25 +82,43 @@ class BayeuxRunner {
         console.log(`   \x1b[32mTests passed: (${testsPassed}/${testsTotal})\x1b[0m`);
         if(testsFailed) {
             console.log(`   \x1b[31mTests failed: (${testsFailed}/${testsTotal})\x1b[0m`);
-            throw new Error();
+            if(this.config.haltOnFail) {
+                throw new Error();  // Essential for CI.
+            }
         }
         console.log("");
     }
 
 
+    // _resolvePaths(args) {
+    //     // Resolve test file path(s)
+    //     let paths;
+    //     if(args._ !== undefined && args._.constructor === Array) {
+    //         console.log(`Using path array: ${JSON.stringify(args._)}`);   // DEBUG ONLY
+    //         paths = args._;
+    //     } else {
+    //         console.log(`Using path glob: ${args._[0]}`);                 // DEBUG ONLY
+    //         paths = glob.sync(args._[0]);
+    //     }
+    //     console.log(`  have paths: ${JSON.stringify(paths)}`);            // DEBUG ONLY
+    //     return paths;
+    // }
     _resolvePaths(args) {
         // Resolve test file path(s)
         let paths;
-        if(args._ !== undefined && args._.constructor === Array) {
-            //console.log(`Using path array: ${JSON.stringify(args._)}`);   // DEBUG ONLY
-            paths = args._;
-        } else {
-            //console.log(`Using path glob: ${args._[0]}`);                 // DEBUG ONLY
-            paths = glob.sync(args._[0]);
+        if(args._ !== undefined) {
+            if(args._.constructor === Array) {
+                console.log(`Using path array: ${JSON.stringify(args._)}`);   // DEBUG ONLY
+                paths = args._;
+            } else {
+                console.log(`Using path glob: ${args._[0]}`);                 // DEBUG ONLY
+                paths = glob.sync(args._[0]);
+            }
         }
-        //console.log(`  have paths: ${JSON.stringify(paths)}`);            // DEBUG ONLY
+        console.log(`  have paths: ${JSON.stringify(paths)}`);            // DEBUG ONLY
         return paths;
     }
+
 
     _generateTest(moduleDirectory, workingDirectory, fileName) {
         let unit = require(fileName);
@@ -121,7 +143,9 @@ class BayeuxRunner {
         console.log(`Generated ${count} files.`);
     }
     _runTest(moduleDirectory, workingDirectory, fileName) {
-
+// console.log("CWD: " + workingDirectory);
+// console.log("MD: " + moduleDirectory);
+// console.log("FILENAME: " + fileName);
         // Switch to directory that contains the test.
         let absolutePath = path.resolve(fileName);
         let newWorkingDirectory = path.dirname(absolutePath);
@@ -156,7 +180,29 @@ class BayeuxRunner {
         //console.log(`Given args: ${JSON.stringify(args)}`);   // DEBUG ONLY
 
         // Resolve test file path(s)
-        let paths = this._resolvePaths(args);
+        // let paths = this._resolvePaths(args);
+
+        // Resolve test file path(s)
+        let paths;
+        switch(typeof args) {
+            case "object":
+                // We assume an args object
+                if(args._.constructor === Array) {
+                    console.log(`Using path array: ${JSON.stringify(args._)}`);   // DEBUG ONLY
+                    paths = args._;
+                } else {
+                    console.log(`Using path glob: ${args._[0]}`);                 // DEBUG ONLY
+                    paths = glob.sync(args._[0]);
+                }
+                break;
+            case "string":
+                console.log(`Using path glob: ${args}`);                 // DEBUG ONLY
+                paths = glob.sync(args);
+                break;
+            default:
+                throw new Error("Unrecognised arguments.");
+        }
+        console.log(`  have paths: ${JSON.stringify(paths)}`);            // DEBUG ONLY
 
         // Execute test units
         let count = 0;
@@ -174,6 +220,6 @@ class BayeuxRunner {
 module.exports = BayeuxRunner;
 
 // let bay = new BayeuxRunner();
-// bay.runTests("/Users/kasargeant/dev/projects/bayeux/test/js/samples/*.test.js");
+// bay.runTests(process.cwd, __dirname, "/Users/kasargeant/dev/projects/bayeux/test/js/samples/*.unit.js");
 // bay._runTest("/Users/kasargeant/dev/projects/bayeux/test/js/samples/Tinter16.test.js");
 // bay._runTest("/Users/kasargeant/dev/projects/bayeux/test/js/samples/bayeuxSnapshots.test.js");

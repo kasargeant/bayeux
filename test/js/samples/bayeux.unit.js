@@ -77,4 +77,65 @@ unit("Examples", function() {
         done(); // Indicate the test is done.
     });
 
+
+    test("spying on a function", function(done) {
+
+        let _add = function(a, b, c) {
+            return a + b + c;
+        };
+
+        _add = Bayeux.spy(_add);
+
+        _add(0, 1, 2);
+        _add(3, 4, 5);
+        given("a mocked function with a call history").expect(_add.callCount).toEqual(2);
+
+
+        done(); // Indicate the test is done.
+    });
+
+
+    test("spying with an anonymous function", function(done) {
+
+        let spy = Bayeux.spy();
+
+        let someFunction = function(callback) {
+            let someResult = 10;
+            callback();
+            callback();
+            return someResult;
+        };
+
+        someFunction(spy);
+
+        given("a function that operates on another function").expect(spy.callCount).toEqual(2);
+
+        done(); // Indicate the test is done.
+    });
+
+
+    test("mocking an object", function(done) {
+
+        let someObject = {
+            val: 10,
+            // get val() { return val; },                   // INSERTED FOR PROPERTY SPYING
+            // set val(value) { this.val = value; },       // INSERTED FOR PROPERTY SPYING
+            add: function(a, b) {
+                return a + b;
+            }
+        };
+
+        let mockObject = Bayeux.mock(someObject);
+        mockObject.add.returns(3);
+
+        // Check that object behavior is as expected/defined.
+        given("a mocked object with a property").expect(mockObject.val).toEqual(10);
+        given("a mocked object with a method").expect(mockObject.add(1, 2)).toEqual(3);
+
+        // Check that spy functionality is available.
+        given("a function that operates on another function").expect(mockObject.add.callCount).toEqual(1);
+
+        done(); // Indicate the test is done.
+    });
+
 });

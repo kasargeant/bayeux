@@ -14,6 +14,7 @@ const fs = require("fs");
 const path = require("path");
 const assert = require("assert");
 const series = require("async-series");
+const sinon = require("sinon");
 
 // Component
 
@@ -29,6 +30,50 @@ const Bayeux = {
     snapshots: {},
     snapshotsUpdated: false,
     snapshotDirectory: "./__snapshots__/",
+
+    _mockObject: function(obj) {
+        return sinon.stub(obj);
+    },
+
+    _mockMethod: function(obj, methodName) {
+        return sinon.stub(obj, methodName);
+    },
+
+    _mockFunction: function() {
+        return sinon.stub();
+    },
+
+    /**
+     * Mocks an object, method or anonymous function i.e. in jargon, a stub.
+     * @returns {Object|Function} stub
+     */
+    mock: function(obj, methodName) {
+        let argc = arguments.length;
+        if(argc === 2) {
+            // Mock/fake a method
+            return this._mockMethod(obj, methodName);
+        } else if(argc === 1) {
+            // Mock/fake an object (i.e. all it's methods)
+            return this._mockObject(obj);
+        } else {
+            // Mock/fake an anonymous function
+            return this._mockFunction();
+        }
+    },
+
+    /**
+     * Spies on a function or returns an anonymous function to use as a spy elsewhere.
+     * @returns {Function} spy
+     */
+    spy: function(fn) {
+        if(fn === undefined) {
+            // Spy with an anonymous function TODO - this case is already handled by mock() and thus unnecessary.
+            return sinon.spy();
+        } else {
+            // Spy on function
+            return sinon.spy(fn);
+        }
+    },
 
     // Used undercover by assertions.
     _reportCase: function(desc, fn) {

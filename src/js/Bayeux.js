@@ -478,7 +478,7 @@ const Bayeux = {
             expectFile: function(filePath, fileType="string") {
                 let actual = null;
                 try {
-                    actual = fs.readFileSync(filePath);
+                    actual = fs.readFileSync(path.resolve(filePath));
                 } catch(err) {
                     throw err;
                 }

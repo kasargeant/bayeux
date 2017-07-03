@@ -12,7 +12,7 @@
 const Bayeux = require("../../src/js/Bayeux");
 const {given, test, unit} = Bayeux.TDD();
 
-const simple = require("simple-mock");
+const sinon = require("sinon");
 
 // Constants
 const DUMMY_REPORTS = require("../data/example_unit_test_reports.json");
@@ -170,11 +170,17 @@ describe("Class: Bayeux", function() {
         //         "stack": "AssertionError: 'ho!' == 'hi!'\n    at /Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:229:20\n    at Object._report (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:38:17)\n    at Object.equal (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:228:14)\n    at /Users/kasargeant/dev/projects/bayeux/test/js/samples/bayeux.test.js:22:12\n    at Object.<anonymous> (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:155:13)\n    at handleItem (/Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:14:13)\n    at series (/Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:30:3)\n    at Object._executeTests (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:138:9)\n    at Object.unit (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:179:14)\n    at unit (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:441:38)"
         // }]
 
+        beforeEach(function() {
+            sinon.spy(Bayeux, "report");
+        });
+        afterEach(function() {
+            Bayeux.report.restore();
+        });
+
+
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // equal()
         it("it should log when a 'pass' on a successful: equal(loose)", function() {
-
-            simple.mock(Bayeux, "report");
 
             let actual = 1;
             let expected = "1";
@@ -187,11 +193,12 @@ describe("Class: Bayeux", function() {
             // console.log(Bayeux.report.calls[0].returned);
 
 
-            let report = Bayeux.report.lastCall.arg;
+
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(true);
             expect(report.description).toBe("it does log a 'pass' when values are loosely equal.");
-
         });
 
         it("it should log when a 'fail' on a failed: equal(loose)", function() {
@@ -200,7 +207,8 @@ describe("Class: Bayeux", function() {
             let expected = "2";
             given("it does log a 'fail' when values are not loosely equal.").expect(actual).toEqual(expected, false);
 
-            let report = Bayeux.report.lastCall.arg;
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(false);
             expect(report.description).toBe("it does log a 'fail' when values are not loosely equal.");
@@ -210,8 +218,6 @@ describe("Class: Bayeux", function() {
             expect(report.expected).toBe(expected);
             expect(report.operator).toBe("==");
             expect(report.stack).toBeDefined();
-
-
         });
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -237,11 +243,11 @@ describe("Class: Bayeux", function() {
 
             given("it does log a 'pass' when values are loosely deep equal.").expect(actual).toDeepEqual(expected, false);
 
-            let report = Bayeux.report.lastCall.arg;
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(true);
             expect(report.description).toBe("it does log a 'pass' when values are loosely deep equal.");
-
         });
 
         it("it should log when a 'fail' on a failed: deepEqual(loose)", function() {
@@ -265,7 +271,8 @@ describe("Class: Bayeux", function() {
 
             given("it does log a 'pass' when values are loosely deep equal.").expect(actual).toDeepEqual(expected, false);
 
-            let report = Bayeux.report.lastCall.arg;
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(false);
             expect(report.description).toBe("it does log a 'pass' when values are loosely deep equal.");
@@ -276,7 +283,6 @@ describe("Class: Bayeux", function() {
             expect(report.expected).toBe(expected);
             expect(report.operator).toBe("deepEqual");
             expect(report.stack).toBeDefined();
-
         });
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -287,11 +293,11 @@ describe("Class: Bayeux", function() {
             let expected = 1;
             given("it does log a 'pass' when values are strictly equal.").expect(actual).toEqual(expected, true);
 
-            let report = Bayeux.report.lastCall.arg;
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(true);
             expect(report.description).toBe("it does log a 'pass' when values are strictly equal.");
-
         });
 
         it("it should log when a 'fail' on a failed: equal(strict)", function() {
@@ -300,7 +306,8 @@ describe("Class: Bayeux", function() {
             let expected = "1";
             given("it does log a 'pass' when values are strictly equal.").expect(actual).toEqual(expected, true);
 
-            let report = Bayeux.report.lastCall.arg;
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(false);
             expect(report.description).toBe("it does log a 'pass' when values are strictly equal.");
@@ -311,7 +318,6 @@ describe("Class: Bayeux", function() {
             expect(report.expected).toBe(expected);
             expect(report.operator).toBe("===");
             expect(report.stack).toBeDefined();
-
         });
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -336,11 +342,11 @@ describe("Class: Bayeux", function() {
             };
             given("it does log a 'pass' when values are strictly deep equal.").expect(actual).toDeepEqual(expected, true);
 
-            let report = Bayeux.report.lastCall.arg;
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(true);
             expect(report.description).toBe("it does log a 'pass' when values are strictly deep equal.");
-
         });
 
         it("it should log when a 'fail' on a failed: deepEqual(strict)", function() {
@@ -363,7 +369,8 @@ describe("Class: Bayeux", function() {
             };
             given("it does log a 'fail' when values are not strictly deep equal.").expect(actual).toDeepEqual(expected, true);
 
-            let report = Bayeux.report.lastCall.arg;
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(false);
             expect(report.description).toBe("it does log a 'fail' when values are not strictly deep equal.");
@@ -374,7 +381,6 @@ describe("Class: Bayeux", function() {
             expect(report.expected).toBe(expected);
             expect(report.operator).toBe("deepStrictEqual");
             expect(report.stack).toBeDefined();
-
         });
     });
 
@@ -405,6 +411,13 @@ describe("Class: Bayeux", function() {
         //         "operator": "==",
         //         "stack": "AssertionError: 'ho!' == 'hi!'\n    at /Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:229:20\n    at Object._report (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:38:17)\n    at Object.equal (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:228:14)\n    at /Users/kasargeant/dev/projects/bayeux/test/js/samples/bayeux.test.js:22:12\n    at Object.<anonymous> (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:155:13)\n    at handleItem (/Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:14:13)\n    at series (/Users/kasargeant/dev/projects/bayeux/node_modules/async-series/index.js:30:3)\n    at Object._executeTests (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:138:9)\n    at Object.unit (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:179:14)\n    at unit (/Users/kasargeant/dev/projects/bayeux/src/js/Bayeux.js:441:38)"
         // }]
+        beforeEach(function() {
+            sinon.spy(Bayeux, "report");
+        });
+        afterEach(function() {
+            Bayeux.report.restore();
+        });
+
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // NOT_EQUAL - LOOSE
@@ -414,11 +427,11 @@ describe("Class: Bayeux", function() {
             let expected = "2";
             given("it does log a 'pass' when values are not loosely equal.").expect(actual).toNotEqual(expected, false);
 
-            let report = Bayeux.report.lastCall.arg;
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(true);
             expect(report.description).toBe("it does log a 'pass' when values are not loosely equal.");
-
         });
 
         it("it should log when a 'fail' on a failed: notEqual(loose)", function() {
@@ -427,7 +440,8 @@ describe("Class: Bayeux", function() {
             let expected = "1";
             given("it does log a 'fail' when values are not loosely equal.").expect(actual).toNotEqual(expected, false);
 
-            let report = Bayeux.report.lastCall.arg;
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(false);
             expect(report.description).toBe("it does log a 'fail' when values are not loosely equal.");
@@ -437,7 +451,6 @@ describe("Class: Bayeux", function() {
             expect(report.expected).toBe(expected);
             expect(report.operator).toBe("!=");
             expect(report.stack).toBeDefined();
-
         });
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -463,11 +476,11 @@ describe("Class: Bayeux", function() {
 
             given("it does log a 'pass' when values are not loosely deep equal.").expect(actual).toNotDeepEqual(expected, false);
 
-            let report = Bayeux.report.lastCall.arg;
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(true);
             expect(report.description).toBe("it does log a 'pass' when values are not loosely deep equal.");
-
         });
 
         it("it should log when a 'fail' on a failed: notDeepEqual(loose)", function() {
@@ -491,7 +504,8 @@ describe("Class: Bayeux", function() {
 
             given("it does log a 'fail' when values are loosely deep equal.").expect(actual).toNotDeepEqual(expected, false);
 
-            let report = Bayeux.report.lastCall.arg;
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(false);
             expect(report.description).toBe("it does log a 'fail' when values are loosely deep equal.");
@@ -501,7 +515,6 @@ describe("Class: Bayeux", function() {
             expect(report.expected).toBe(expected);
             expect(report.operator).toBe("notDeepEqual");
             expect(report.stack).toBeDefined();
-
         });
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -512,11 +525,11 @@ describe("Class: Bayeux", function() {
             let expected = "1";
             given("it does log a 'pass' when values are not strictly equal.").expect(actual).toNotEqual(expected, true);
 
-            let report = Bayeux.report.lastCall.arg;
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(true);
             expect(report.description).toBe("it does log a 'pass' when values are not strictly equal.");
-
         });
 
         it("it should log when a 'fail' on a failed: notEqual(strict)", function() {
@@ -525,7 +538,8 @@ describe("Class: Bayeux", function() {
             let expected = 1;
             given("it does log a 'fail' when values are strictly equal.").expect(actual).toNotEqual(expected, true);
 
-            let report = Bayeux.report.lastCall.arg;
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(false);
             expect(report.description).toBe("it does log a 'fail' when values are strictly equal.");
@@ -535,7 +549,6 @@ describe("Class: Bayeux", function() {
             expect(report.expected).toBe(expected);
             expect(report.operator).toBe("!==");
             expect(report.stack).toBeDefined();
-
         });
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -560,11 +573,11 @@ describe("Class: Bayeux", function() {
             };
             given("it does log a 'pass' when values are not strictly deep equal.").expect(actual).toNotDeepEqual(expected, true);
 
-            let report = Bayeux.report.lastCall.arg;
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(true);
             expect(report.description).toBe("it does log a 'pass' when values are not strictly deep equal.");
-
         });
 
         it("it should log when a 'fail' on a failed: notDeepEqual(strict)", function() {
@@ -587,7 +600,8 @@ describe("Class: Bayeux", function() {
             };
             given("it does log a 'fail' when values are strictly deep equal.").expect(actual).toNotDeepEqual(expected, true);
 
-            let report = Bayeux.report.lastCall.arg;
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
             expect(report.type).toBe("case");
             expect(report.ok).toBe(false);
             expect(report.description).toBe("it does log a 'fail' when values are strictly deep equal.");
@@ -597,126 +611,134 @@ describe("Class: Bayeux", function() {
             expect(report.expected).toBe(expected);
             expect(report.operator).toBe("notDeepStrictEqual");
             expect(report.stack).toBeDefined();
-
         });
+    });
 
-        // //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        // // TRUTH
-        // //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //
-        // describe("User functions: 'truthiness'", function() {
-        //
-        //     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        //     // truthy()
-        //     it("it should log when a 'pass' on a successful: truthy()", function() {
-        //
-        //         let actual = 1;
-        //         given("it should be able to determine if a value is truthy.").expect(actual).toBeTruthy();
-        //
-        //         let report = Bayeux.report.lastCall.arg;
-        //         expect(report.type).toBe("case");
-        //         expect(report.ok).toBe(true);
-        //         expect(report.description).toBe("it should be able to determine if a value is truthy.");
-        //
-        //     });
-        //
-        //     it("it should log when a 'fail' on a failed: truthy()", function() {
-        //         expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
-        //
-        //         let actual = 0;
-        //         given("it should be able to determine if a value is not truthy.").expect(actual).toBeTruthy();
-        //
-        //         let report = Bayeux.report.lastCall.arg;
-        //         expect(report.type).toBe("case");
-        //         expect(report.ok).toBe(false);
-        //         expect(report.description).toBe("it should be able to compare strings for notEquality.");
-        //         expect(report.message).toBe("it should be able to compare strings for notEquality.");
-        //         expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
-        //         expect(report.actual).toBe(actual);
-        //         expect(report.operator).toBe("==");
-        //         expect(report.stack).toBeDefined();
-        //
-        //         Bayeux._cleanup(); // Explicit cleanup
-        //     });
-        //
-        // });
+    // //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // // TRUTH
+    // //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //
+    // describe("User functions: 'truthiness'", function() {
+    //
+    //     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //     // truthy()
+    //     it("it should log when a 'pass' on a successful: truthy()", function() {
+    //
+    //         let actual = 1;
+    //         given("it should be able to determine if a value is truthy.").expect(actual).toBeTruthy();
+    //
+    //         expect(Bayeux.report.callCount).toBe(1);
+    //         let report = Bayeux.report.lastCall.args[0];
+    //         expect(report.type).toBe("case");
+    //         expect(report.ok).toBe(true);
+    //         expect(report.description).toBe("it should be able to determine if a value is truthy.");
+    //         Bayeux.report.restore();
+    //     });
+    //
+    //     it("it should log when a 'fail' on a failed: truthy()", function() {
+    //         expect(Bayeux.reports).toEqual([]); // Make sure nothing from other tests contaminating shared variable.
+    //
+    //         let actual = 0;
+    //         given("it should be able to determine if a value is not truthy.").expect(actual).toBeTruthy();
+    //
+    //         expect(Bayeux.report.callCount).toBe(1);
+    //         let report = Bayeux.report.lastCall.args[0];
+    //         expect(report.type).toBe("case");
+    //         expect(report.ok).toBe(false);
+    //         expect(report.description).toBe("it should be able to compare strings for notEquality.");
+    //         expect(report.message).toBe("it should be able to compare strings for notEquality.");
+    //         expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
+    //         expect(report.actual).toBe(actual);
+    //         expect(report.operator).toBe("==");
+    //         expect(report.stack).toBeDefined();
+    //         Bayeux.report.restore();
+    //         Bayeux._cleanup(); // Explicit cleanup
+    //     });
+    //
+    // });
+
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ERRORS (EXCEPTION-HANDLING)
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    //FIXME - NEED TO ADD CASES WHEN CHECKING FOR SPECIFIC ERROR TYPES!!!
+
+    describe("User functions: 'exceptions'", function() {
+
+        beforeEach(function() {
+            sinon.spy(Bayeux, "report");
+        });
+        afterEach(function() {
+            Bayeux.report.restore();
+        });
 
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        // ERRORS (EXCEPTION-HANDLING)
-        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // thrown()
+        it("it should log when a 'pass' on a successful: thrown()", function() {
 
-        //FIXME - NEED TO ADD CASES WHEN CHECKING FOR SPECIFIC ERROR TYPES!!!
+            let actual = function() {
+                throw new Error("Error!");
+            };
+            given("it should be able to determine if an error was thrown.").expect(actual).toThrow();
 
-        describe("User functions: 'exceptions'", function() {
-
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            // thrown()
-            it("it should log when a 'pass' on a successful: thrown()", function() {
-
-                let actual = function() {
-                    throw new Error("Error!");
-                };
-                given("it should be able to determine if an error was thrown.").expect(actual).toThrow();
-
-                let report = Bayeux.report.lastCall.arg;
-                expect(report.type).toBe("case");
-                expect(report.ok).toBe(true);
-                expect(report.description).toBe("it should be able to determine if an error was thrown.");
-
-            });
-
-            it("it should log when a 'fail' on a failed: thrown()", function() {
-
-                let actual = function() {
-                    return "kitten";
-                };
-                given("it should be able to determine if an error was thrown.").expect(actual).toThrow();
-
-                let report = Bayeux.report.lastCall.arg;
-                expect(report.type).toBe("case");
-                expect(report.ok).toBe(false);
-                expect(report.description).toBe("it should be able to determine if an error was thrown.");
-                expect(report.message.slice(0, 27)).toBe("Missing expected exception.");
-                expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
-                expect(report.stack).toBeDefined();
-
-            });
-
-            //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            // notThrown()
-            it("it should log when a 'pass' on a successful: notThrown()", function() {
-
-                let actual = function() {
-                    return "kitten";
-                };
-                given("it should be able to determine if an error was not thrown.").expect(actual).toNotThrow();
-
-                let report = Bayeux.report.lastCall.arg;
-                expect(report.type).toBe("case");
-                expect(report.ok).toBe(true);
-                expect(report.description).toBe("it should be able to determine if an error was not thrown.");
-
-            });
-
-            it("it should log when a 'fail' on a failed: notThrown()", function() {
-
-                let actual = function() {
-                    throw new Error("Error!");
-                };
-                given("it should be able to determine if an error was not not thrown.").expect(actual).toNotThrow();
-
-                let report = Bayeux.report.lastCall.arg;
-                expect(report.type).toBe("case");
-                expect(report.ok).toBe(false);
-                expect(report.description).toBe("it should be able to determine if an error was not not thrown.");
-                expect(report.message.slice(0, 23)).toBe("Got unwanted exception.");
-                expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
-                expect(report.stack).toBeDefined();
-
-            });
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(true);
+            expect(report.description).toBe("it should be able to determine if an error was thrown.");
         });
 
+        it("it should log when a 'fail' on a failed: thrown()", function() {
+
+            let actual = function() {
+                return "kitten";
+            };
+            given("it should be able to determine if an error was thrown.").expect(actual).toThrow();
+
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(false);
+            expect(report.description).toBe("it should be able to determine if an error was thrown.");
+            expect(report.message.slice(0, 27)).toBe("Missing expected exception.");
+            expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
+            expect(report.stack).toBeDefined();
+        });
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        // notThrown()
+        it("it should log when a 'pass' on a successful: notThrown()", function() {
+
+            let actual = function() {
+                return "kitten";
+            };
+            given("it should be able to determine if an error was not thrown.").expect(actual).toNotThrow();
+
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(true);
+            expect(report.description).toBe("it should be able to determine if an error was not thrown.");
+        });
+
+        it("it should log when a 'fail' on a failed: notThrown()", function() {
+
+            let actual = function() {
+                throw new Error("Error!");
+            };
+            given("it should be able to determine if an error was not not thrown.").expect(actual).toNotThrow();
+
+            expect(Bayeux.report.callCount).toBe(1);
+            let report = Bayeux.report.lastCall.args[0];
+            expect(report.type).toBe("case");
+            expect(report.ok).toBe(false);
+            expect(report.description).toBe("it should be able to determine if an error was not not thrown.");
+            expect(report.message.slice(0, 23)).toBe("Got unwanted exception.");
+            expect(report.name.slice(0, 14)).toBe("AssertionError"); // Note: The slice is because Travis returns: "AssertionError [ERR_ASSERTION]"
+            expect(report.stack).toBeDefined();
+        });
     });
 });
 

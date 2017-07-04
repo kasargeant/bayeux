@@ -1,6 +1,6 @@
 {
   "name": "bayeux",
-  "version": "0.9.1",
+  "version": "0.9.3",
   "description": "A simple, capable and pragmatic Tap-based test framework.",
   "keywords": [
     "javascript",
@@ -40,9 +40,9 @@
     "bayeux-test": "./bin/bayeux ./test/js/samples/*.test.js",
     "bayeux-test-cover": "nyc ./bin/bayeux ./test/js/samples/*.test.js",
     "bayeux-test-cover-single": "nyc node ./test/js/samples/Tinter16.test.js",
-    "test": "jest --config ./conf/jest.json",
-    "test-cover": "jest --config ./conf/jest.json --coverage",
-    "test-update": "jest --config ./conf/jest.json --updateSnapshot"
+    "test": "jest ./test/js/Bayeux.test.js --config ./conf/jest.json",
+    "test-cover": "jest ./test/js/Bayeux.test.js --config ./conf/jest.json --coverage",
+    "test-update": "jest ./test/js/Bayeux.test.js --config ./conf/jest.json --updateSnapshot"
   },
   "devDependencies": {
     "coveralls": "^2.13.1",
@@ -58,12 +58,18 @@
     "includeFailureMsg": false
   },
   "dependencies": {
+    "acorn": "^5.0.3",
     "async-series": "0.0.1",
     "glob": "^7.1.2",
+    "jest-html-reporter": "^0.3.1",
     "jsdoc": "^3.4.3",
+    "json-chop": "^1.0.5",
+    "lodash": "^4.17.4",
     "minimist": "^1.2.0",
-    "nyc": "^11.0.2",
-    "sinon": "^2.3.5",
-    "tinter": "^0.4.5"
+    "nyc": "^11.0.3",
+    "pageant": "^0.1.6",
+    "sinon": "^2.3.6",
+    "tape": "^4.7.0",
+    "tinter": "^0.4.6"
   }
 }
